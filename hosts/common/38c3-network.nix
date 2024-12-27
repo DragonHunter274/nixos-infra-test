@@ -9,6 +9,7 @@
         prefixLength = 23;
       }];
   };
+  networking.networkmanager.enable = true;
   networking.networkmanager.ensureProfiles.profiles= {
     fiber = {
       connection = {
