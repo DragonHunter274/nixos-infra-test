@@ -9,11 +9,13 @@
         prefixLength = 23;
       }];
   };
-  networking.networkmanager.settings = {
+  networking.networkmanager.ensureProfiles.profiles= {
+  fiber = {
     ipv6 = {
-      "addr-gen-mode" = "0";
+      addr-gen-mode = "0";
     };
   };
+}
 
   services.lldpd.enable = true;
 
