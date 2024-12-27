@@ -10,7 +10,6 @@
       }];
   };
   networking.defaultGateway.interface = "enp43s0";
-  networking.defaultGateway.address = "151.217.62.1";
   networking.networkmanager.settings = {
     ipv6 = {
       "addr-gen-mode" = "0";
