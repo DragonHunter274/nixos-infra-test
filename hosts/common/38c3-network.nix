@@ -10,11 +10,9 @@
   #    }];
   #};
 
-  networking.networkmanager.settings = {
-    connection = {
-      "addr-gen-mode" = "eui64";
-    };
-  };
+  settings.connection.ipv6.addr-gen-mode = "eui64";
+  settings.connection.ipv6.ip6-privacy = "0";
+
 
 
   services.lldpd.enable = true;
