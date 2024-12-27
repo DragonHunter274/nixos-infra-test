@@ -9,9 +9,10 @@
   #      prefixLength = 23;
   #    }];
   #};
-
-  settings.connection.ipv6.addr-gen-mode = "eui64";
-  settings.connection.ipv6.ip6-privacy = "0";
+  networking.networkmanager = {
+    settings.connection.ipv6.addr-gen-mode = "eui64";
+    settings.connection.ipv6.ip6-privacy = "0";
+  };
 
 
 
