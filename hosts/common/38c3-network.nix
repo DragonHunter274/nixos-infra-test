@@ -10,12 +10,12 @@
       }];
   };
   networking.networkmanager.ensureProfiles.profiles= {
-  fiber = {
-    ipv6 = {
-      addr-gen-mode = "0";
+    fiber = {
+      ipv6 = {
+        addr-gen-mode = "0";
+      };
     };
   };
-}
 
   services.lldpd.enable = true;
 
