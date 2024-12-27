@@ -69,7 +69,8 @@
           "sudo"
           "terraform"
           "systemadmin"
-
+          "git"
+          "kubectl"
         ];
       };
     };

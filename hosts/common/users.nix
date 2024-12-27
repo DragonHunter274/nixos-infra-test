@@ -85,5 +85,21 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBGJlmdhEw08YDrg8zVzIfXfeuKqB0FCtAfnW0TFT18r"
     ];
   };
+  users.users.obedaya = {
+    isNormalUser = true;
+    description = "Simon Holzner";
+    shell = pkgs.zsh;
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [
+      k9s
+      neovim
+    ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHk9HLSPaM3IZrJE2OsLLEjjtsd78EAG9aB6i14Ihd1g"
+    ];
+  };
 
 }
