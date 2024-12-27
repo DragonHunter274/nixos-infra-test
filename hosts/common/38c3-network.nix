@@ -11,6 +11,14 @@
   };
   networking.networkmanager.ensureProfiles.profiles= {
     fiber = {
+      connection = {
+        id = "Wired connection 2";
+        uuid = "5bc1572f-c4b3-36c4-8444-9a4c347158b2";
+        type = "ethernet";
+        autoconnect-priority = "-999";
+        interface-name = "enp43s0";
+        timestamp = "1735308281";
+      };
       ipv6 = {
         addr-gen-mode = "0";
       };
