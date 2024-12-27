@@ -12,7 +12,7 @@
 
   networking.networkmanager.settings = {
     connection = {
-      "addr-gen-mode" = "0";
+      "addr-gen-mode" = "eui64";
     };
   };
 
