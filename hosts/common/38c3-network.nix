@@ -3,6 +3,14 @@
 {
   networking.tempAddresses = "disabled";
   #networking.interfaces.enp1s0.acceptRA = true;
+  networking.interfaces.enp43s0 = {
+    ipv4.addresses = [{
+        address = "151.217.62.81";
+        prefixLength = 23;
+      }];
+  };
+  networking.defaultGateway.interface = "enp43s0";
+  networking.defaultGateway.address = "151.217.62.1";
 
   services.lldpd.enable = true;
 
