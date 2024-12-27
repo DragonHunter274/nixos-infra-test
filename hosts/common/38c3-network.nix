@@ -9,7 +9,6 @@
         prefixLength = 23;
       }];
   };
-  networking.defaultGateway.interface = "enp43s0";
   networking.networkmanager.settings = {
     ipv6 = {
       "addr-gen-mode" = "0";
