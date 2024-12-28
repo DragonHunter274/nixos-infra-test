@@ -89,8 +89,8 @@ services:
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent
- #   ports:
- #     - "8080:8080"
+#    ports:
+#      - "8080:8080"
     environment:
       - PUID=1000
       - PGID=1000
@@ -141,22 +141,6 @@ services:
       - "traefik.http.routers.oauth2.tls=true"
       - "traefik.http.routers.oauth2.tls.certResolver=letsencrypt"
       - "traefik.http.services.oauth2.loadbalancer.server.port=4180"
-
-  unbound:
-    container_name: unbound
-    image: ghcr.io/dragonhunter274/unbound-docker:latest
-    ports:
-      - 53:5335/tcp
-      - 53:5335/udp
-    volumes:
-      - /etc/unbound/conf.d/:/usr/local/unbound/conf.d/:rw
-    restart: unless-stopped
-    healthcheck:
-      test: /usr/local/unbound/sbin/healthcheck.sh
-      interval: 60s
-      retries: 5
-      start_period: 15s
-      timeout: 30s
 
 volumes:
   shared-download:
