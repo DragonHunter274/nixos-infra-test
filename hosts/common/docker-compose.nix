@@ -20,6 +20,155 @@
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
+  virtualisation.oci-containers.containers."ftpserver" = {
+    image = "fauria/vsftpd";
+    environment = {
+      "DIRLIST_DEFAULTS_ENABLE" = "YES";
+      "DIRLIST_ENABLE" = "YES";
+      "FTPD_LOG_FILE" = "/var/log/vsftpd/xferlog";
+      "FTP_PASS" = "ftpuserpass";
+      "FTP_USER" = "ftpuser";
+      "LOCAL_UMASK" = "18";
+      "PASV_ADDRESS" = "127.0.0.1";
+      "PASV_MAX_PORT" = "21200";
+      "PASV_MIN_PORT" = "21100";
+      "WRITE_ENABLE" = "NO";
+      "XFERLOG_STD_FORMAT" = "YES";
+    };
+    volumes = [
+      "/upload:/home/vsftpd:rw"
+      "traefik-test_vsftpd-data:/var/log/vsftpd:rw"
+    ];
+    ports = [
+      "21:21/tcp"
+      "20:20/tcp"
+      "21100:21100/tcp"
+      "21101:21101/tcp"
+      "21102:21102/tcp"
+      "21103:21103/tcp"
+      "21104:21104/tcp"
+      "21105:21105/tcp"
+      "21106:21106/tcp"
+      "21107:21107/tcp"
+      "21108:21108/tcp"
+      "21109:21109/tcp"
+      "21110:21110/tcp"
+      "21111:21111/tcp"
+      "21112:21112/tcp"
+      "21113:21113/tcp"
+      "21114:21114/tcp"
+      "21115:21115/tcp"
+      "21116:21116/tcp"
+      "21117:21117/tcp"
+      "21118:21118/tcp"
+      "21119:21119/tcp"
+      "21120:21120/tcp"
+      "21121:21121/tcp"
+      "21122:21122/tcp"
+      "21123:21123/tcp"
+      "21124:21124/tcp"
+      "21125:21125/tcp"
+      "21126:21126/tcp"
+      "21127:21127/tcp"
+      "21128:21128/tcp"
+      "21129:21129/tcp"
+      "21130:21130/tcp"
+      "21131:21131/tcp"
+      "21132:21132/tcp"
+      "21133:21133/tcp"
+      "21134:21134/tcp"
+      "21135:21135/tcp"
+      "21136:21136/tcp"
+      "21137:21137/tcp"
+      "21138:21138/tcp"
+      "21139:21139/tcp"
+      "21140:21140/tcp"
+      "21141:21141/tcp"
+      "21142:21142/tcp"
+      "21143:21143/tcp"
+      "21144:21144/tcp"
+      "21145:21145/tcp"
+      "21146:21146/tcp"
+      "21147:21147/tcp"
+      "21148:21148/tcp"
+      "21149:21149/tcp"
+      "21150:21150/tcp"
+      "21151:21151/tcp"
+      "21152:21152/tcp"
+      "21153:21153/tcp"
+      "21154:21154/tcp"
+      "21155:21155/tcp"
+      "21156:21156/tcp"
+      "21157:21157/tcp"
+      "21158:21158/tcp"
+      "21159:21159/tcp"
+      "21160:21160/tcp"
+      "21161:21161/tcp"
+      "21162:21162/tcp"
+      "21163:21163/tcp"
+      "21164:21164/tcp"
+      "21165:21165/tcp"
+      "21166:21166/tcp"
+      "21167:21167/tcp"
+      "21168:21168/tcp"
+      "21169:21169/tcp"
+      "21170:21170/tcp"
+      "21171:21171/tcp"
+      "21172:21172/tcp"
+      "21173:21173/tcp"
+      "21174:21174/tcp"
+      "21175:21175/tcp"
+      "21176:21176/tcp"
+      "21177:21177/tcp"
+      "21178:21178/tcp"
+      "21179:21179/tcp"
+      "21180:21180/tcp"
+      "21181:21181/tcp"
+      "21182:21182/tcp"
+      "21183:21183/tcp"
+      "21184:21184/tcp"
+      "21185:21185/tcp"
+      "21186:21186/tcp"
+      "21187:21187/tcp"
+      "21188:21188/tcp"
+      "21189:21189/tcp"
+      "21190:21190/tcp"
+      "21191:21191/tcp"
+      "21192:21192/tcp"
+      "21193:21193/tcp"
+      "21194:21194/tcp"
+      "21195:21195/tcp"
+      "21196:21196/tcp"
+      "21197:21197/tcp"
+      "21198:21198/tcp"
+      "21199:21199/tcp"
+      "21200:21200/tcp"
+    ];
+    log-driver = "journald";
+    extraOptions = [
+      "--network-alias=vsftpd"
+      "--network=traefik-test_default"
+    ];
+  };
+  systemd.services."podman-ftpserver" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "no";
+    };
+    after = [
+      "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_vsftpd-data.service"
+    ];
+    requires = [
+      "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_vsftpd-data.service"
+    ];
+    partOf = [
+      "podman-compose-traefik-test-root.target"
+    ];
+    wantedBy = [
+      "podman-compose-traefik-test-root.target"
+    ];
+  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {
@@ -178,6 +327,7 @@
     volumes = [
       "/slow/media/radarr-out:/out:rw"
       "traefik-test_radarr-data:/config:rw"
+      "traefik-test_shared-download:/download:rw"
     ];
     ports = [
       "7676:7878/tcp"
@@ -203,10 +353,12 @@
     after = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_radarr-data.service"
+      "podman-volume-traefik-test_shared-download.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_radarr-data.service"
+      "podman-volume-traefik-test_shared-download.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -258,6 +410,7 @@
     };
     volumes = [
       "/slow/media/sonarr-out:/out:rw"
+      "traefik-test_shared-download:/download:rw"
       "traefik-test_sonarr-data:/config:rw"
     ];
     ports = [
@@ -285,48 +438,13 @@
     };
     after = [
       "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_shared-download.service"
       "podman-volume-traefik-test_sonarr-data.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_shared-download.service"
       "podman-volume-traefik-test_sonarr-data.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."unbound" = {
-    image = "ghcr.io/dragonhunter274/unbound-docker:latest";
-    volumes = [
-      "/etc/unbound/conf.d/:/usr/local/unbound/conf.d:rw"
-    ];
-    ports = [
-      "53:5335/tcp"
-      "53:5335/udp"
-    ];
-    log-driver = "journald";
-    extraOptions = [
-      "--health-cmd=/usr/local/unbound/sbin/healthcheck.sh"
-      "--health-interval=1m0s"
-      "--health-retries=5"
-      "--health-start-period=15s"
-      "--health-timeout=30s"
-      "--network-alias=unbound"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-unbound" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -440,6 +558,18 @@
     };
     script = ''
       podman volume inspect traefik-test_sonarr-data || podman volume create traefik-test_sonarr-data
+    '';
+    partOf = [ "podman-compose-traefik-test-root.target" ];
+    wantedBy = [ "podman-compose-traefik-test-root.target" ];
+  };
+  systemd.services."podman-volume-traefik-test_vsftpd-data" = {
+    path = [ pkgs.podman ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      podman volume inspect traefik-test_vsftpd-data || podman volume create traefik-test_vsftpd-data
     '';
     partOf = [ "podman-compose-traefik-test-root.target" ];
     wantedBy = [ "podman-compose-traefik-test-root.target" ];
