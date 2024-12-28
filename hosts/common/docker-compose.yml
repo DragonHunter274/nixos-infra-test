@@ -97,8 +97,8 @@ services:
       - "20:20"
       - "21100-21200:21100-21200"
     environment:
-      FTP_USER: ftpuser
-      FTP_PASS: ftpuserpass
+      FTP_USER: 38c3
+      FTP_PASS: 38c3
       PASV_ADDRESS: 127.0.0.1
       PASV_MIN_PORT: 21100
       PASV_MAX_PORT: 21200

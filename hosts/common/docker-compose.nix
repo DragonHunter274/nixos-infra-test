@@ -26,8 +26,8 @@
       "DIRLIST_DEFAULTS_ENABLE" = "YES";
       "DIRLIST_ENABLE" = "YES";
       "FTPD_LOG_FILE" = "/var/log/vsftpd/xferlog";
-      "FTP_PASS" = "ftpuserpass";
-      "FTP_USER" = "ftpuser";
+      "FTP_PASS" = "38c3";
+      "FTP_USER" = "38c3";
       "LOCAL_UMASK" = "18";
       "PASV_ADDRESS" = "127.0.0.1";
       "PASV_MAX_PORT" = "21200";
