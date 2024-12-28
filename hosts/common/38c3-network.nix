@@ -26,9 +26,29 @@
   ];
   networking.firewall.allowedUDPPorts = [ 646 ]; # Port used for LLDP
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  # Firewall
+  networking.firewall = {
+    enable = true;
+
+    # Allow HTTP and HTTPS on all interfaces
+    allowedTCPPorts = [ 80 443 ];
+
+    # Allow FTP on enp43s0 only
+    interfaces.enp43s0 = {
+      allowedTCPPorts = [ 20 21 ]; # Control and data ports
+      allowedTCPPortRanges = [
+        { from = 65500; to = 65515; } # Passive port range
+      ];
+    };
+
+    # Allow SSH on enp42s0 and tailscale0
+    interfaces.enp42s0 = {
+      allowedTCPPorts = [ 22 ];
+    };
+
+    interfaces.tailscale0 = {
+      allowedTCPPorts = [ 22 ];
+    };
+
+  };
 }
