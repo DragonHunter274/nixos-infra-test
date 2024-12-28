@@ -62,7 +62,7 @@
       };
       http.routers = {
         docker-multiuser = {
-          rule = "Host(`test.38c3.tschunk.social`)";
+          rule = "Host(`ftpclient.38c3.tschunk.social`)";
           service = "docker-multiuser";
           middlewares = [ "oauth2-auth" ];
         };
