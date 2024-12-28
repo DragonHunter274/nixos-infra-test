@@ -96,6 +96,7 @@ services:
       - "20:20"
       - "65500-65515:65500-65515"
     environment:
+      PASV_ADDRESS: "151.217.62.81"
       FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
   qbittorrent:
     container_name: qbittorrent

@@ -24,6 +24,7 @@
     image = "metabrainz/docker-anon-ftp";
     environment = {
       "FTPD_BANNER" = "Welcome to the Faboulous FTP Server! be gentle pls!";
+      "PASV_ADDRESS" = "151.217.62.81";
     };
     volumes = [
       "/upload:/var/ftp:rw"
