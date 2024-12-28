@@ -448,7 +448,7 @@
       RemainAfterExit = true;
     };
     script = ''
-      podman volume inspect traefik-test_shared-download || podman volume create traefik-test_shared-download --driver=local --opt=device=/flash/download --opt=o=bind --opt=type=none
+      podman volume inspect traefik-test_shared-download || podman volume create traefik-test_shared-download --driver=local --opt=device=/flash/downloads --opt=o=bind --opt=type=none
     '';
     partOf = [ "podman-compose-traefik-test-root.target" ];
     wantedBy = [ "podman-compose-traefik-test-root.target" ];

@@ -159,7 +159,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /flash/download
+      device: /flash/downloads
       o: bind
   radarr-data:
   sonarr-data:
