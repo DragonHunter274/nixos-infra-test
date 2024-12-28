@@ -30,6 +30,7 @@ services:
     volumes:
       - radarr-data:/config
       - /slow/media/radarr-out:/out
+      - shared-download:/download
     ports:
       - 7676:7878
     restart: unless-stopped
@@ -53,6 +54,7 @@ services:
     volumes:
       - sonarr-data:/config
       - /slow/media/sonarr-out:/out
+      - shared-download:/download
     ports:
       - 7878:7878
       - 8989:8989
