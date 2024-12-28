@@ -94,10 +94,8 @@ services:
     ports:
       - "21:21"
       - "20:20"
-      - "21100-21200:21100-21200"
+      - "65500-65515:65500-65515"
     environment:
-      PASV_MIN_PORT: 21100
-      PASV_MAX_PORT: 21200
       FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
   qbittorrent:
     container_name: qbittorrent
