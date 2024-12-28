@@ -89,6 +89,7 @@
     kitty
     pciutils
     compose2nix
+    tmux
   ];
 
   security.sudo.wheelNeedsPassword = false;
