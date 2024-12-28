@@ -1,4 +1,4 @@
-# Auto-generated using compose2nix v0.2.3.
+# Auto-generated using compose2nix v0.3.1.
 { pkgs, lib, ... }:
 
 {
@@ -12,44 +12,14 @@
       dns_enabled = true;
     };
   };
+
+  # Enable container name DNS for non-default Podman networks.
+  # https://github.com/NixOS/nixpkgs/issues/226365
+  networking.firewall.interfaces."podman+".allowedUDPPorts = [ 53 ];
+
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
-  virtualisation.oci-containers.containers."filezilla" = {
-    image = "lscr.io/linuxserver/filezilla:latest";
-    environment = {
-      "PGID" = "1000";
-      "PUID" = "1000";
-      "TZ" = "Etc/UTC";
-    };
-    ports = [
-      "3000:3000/tcp"
-      "3001:3001/tcp"
-    ];
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=filezilla"
-      "--network=traefik-test_default"
-      "--security-opt=seccomp:unconfined"
-    ];
-  };
-  systemd.services."podman-filezilla" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 500 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {
@@ -88,13 +58,59 @@
   };
   systemd.services."podman-oauth2-proxy" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "no";
+      Restart = lib.mkOverride 90 "no";
     };
     after = [
       "podman-network-traefik-test_default.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
+    ];
+    partOf = [
+      "podman-compose-traefik-test-root.target"
+    ];
+    wantedBy = [
+      "podman-compose-traefik-test-root.target"
+    ];
+  };
+  virtualisation.oci-containers.containers."prowlarr" = {
+    image = "ghcr.io/linuxserver/prowlarr:latest";
+    environment = {
+      "PGID" = "1000";
+      "PUID" = "1000";
+      "TZ" = "Europe/paris";
+    };
+    volumes = [
+      "traefik-test_prowlarr-data:/config:rw"
+    ];
+    ports = [
+      "9696:9696/tcp"
+    ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.prowlarr.entryPoints" = "websecure";
+      "traefik.http.routers.prowlarr.middlewares" = "oauth2-auth@file";
+      "traefik.http.routers.prowlarr.rule" = "Host(`prowlarr.38c3.tschunk.social`)";
+      "traefik.http.routers.prowlarr.tls.certResolver" = "letsencrypt";
+      "traefik.http.services.prowlarr.loadbalancer.server.port" = "9696";
+    };
+    log-driver = "journald";
+    extraOptions = [
+      "--network-alias=prowlarr"
+      "--network=traefik-test_default"
+    ];
+  };
+  systemd.services."podman-prowlarr" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+    };
+    after = [
+      "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_prowlarr-data.service"
+    ];
+    requires = [
+      "podman-network-traefik-test_default.service"
+      "podman-volume-traefik-test_prowlarr-data.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -133,7 +149,7 @@
   };
   systemd.services."podman-qbittorrent" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "no";
+      Restart = lib.mkOverride 90 "no";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -160,6 +176,7 @@
       "TZ" = "Europe/paris";
     };
     volumes = [
+      "/slow/media/radarr-out:/out:rw"
       "traefik-test_radarr-data:/config:rw"
     ];
     ports = [
@@ -181,7 +198,7 @@
   };
   systemd.services."podman-radarr" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "always";
+      Restart = lib.mkOverride 90 "always";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -215,7 +232,7 @@
   };
   systemd.services."podman-simple-service" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "no";
+      Restart = lib.mkOverride 90 "no";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -240,6 +257,7 @@
       "TZ" = "Europe/paris";
     };
     volumes = [
+      "/slow/media/sonarr-out:/out:rw"
       "traefik-test_sonarr-data:/config:rw"
     ];
     ports = [
@@ -263,7 +281,7 @@
   };
   systemd.services."podman-sonarr" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "always";
+      Restart = lib.mkOverride 90 "always";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -302,7 +320,7 @@
   };
   systemd.services."podman-unbound" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "always";
+      Restart = lib.mkOverride 90 "always";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -334,7 +352,7 @@
   };
   systemd.services."podman-whoami" = {
     serviceConfig = {
-      Restart = lib.mkOverride 500 "no";
+      Restart = lib.mkOverride 90 "no";
     };
     after = [
       "podman-network-traefik-test_default.service"
@@ -366,6 +384,18 @@
   };
 
   # Volumes
+  systemd.services."podman-volume-traefik-test_prowlarr-data" = {
+    path = [ pkgs.podman ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      podman volume inspect traefik-test_prowlarr-data || podman volume create traefik-test_prowlarr-data
+    '';
+    partOf = [ "podman-compose-traefik-test-root.target" ];
+    wantedBy = [ "podman-compose-traefik-test-root.target" ];
+  };
   systemd.services."podman-volume-traefik-test_qbittorrent-data" = {
     path = [ pkgs.podman ];
     serviceConfig = {
