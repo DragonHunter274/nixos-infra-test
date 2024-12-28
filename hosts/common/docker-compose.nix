@@ -21,22 +21,14 @@
 
   # Containers
   virtualisation.oci-containers.containers."ftpserver" = {
-    image = "fauria/vsftpd";
+    image = "metabrainz/docker-anon-ftp";
     environment = {
-      "DIRLIST_DEFAULTS_ENABLE" = "YES";
-      "DIRLIST_ENABLE" = "YES";
-      "FTPD_LOG_FILE" = "/var/log/vsftpd/xferlog";
-      "FTP_PASS" = "38c33";
-      "FTP_USER" = "38c3";
-      "LOCAL_UMASK" = "18";
-      "PASV_ADDRESS" = "127.0.0.1";
+      "FTPD_BANNER" = "Welcome to the Faboulous FTP Server! be gentle pls!";
       "PASV_MAX_PORT" = "21200";
       "PASV_MIN_PORT" = "21100";
-      "XFERLOG_STD_FORMAT" = "YES";
     };
     volumes = [
-      "/upload:/home/vsftpd/38c3:rw"
-      "traefik-test_vsftpd-data:/var/log/vsftpd:rw"
+      "/upload:/var/ftp:rw"
     ];
     ports = [
       "21:21/tcp"
@@ -155,11 +147,9 @@
     };
     after = [
       "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_vsftpd-data.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_vsftpd-data.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -557,18 +547,6 @@
     };
     script = ''
       podman volume inspect traefik-test_sonarr-data || podman volume create traefik-test_sonarr-data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
-  systemd.services."podman-volume-traefik-test_vsftpd-data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_vsftpd-data || podman volume create traefik-test_vsftpd-data
     '';
     partOf = [ "podman-compose-traefik-test-root.target" ];
     wantedBy = [ "podman-compose-traefik-test-root.target" ];
