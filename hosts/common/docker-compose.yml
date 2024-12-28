@@ -156,6 +156,11 @@ services:
 
 volumes:
   shared-download:
+    driver: local
+    driver_opts:
+      type: none
+      device: /flash/download
+      o: bind
   radarr-data:
   sonarr-data:
   prowlarr-data:
