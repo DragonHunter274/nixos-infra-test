@@ -26,17 +26,16 @@
       "DIRLIST_DEFAULTS_ENABLE" = "YES";
       "DIRLIST_ENABLE" = "YES";
       "FTPD_LOG_FILE" = "/var/log/vsftpd/xferlog";
-      "FTP_PASS" = "38c3";
+      "FTP_PASS" = "38c33";
       "FTP_USER" = "38c3";
       "LOCAL_UMASK" = "18";
       "PASV_ADDRESS" = "127.0.0.1";
       "PASV_MAX_PORT" = "21200";
       "PASV_MIN_PORT" = "21100";
-      "WRITE_ENABLE" = "NO";
       "XFERLOG_STD_FORMAT" = "YES";
     };
     volumes = [
-      "/upload:/home/vsftpd:rw"
+      "/upload:/home/vsftpd/38c3:rw"
       "traefik-test_vsftpd-data:/var/log/vsftpd:rw"
     ];
     ports = [

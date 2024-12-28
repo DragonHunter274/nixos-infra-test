@@ -90,7 +90,7 @@ services:
     image: fauria/vsftpd
     container_name: ftpserver
     volumes:
-      - /upload:/home/vsftpd
+      - /upload:/home/vsftpd/38c3
       - vsftpd-data:/var/log/vsftpd
     ports:
       - "21:21"
@@ -98,12 +98,11 @@ services:
       - "21100-21200:21100-21200"
     environment:
       FTP_USER: 38c3
-      FTP_PASS: 38c3
+      FTP_PASS: 38c33
       PASV_ADDRESS: 127.0.0.1
       PASV_MIN_PORT: 21100
       PASV_MAX_PORT: 21200
       LOCAL_UMASK: 022
-      WRITE_ENABLE: NO
       DIRLIST_ENABLE: YES
       DIRLIST_DEFAULTS_ENABLE: YES
       FTPD_LOG_FILE: /var/log/vsftpd/xferlog
