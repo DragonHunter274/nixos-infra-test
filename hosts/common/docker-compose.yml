@@ -87,26 +87,18 @@ services:
       - "traefik.http.routers.prowlarr.middlewares=oauth2-auth@file"
     restart: unless-stopped
   vsftpd:
-    image: fauria/vsftpd
+    image: metabrainz/docker-anon-ftp
     container_name: ftpserver
     volumes:
-      - /upload:/home/vsftpd/38c3
-      - vsftpd-data:/var/log/vsftpd
+      - /upload:/var/ftp/
     ports:
       - "21:21"
       - "20:20"
       - "21100-21200:21100-21200"
     environment:
-      FTP_USER: 38c3
-      FTP_PASS: 38c33
-      PASV_ADDRESS: 127.0.0.1
       PASV_MIN_PORT: 21100
       PASV_MAX_PORT: 21200
-      LOCAL_UMASK: 022
-      DIRLIST_ENABLE: YES
-      DIRLIST_DEFAULTS_ENABLE: YES
-      FTPD_LOG_FILE: /var/log/vsftpd/xferlog
-      XFERLOG_STD_FORMAT: YES
+      FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent
@@ -169,4 +161,3 @@ volumes:
   sonarr-data:
   prowlarr-data:
   qbittorrent-data:
-  vsftpd-data:
