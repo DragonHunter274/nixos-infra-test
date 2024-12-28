@@ -29,6 +29,7 @@ services:
       - TZ=Europe/paris
     volumes:
       - radarr-data:/config
+      - /slow/media/radarr-out:/out
     ports:
       - 7676:7878
     restart: unless-stopped
@@ -51,6 +52,7 @@ services:
       - TP_THEME=organizr
     volumes:
       - sonarr-data:/config
+      - /slow/media/sonarr-out:/out
     ports:
       - 7878:7878
       - 8989:8989
