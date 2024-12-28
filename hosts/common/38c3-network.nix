@@ -30,6 +30,8 @@
   networking.firewall = {
     enable = true;
 
+    pingLimit = "--limit 1/minute --limit-burst 5";
+
     # Allow HTTP and HTTPS on all interfaces
     allowedTCPPorts = [ 80 443 ];
 
