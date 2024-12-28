@@ -88,6 +88,7 @@
     git
     kitty
     pciutils
+    compose2nix
   ];
 
   security.sudo.wheelNeedsPassword = false;
