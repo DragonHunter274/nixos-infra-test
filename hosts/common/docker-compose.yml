@@ -30,7 +30,7 @@ services:
     volumes:
       - radarr-data:/config
       - /slow/media/radarr-out:/out
-      - shared-download:/download
+      - /flash/downloads:/download
     ports:
       - 7676:7878
     restart: unless-stopped
@@ -54,7 +54,7 @@ services:
     volumes:
       - sonarr-data:/config
       - /slow/media/sonarr-out:/out
-      - shared-download:/download
+      - /flash/downloads:/download
     ports:
       - 7878:7878
       - 8989:8989
@@ -111,7 +111,7 @@ services:
       - WEBUI_PORTS=8080/tcp,8080/udp
     volumes:
       - qbittorrent-data:/config
-      - shared-download:/data
+      - /flash/downloads:/data
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.torrent.entryPoints=websecure"
@@ -155,12 +155,6 @@ services:
       - "traefik.http.services.oauth2.loadbalancer.server.port=4180"
 
 volumes:
-  shared-download:
-    driver: local
-    driver_opts:
-      type: none
-      device: /flash/downloads
-      o: bind
   radarr-data:
   sonarr-data:
   prowlarr-data:

@@ -181,8 +181,8 @@
       "WEBUI_PORTS" = "8080/tcp,8080/udp";
     };
     volumes = [
+      "/flash/downloads:/data:rw"
       "traefik-test_qbittorrent-data:/config:rw"
-      "traefik-test_shared-download:/data:rw"
     ];
     labels = {
       "traefik.enable" = "true";
@@ -206,12 +206,10 @@
     after = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_qbittorrent-data.service"
-      "podman-volume-traefik-test_shared-download.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_qbittorrent-data.service"
-      "podman-volume-traefik-test_shared-download.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -228,9 +226,9 @@
       "TZ" = "Europe/paris";
     };
     volumes = [
+      "/flash/downloads:/download:rw"
       "/slow/media/radarr-out:/out:rw"
       "traefik-test_radarr-data:/config:rw"
-      "traefik-test_shared-download:/download:rw"
     ];
     ports = [
       "7676:7878/tcp"
@@ -256,12 +254,10 @@
     after = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_radarr-data.service"
-      "podman-volume-traefik-test_shared-download.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_radarr-data.service"
-      "podman-volume-traefik-test_shared-download.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -312,8 +308,8 @@
       "TZ" = "Europe/paris";
     };
     volumes = [
+      "/flash/downloads:/download:rw"
       "/slow/media/sonarr-out:/out:rw"
-      "traefik-test_shared-download:/download:rw"
       "traefik-test_sonarr-data:/config:rw"
     ];
     ports = [
@@ -341,12 +337,10 @@
     };
     after = [
       "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_shared-download.service"
       "podman-volume-traefik-test_sonarr-data.service"
     ];
     requires = [
       "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_shared-download.service"
       "podman-volume-traefik-test_sonarr-data.service"
     ];
     partOf = [
@@ -437,18 +431,6 @@
     };
     script = ''
       podman volume inspect traefik-test_radarr-data || podman volume create traefik-test_radarr-data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
-  systemd.services."podman-volume-traefik-test_shared-download" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_shared-download || podman volume create traefik-test_shared-download --driver=local --opt=device=/flash/downloads --opt=o=bind --opt=type=none
     '';
     partOf = [ "podman-compose-traefik-test-root.target" ];
     wantedBy = [ "podman-compose-traefik-test-root.target" ];
