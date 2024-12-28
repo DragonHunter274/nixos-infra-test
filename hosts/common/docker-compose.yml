@@ -63,6 +63,25 @@ services:
       - "traefik.port=8989"
       - "traefik.http.routers.sonarr.middlewares=oauth2-auth@file"
     restart: unless-stopped
+  prowlarr:
+    image: ghcr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/paris
+    volumes:
+      - prowlarr-data:/config
+    ports:
+      - 9696:9696
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.entryPoints=websecure"
+      - "traefik.http.routers.prowlarr.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.38c3.tschunk.social`)" # Edit here to change the domain name
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+      - "traefik.http.routers.prowlarr.middlewares=oauth2-auth@file"
+    restart: unless-stopped
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent
