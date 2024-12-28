@@ -15,6 +15,8 @@
   };
   services.tailscale.enable = true;
 
+  networking.defaultGateway.interface = "enp43s0";
+  networking.defaultGateway.address = "151.217.62.1";
 
   services.lldpd.enable = true;
 
