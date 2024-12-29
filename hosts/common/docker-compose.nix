@@ -113,6 +113,28 @@
       "podman-compose-traefik-test-root.target"
     ];
   };
+  virtualisation.oci-containers.containers."node-exporter" = {
+    image = "quay.io/prometheus/node-exporter:latest";
+    volumes = [
+      "/:/host:ro,rslave"
+    ];
+    cmd = [ "--path.rootfs=/host" ];
+    log-driver = "journald";
+    extraOptions = [
+      "--network=host"
+    ];
+  };
+  systemd.services."podman-node-exporter" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+    };
+    partOf = [
+      "podman-compose-traefik-test-root.target"
+    ];
+    wantedBy = [
+      "podman-compose-traefik-test-root.target"
+    ];
+  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {

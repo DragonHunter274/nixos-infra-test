@@ -14,7 +14,6 @@
     ./traefik.nix
     ./docker-compose.nix
     ./unbound.nix
-    ./monitoring.nix
     # ./sops_fetch.nix
   ];
   nix.settings.trusted-users = [ "@wheel" ];

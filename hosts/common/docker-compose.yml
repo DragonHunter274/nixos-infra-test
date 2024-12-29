@@ -120,6 +120,16 @@ services:
       - "traefik.http.services.torrent.loadbalancer.server.port=8080"
       - "traefik.port=8080"
       - "traefik.http.routers.torrent.middlewares=oauth2-auth@file"
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
 
   prometheus:
     image: prom/prometheus:latest
