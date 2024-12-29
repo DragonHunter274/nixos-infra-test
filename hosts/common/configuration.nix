@@ -90,6 +90,7 @@
     pciutils
     compose2nix
     tmux
+    zenith
   ];
 
   security.sudo.wheelNeedsPassword = false;
