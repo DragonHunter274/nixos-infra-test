@@ -25,9 +25,6 @@
     volumes = [
       "/upload:/usr/share/nginx/html:ro"
     ];
-    ports = [
-      "80:80/tcp"
-    ];
     labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.file_index.entryPoints" = "web";
