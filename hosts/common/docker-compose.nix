@@ -90,8 +90,7 @@
     };
     log-driver = "journald";
     extraOptions = [
-      "--network-alias=grafana"
-      "--network=traefik-test_default"
+      "--network=host"
     ];
   };
   systemd.services."podman-grafana" = {
@@ -99,11 +98,9 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_grafana_data.service"
     ];
     requires = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_grafana_data.service"
     ];
     partOf = [
@@ -117,9 +114,6 @@
     image = "quay.io/prometheus/node-exporter:latest";
     volumes = [
       "/:/host:ro,rslave"
-    ];
-    ports = [
-      "9100/tcp"
     ];
     cmd = [ "--path.rootfs=/host" ];
     log-driver = "journald";
@@ -208,8 +202,7 @@
     };
     log-driver = "journald";
     extraOptions = [
-      "--network-alias=prometheus"
-      "--network=traefik-test_default"
+      "--network=host"
     ];
   };
   systemd.services."podman-prometheus" = {
@@ -217,11 +210,9 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     requires = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     partOf = [
