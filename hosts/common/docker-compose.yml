@@ -130,6 +130,8 @@ services:
     pid: host
     restart: unless-stopped
     volumes:
+      - '/proc:/host/proc:ro'
+      - '/sys:/host/sys:ro'
       - '/:/host:ro,rslave'
 
   prometheus:

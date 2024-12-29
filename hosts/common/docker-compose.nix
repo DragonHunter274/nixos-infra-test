@@ -114,6 +114,8 @@
     image = "quay.io/prometheus/node-exporter:latest";
     volumes = [
       "/:/host:ro,rslave"
+      "/proc:/host/proc:ro"
+      "/sys:/host/sys:ro"
     ];
     cmd = [ "--path.rootfs=/host" "--collector.ethtool.device-include" ];
     log-driver = "journald";
