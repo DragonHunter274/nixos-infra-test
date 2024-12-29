@@ -21,9 +21,9 @@
 
   # Containers
   virtualisation.oci-containers.containers."file_index" = {
-    image = "nginx:latest";
+    image = "h5ai:latest";
     volumes = [
-      "/upload:/usr/share/nginx/html:ro"
+      "/upload:/h5ai:ro"
     ];
     labels = {
       "traefik.enable" = "true";
