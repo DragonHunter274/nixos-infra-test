@@ -102,7 +102,7 @@ services:
     image: nginx:latest
     container_name: file_index
     volumes:
-      - /uploads:/usr/share/nginx/html:ro
+      - /upload:/usr/share/nginx/html:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.file_index.entryPoints=web"

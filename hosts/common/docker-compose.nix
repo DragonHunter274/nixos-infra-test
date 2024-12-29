@@ -23,7 +23,7 @@
   virtualisation.oci-containers.containers."file_index" = {
     image = "nginx:latest";
     volumes = [
-      "/uploads:/usr/share/nginx/html:ro"
+      "/upload:/usr/share/nginx/html:ro"
     ];
     ports = [
       "80:80/tcp"
