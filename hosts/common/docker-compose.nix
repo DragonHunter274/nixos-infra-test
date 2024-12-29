@@ -115,7 +115,7 @@
     volumes = [
       "/:/host:ro,rslave"
     ];
-    cmd = [ "--path.rootfs=/host" ];
+    cmd = [ "--path.rootfs=/host" "--collector.ethtool.device-include" ];
     log-driver = "journald";
     extraOptions = [
       "--network=host"
