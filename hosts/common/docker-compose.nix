@@ -117,7 +117,7 @@
       "/proc:/host/proc:ro"
       "/sys:/host/sys:ro"
     ];
-    cmd = [ "--path.rootfs=/host" "--collector.ethtool.device-include" ];
+    cmd = [ "--path.rootfs=/host" ];
     log-driver = "journald";
     extraOptions = [
       "--network=host"
