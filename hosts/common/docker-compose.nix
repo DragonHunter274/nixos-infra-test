@@ -118,6 +118,9 @@
     volumes = [
       "/:/host:ro,rslave"
     ];
+    ports = [
+      "9100/tcp"
+    ];
     cmd = [ "--path.rootfs=/host" ];
     log-driver = "journald";
     extraOptions = [
