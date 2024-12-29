@@ -125,7 +125,6 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: unless-stopped
-    network_mode: host
     volumes:
       - /flash/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus

@@ -183,7 +183,8 @@
     };
     log-driver = "journald";
     extraOptions = [
-      "--network=host"
+      "--network-alias=prometheus"
+      "--network=traefik-test_default"
     ];
   };
   systemd.services."podman-prometheus" = {
@@ -191,9 +192,11 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
+      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     requires = [
+      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     partOf = [
