@@ -98,6 +98,18 @@ services:
     environment:
       PASV_ADDRESS: "151.217.62.81"
       FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
+  file_index:
+    image: nginx:latest
+    container_name: file_index
+    volumes:
+      - /uploads:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.file_index.entryPoints=web"
+      - "traefik.http.routers.file_index.rule=Host(`151.217.62.81`) || Host(`2001:67c:20a1:1561:259a:f7b7:d6d1:5c26`)"
+      - "traefik.http.services.file_index.loadbalancer.server.port=80"
+    ports:
+      - "80:80"
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent

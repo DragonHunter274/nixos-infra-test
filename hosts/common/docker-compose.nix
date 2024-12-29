@@ -20,6 +20,43 @@
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
+  virtualisation.oci-containers.containers."file_index" = {
+    image = "nginx:latest";
+    volumes = [
+      "/uploads:/usr/share/nginx/html:ro"
+    ];
+    ports = [
+      "80:80/tcp"
+    ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.file_index.entryPoints" = "web";
+      "traefik.http.routers.file_index.rule" = "Host(`151.217.62.81`) || Host(`2001:67c:20a1:1561:259a:f7b7:d6d1:5c26`)";
+      "traefik.http.services.file_index.loadbalancer.server.port" = "80";
+    };
+    log-driver = "journald";
+    extraOptions = [
+      "--network-alias=file_index"
+      "--network=traefik-test_default"
+    ];
+  };
+  systemd.services."podman-file_index" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "no";
+    };
+    after = [
+      "podman-network-traefik-test_default.service"
+    ];
+    requires = [
+      "podman-network-traefik-test_default.service"
+    ];
+    partOf = [
+      "podman-compose-traefik-test-root.target"
+    ];
+    wantedBy = [
+      "podman-compose-traefik-test-root.target"
+    ];
+  };
   virtualisation.oci-containers.containers."ftpserver" = {
     image = "metabrainz/docker-anon-ftp";
     environment = {
