@@ -67,6 +67,7 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUUz0Z9HISfITuG7cUnN3PMvxUbvRMHfFwvy8HvwDG8"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIER5dTWkG/HH2JuWtyQGl892dLBqIvblDnWUIwI9Os1D"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK4ErQoDPxZNst5f7Qc2jtRPOzprs+WKObjg1jevcjnW"
     ];
   };
   users.users.adrian = {
