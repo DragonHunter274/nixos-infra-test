@@ -27,8 +27,9 @@
     ];
     labels = {
       "traefik.enable" = "true";
-      "traefik.http.routers.file_index.entryPoints" = "web";
       "traefik.http.routers.file_index.rule" = "Host(`151.217.62.81`) || Host(`2001:67c:20a1:1561:259a:f7b7:d6d1:5c26`)";
+      "traefik.http.routers.prowlarr.entryPoints" = "websecure";
+      "traefik.http.routers.prowlarr.tls.certResolver" = "letsencrypt";
       "traefik.http.services.file_index.loadbalancer.server.port" = "80";
     };
     log-driver = "journald";
