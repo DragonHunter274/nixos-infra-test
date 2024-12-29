@@ -125,7 +125,6 @@ services:
     container_name: node-exporter
     command:
       - '--path.rootfs=/host'
-      - '--collector.ethtool.device-include'
     network_mode: host
     pid: host
     restart: unless-stopped
