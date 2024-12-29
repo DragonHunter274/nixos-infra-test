@@ -21,7 +21,7 @@
 
   # Containers
   virtualisation.oci-containers.containers."file_index" = {
-    image = "h5ai:latest";
+    image = "awesometic/h5ai:latest";
     volumes = [
       "/upload:/h5ai:ro"
     ];

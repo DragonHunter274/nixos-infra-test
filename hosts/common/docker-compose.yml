@@ -99,7 +99,7 @@ services:
       PASV_ADDRESS: "151.217.62.81"
       FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
   file_index:
-    image: h5ai:latest
+    image: awesometic/h5ai:latest
     container_name: file_index
     volumes:
       - /upload:/h5ai:ro
