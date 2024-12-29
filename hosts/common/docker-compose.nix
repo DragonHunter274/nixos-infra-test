@@ -113,37 +113,6 @@
       "podman-compose-traefik-test-root.target"
     ];
   };
-  virtualisation.oci-containers.containers."node-exporter" = {
-    image = "prom/node-exporter:latest";
-    volumes = [
-      "/:/rootfs:ro"
-      "/proc:/host/proc:ro"
-      "/sys:/host/sys:ro"
-    ];
-    cmd = [ "--path.procfs=/host/proc" "--path.rootfs=/rootfs" "--path.sysfs=/host/sys" "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)" ];
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=node-exporter"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-node-exporter" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {
@@ -214,8 +183,7 @@
     };
     log-driver = "journald";
     extraOptions = [
-      "--network-alias=prometheus"
-      "--network=traefik-test_default"
+      "--network=host"
     ];
   };
   systemd.services."podman-prometheus" = {
@@ -223,11 +191,9 @@
       Restart = lib.mkOverride 90 "always";
     };
     after = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     requires = [
-      "podman-network-traefik-test_default.service"
       "podman-volume-traefik-test_prometheus_data.service"
     ];
     partOf = [
