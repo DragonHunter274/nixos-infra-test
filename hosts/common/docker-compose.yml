@@ -99,10 +99,10 @@ services:
       PASV_ADDRESS: "151.217.62.81"
       FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
   file_index:
-    image: nginx:latest
+    image: h5ai:latest
     container_name: file_index
     volumes:
-      - /upload:/usr/share/nginx/html:ro
+      - /upload:/h5ai:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.prowlarr.entryPoints=websecure"
