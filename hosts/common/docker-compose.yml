@@ -131,57 +131,57 @@ services:
       - "traefik.http.services.torrent.loadbalancer.server.port=8080"
       - "traefik.port=8080"
       - "traefik.http.routers.torrent.middlewares=oauth2-auth@file"
-  node_exporter:
-    image: quay.io/prometheus/node-exporter:latest
-    container_name: node-exporter
-    command:
-      - '--path.rootfs=/host'
-    network_mode: host
-    pid: host
-    restart: unless-stopped
-    volumes:
-      - '/proc:/host/proc:ro'
-      - '/sys:/host/sys:ro'
-      - '/:/host:ro,rslave'
+  # node_exporter:
+  #   image: quay.io/prometheus/node-exporter:latest
+  #   container_name: node-exporter
+  #   command:
+  #     - '--path.rootfs=/host'
+  #   network_mode: host
+  #   pid: host
+  #   restart: unless-stopped
+  #   volumes:
+  #     - '/proc:/host/proc:ro'
+  #     - '/sys:/host/sys:ro'
+  #     - '/:/host:ro,rslave'
 
-  prometheus:
-    image: prom/prometheus:latest
-    network_mode: host
-    container_name: prometheus
-    restart: unless-stopped
-    volumes:
-      - /flash/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prometheus.entryPoints=websecure"
-      - "traefik.http.routers.prometheus.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.prometheus.rule=Host(`prometheus.38c3.tschunk.social`)" # Edit here to change the domain name
-      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
-      - "traefik.http.routers.prometheus.middlewares=oauth2-auth@file"
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   network_mode: host
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /flash/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #     - '--web.console.templates=/etc/prometheus/consoles'
+  #     - '--web.enable-lifecycle'
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.prometheus.entryPoints=websecure"
+  #     - "traefik.http.routers.prometheus.tls.certResolver=letsencrypt"
+  #     - "traefik.http.routers.prometheus.rule=Host(`prometheus.38c3.tschunk.social`)" # Edit here to change the domain name
+  #     - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+  #     - "traefik.http.routers.prometheus.middlewares=oauth2-auth@file"
 
-  grafana:
-    image: grafana/grafana:latest
-    network_mode: host
-    container_name: grafana
-    restart: unless-stopped
-    volumes:
-      - grafana_data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.entryPoints=websecure"
-      - "traefik.http.routers.grafana.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.38c3.tschunk.social`)" # Edit here to change the domain name
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-      - "traefik.http.routers.grafana.middlewares=oauth2-auth@file"
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   network_mode: host
+  #   container_name: grafana
+  #   restart: unless-stopped
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.grafana.entryPoints=websecure"
+  #     - "traefik.http.routers.grafana.tls.certResolver=letsencrypt"
+  #     - "traefik.http.routers.grafana.rule=Host(`grafana.38c3.tschunk.social`)" # Edit here to change the domain name
+  #     - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+  #     - "traefik.http.routers.grafana.middlewares=oauth2-auth@file"
 
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:latest

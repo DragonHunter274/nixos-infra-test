@@ -72,68 +72,6 @@
       "podman-compose-traefik-test-root.target"
     ];
   };
-  virtualisation.oci-containers.containers."grafana" = {
-    image = "grafana/grafana:latest";
-    environment = {
-      "GF_SECURITY_ADMIN_PASSWORD" = "admin";
-    };
-    volumes = [
-      "traefik-test_grafana_data:/var/lib/grafana:rw"
-    ];
-    labels = {
-      "traefik.enable" = "true";
-      "traefik.http.routers.grafana.entryPoints" = "websecure";
-      "traefik.http.routers.grafana.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.grafana.rule" = "Host(`grafana.38c3.tschunk.social`)";
-      "traefik.http.routers.grafana.tls.certResolver" = "letsencrypt";
-      "traefik.http.services.grafana.loadbalancer.server.port" = "3000";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--network=host"
-    ];
-  };
-  systemd.services."podman-grafana" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-volume-traefik-test_grafana_data.service"
-    ];
-    requires = [
-      "podman-volume-traefik-test_grafana_data.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."node-exporter" = {
-    image = "quay.io/prometheus/node-exporter:latest";
-    volumes = [
-      "/:/host:ro,rslave"
-      "/proc:/host/proc:ro"
-      "/sys:/host/sys:ro"
-    ];
-    cmd = [ "--path.rootfs=/host" ];
-    log-driver = "journald";
-    extraOptions = [
-      "--network=host"
-    ];
-  };
-  systemd.services."podman-node-exporter" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {
@@ -179,43 +117,6 @@
     ];
     requires = [
       "podman-network-traefik-test_default.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."prometheus" = {
-    image = "prom/prometheus:latest";
-    volumes = [
-      "/flash/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:rw"
-      "traefik-test_prometheus_data:/prometheus:rw"
-    ];
-    cmd = [ "--config.file=/etc/prometheus/prometheus.yml" "--storage.tsdb.path=/prometheus" "--web.console.libraries=/etc/prometheus/console_libraries" "--web.console.templates=/etc/prometheus/consoles" "--web.enable-lifecycle" ];
-    labels = {
-      "traefik.enable" = "true";
-      "traefik.http.routers.prometheus.entryPoints" = "websecure";
-      "traefik.http.routers.prometheus.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.prometheus.rule" = "Host(`prometheus.38c3.tschunk.social`)";
-      "traefik.http.routers.prometheus.tls.certResolver" = "letsencrypt";
-      "traefik.http.services.prometheus.loadbalancer.server.port" = "9090";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--network=host"
-    ];
-  };
-  systemd.services."podman-prometheus" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-volume-traefik-test_prometheus_data.service"
-    ];
-    requires = [
-      "podman-volume-traefik-test_prometheus_data.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -498,30 +399,6 @@
   };
 
   # Volumes
-  systemd.services."podman-volume-traefik-test_grafana_data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_grafana_data || podman volume create traefik-test_grafana_data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
-  systemd.services."podman-volume-traefik-test_prometheus_data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_prometheus_data || podman volume create traefik-test_prometheus_data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
   systemd.services."podman-volume-traefik-test_prowlarr-data" = {
     path = [ pkgs.podman ];
     serviceConfig = {
