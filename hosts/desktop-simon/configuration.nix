@@ -103,7 +103,6 @@
   networking.wireless.iwd.enable = true;
   networking.networkmanager.wifi.backend = "iwd";
 
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
