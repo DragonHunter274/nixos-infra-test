@@ -17,7 +17,7 @@
         web = {
           address = ":80";
           http.redirections.entrypoint = {
-           to = "websecure";
+            to = "websecure";
             scheme = "https";
           };
         };

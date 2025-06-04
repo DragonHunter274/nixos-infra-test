@@ -4,10 +4,12 @@
   networking.tempAddresses = "disabled";
   #networking.interfaces.enp1s0.acceptRA = true;
   networking.interfaces.enp43s0 = {
-    ipv4.addresses = [{
+    ipv4.addresses = [
+      {
         address = "151.217.62.81";
         prefixLength = 23;
-      }];
+      }
+    ];
   };
   networking.networkmanager = {
     settings.connection."ipv6.addr-gen-mode" = "eui64";
@@ -33,13 +35,22 @@
     pingLimit = "--limit 1/minute --limit-burst 5";
 
     # Allow HTTP and HTTPS on all interfaces
-    allowedTCPPorts = [ 80 443 ];
+    allowedTCPPorts = [
+      80
+      443
+    ];
 
     # Allow FTP on enp43s0 only
     interfaces.enp43s0 = {
-      allowedTCPPorts = [ 20 21 ]; # Control and data ports
+      allowedTCPPorts = [
+        20
+        21
+      ]; # Control and data ports
       allowedTCPPortRanges = [
-        { from = 65500; to = 65515; } # Passive port range
+        {
+          from = 65500;
+          to = 65515;
+        } # Passive port range
       ];
     };
 
