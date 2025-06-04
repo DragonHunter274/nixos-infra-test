@@ -11,7 +11,7 @@
     };
     nur.url = "github:dragonhunter274/nur-packages";
     comin = {
-      url = "github:nlewo/comin";
+      url = "github:dragonhunter274/comin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -74,6 +74,7 @@
           {
             services.comin = {
               enable = true;
+              allowForcePushMain = true;
               remotes = [
                 {
                   name = "origin";
