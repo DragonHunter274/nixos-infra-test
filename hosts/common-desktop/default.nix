@@ -42,5 +42,6 @@
 
   environment.systemPackages = with pkgs; [
     nur-packages.docker-credential-ghcr-login
+    gh
   ];
 }
