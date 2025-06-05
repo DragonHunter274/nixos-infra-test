@@ -180,6 +180,8 @@
     ninja
     pkg-config
     gnumake
+    go
+    jq
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
   ];
