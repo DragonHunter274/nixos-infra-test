@@ -754,11 +754,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1733167559,
-        "narHash": "sha256-k8ktfvKly3Bk3Lq3Vf4b8JyoZ8LwPoOOcEjzGV7q1uA=",
+        "lastModified": 1749135510,
+        "narHash": "sha256-FTh8ZoWOfHN1UmqlNU6YzAnTedGTSaLKfmifj591cWo=",
         "owner": "dragonhunter274",
         "repo": "nur-packages",
-        "rev": "0113533c5a56c80d89b1e0849b34c8f32ec1c734",
+        "rev": "79b600b5030445fb2b07e3864ec89d8ddc8b3642",
         "type": "github"
       },
       "original": {
