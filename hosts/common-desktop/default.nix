@@ -34,4 +34,13 @@
   time.timeZone = "Europe/Berlin";
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
+  environment.etc."docker/config.json".text = builtins.toJSON {
+    credsHelpers = {
+      "ghcr.io" = "ghcr-login";
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
+    nur-packages.docker-credential-ghcr-login
+  ];
 }
