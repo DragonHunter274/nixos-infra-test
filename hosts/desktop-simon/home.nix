@@ -29,6 +29,12 @@
     size = 16;
   };
 
+  home.file.".docker/config.json".text = builtins.toJSON {
+    credsHelpers = {
+      "ghcr.io" = "ghcr-login";
+    };
+  };
+
   gtk = {
     enable = true;
 
