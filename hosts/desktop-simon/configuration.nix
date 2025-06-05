@@ -166,7 +166,7 @@
     nixfmt-rfc-style
     tlp
     goldwarden
-    nur-packages.bitwarden-desktop
+    bitwarden-desktop
     kdePackages.qtsvg
     inputs.pyprland.packages."x86_64-linux".pyprland
     elegant-sddm
