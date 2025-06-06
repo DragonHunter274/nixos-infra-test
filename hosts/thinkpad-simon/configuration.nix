@@ -19,6 +19,7 @@
     ./modules/nixos/libvirt.nix
     ./modules/nixos/fingerprint.nix
     ./modules/nixos/udev-mtkclient.nix
+    ../common_desktop
     inputs.termfilepickers.nixosModules.default
   ];
 
