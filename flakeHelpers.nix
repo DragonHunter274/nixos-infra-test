@@ -20,6 +20,7 @@ let
         nixpkgs.overlays = [
           (final: prev: { nur-packages = inputs.nur.packages.x86_64-linux; })
           (final: prev: { unstable = inputs.nixpkgs.legacyPackages.x86_64-linux; })
+	  (final: prev: { pkgs-makemkv = inputs.makemkv.legacyPackages.x86_64-linux; })          
         ];
       }
     )

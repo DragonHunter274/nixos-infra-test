@@ -3,6 +3,8 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-24-05.url = "nixpkgs/nixos-24.05";
+    nixpkgs-23-11.url = "nixpkgs/nixos-23.11";
+    makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
     sops-nix.url = "github:Mic92/sops-nix";
     disko = {
       url = "github:nix-community/disko";
@@ -21,6 +23,11 @@
     pyprland.url = "github:hyprland-community/pyprland";
     hyprlock.url = "github:hyprwm/hyprlock";
     termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
+
+nixos-06cb-009a-fingerprint-sensor = {
+      url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
+    };
   };
   outputs =
     { nixpkgs, ... }@inputs:
@@ -35,5 +42,6 @@
       (mkNixos "fablabmuc-38c3" { } [ ])
       (mkNixos "fablabmuc-38c3-minipc" { } [ ])
       (mkNixos "desktop-simon" { } [ ])
+      (mkNixos "thinkpad-simon" { } [inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity])
     ];
 }
