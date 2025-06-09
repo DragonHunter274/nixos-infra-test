@@ -42,9 +42,6 @@
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
 
-  programs.yazi = {
-    enable = true;
-  };
 
   ###TERMFILEPICKERS
 

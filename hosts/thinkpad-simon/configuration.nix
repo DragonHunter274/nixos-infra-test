@@ -60,21 +60,6 @@
   services.udisks2.enable = true;
   services.lldpd.enable = true;
 
-  system.activationScripts.updateUnboundRecords =
-    let
-      records = ''
-        server:
-         local-zone: "38c3.tschunk.social" redirect
-         local-data: "38c3.tschunk.social IN  A 10.1.1.76"
-      '';
-    in
-    ''
-      cat > /etc/unbound/conf.d/records.conf << EOF
-      ${records}
-      EOF
-      chown root:root /etc/unbound/conf.d/records.conf
-      chmod 0644 /etc/unbound/conf.d/records.conf
-    '';
 
   virtualisation.docker.enable = true;
 
@@ -91,16 +76,6 @@
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
 
-  ###YAZI_OVERRIDE_TEMP
-
-  programs.yazi = {
-    enable = true;
-    package = pkgs.yazi.override {
-      _7zz = (pkgs._7zz.override { useUasm = true; });
-    };
-  };
-
-  ###END_YAZI_OVERIDE_TEMP
 
   ###TERMFILEPICKERS
 
@@ -159,20 +134,6 @@
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
-  };
 
   home-manager = {
     useGlobalPkgs = true;
