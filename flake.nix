@@ -40,7 +40,7 @@ nixos-06cb-009a-fingerprint-sensor = {
         formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
       }
       (mkNixos "fablabmuc-38c3" { } [ ])
-      (mkNixos "fablabmuc-38c3-minipc" { } [ ])
+      (mkNixos "fablabmuc-38c3-minipc" { } [./modules/k3s.nix ])
       (mkNixos "desktop-simon" { } [ ])
       (mkNixos "thinkpad-simon" { } [inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity])
     ];
