@@ -1,0 +1,46 @@
+name: Compose2Nix Auto-Generator
+
+on:
+  push:
+    paths:
+      - 'hosts/**/docker-compose/*.yaml'
+      - '.github/workflows/compose2nix.yaml'
+  workflow_dispatch:
+
+jobs:
+  generate-nix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Convert docker-compose files to Nix
+        run: |
+          shopt -s globstar
+          for file in hosts/**/docker-compose/*.yaml; do
+            [ -e "$file" ] || continue
+            dir=$(dirname "$file")
+            base=$(basename "$file" .yml)
+            nix run github:aksiksi/compose2nix -- "$file" > "$dir/${base}.nix"
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add hosts/**/docker-compose/*.nix
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: auto-generate .nix files from docker-compose"
+            git push
+          fi
