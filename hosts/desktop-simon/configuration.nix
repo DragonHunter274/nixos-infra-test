@@ -134,6 +134,7 @@
       "wheel"
       "docker"
       "adbusers"
+      "wireshark"
     ];
     packages = with pkgs; [
       kdePackages.kate
