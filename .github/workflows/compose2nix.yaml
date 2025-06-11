@@ -28,7 +28,7 @@ jobs:
             [ -e "$file" ] || continue
             dir=$(dirname "$file")
             base=$(basename "$file" .yaml)
-            nix run github:aksiksi/compose2nix -- -inputs "$file" > "$dir/${base}.nix"
+            nix run nixpkgs#compose2nix -- -inputs "$file" > "$dir/${base}.nix"
           done
 
       - name: Commit and push changes
