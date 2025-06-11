@@ -27,8 +27,8 @@ jobs:
           for file in hosts/**/docker-compose/*.yaml; do
             [ -e "$file" ] || continue
             dir=$(dirname "$file")
-            base=$(basename "$file" .yml)
-            nix run github:aksiksi/compose2nix -- "$file" > "$dir/${base}.nix"
+            base=$(basename "$file" .yaml)
+            nix run github:aksiksi/compose2nix -- -inputs "$file" > "$dir/${base}.nix"
           done
 
       - name: Commit and push changes
