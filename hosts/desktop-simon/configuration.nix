@@ -188,6 +188,7 @@
     gnumake
     go
     jq
+    sdrangel
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
   ];
