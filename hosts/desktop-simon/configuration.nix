@@ -149,9 +149,9 @@
   services.spice-vdagentd.enable = true;
   # Install firefox.
   programs.firefox.enable = true;
-  programs.firefox.preferences = {
-    "widget.use-xdg-desktop-portal.file-picker" = 1;
-  };
+ # programs.firefox.preferences = {
+ #   "widget.use-xdg-desktop-portal.file-picker" = 1;
+ # };
   programs.goldwarden.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
