@@ -42,7 +42,6 @@
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
 
-
   ###TERMFILEPICKERS
 
   #imports = [ inputs.xdp-termfilepickers.nixosModules.default ];
@@ -156,7 +155,14 @@
   programs.goldwarden.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      wlrobs
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+    ];
+  };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [

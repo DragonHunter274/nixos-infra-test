@@ -24,7 +24,7 @@
     hyprlock.url = "github:hyprwm/hyprlock";
     termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
 
-nixos-06cb-009a-fingerprint-sensor = {
+    nixos-06cb-009a-fingerprint-sensor = {
       url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
@@ -40,8 +40,11 @@ nixos-06cb-009a-fingerprint-sensor = {
         formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
       }
       (mkNixos "fablabmuc-38c3" { } [ ])
-      (mkNixos "fablabmuc-38c3-minipc" { } [./modules/k3s.nix ])
+      (mkNixos "fablabmuc-38c3-minipc" { } [ ./modules/k3s.nix ])
       (mkNixos "desktop-simon" { } [ ])
-      (mkNixos "thinkpad-simon" { } [inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity])
+      (mkNixos "thinkpad-simon" { } [
+        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
+        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
+      ])
     ];
 }

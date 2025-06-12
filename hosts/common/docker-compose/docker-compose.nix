@@ -97,7 +97,8 @@
     labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.oauth2.entrypoints" = "websecure";
-      "traefik.http.routers.oauth2.rule" = "(Host(`oauth2.38c3.tschunk.social`) && PathPrefix(`/oauth2/`)) || (PathPrefix(`/oauth2/`))";
+      "traefik.http.routers.oauth2.rule" =
+        "(Host(`oauth2.38c3.tschunk.social`) && PathPrefix(`/oauth2/`)) || (PathPrefix(`/oauth2/`))";
       "traefik.http.routers.oauth2.tls" = "true";
       "traefik.http.routers.oauth2.tls.certResolver" = "letsencrypt";
       "traefik.http.services.oauth2.loadbalancer.server.port" = "4180";
@@ -356,7 +357,8 @@
       "traefik.enable" = "true";
       "traefik.http.routers.whoami2.entryPoints" = "websecure";
       "traefik.http.routers.whoami2.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.whoami2.rule" = "Host(`whoami.38c3.tschunk.social`) && Header(`x-auth-request-user`, `DragonHunter274`)";
+      "traefik.http.routers.whoami2.rule" =
+        "Host(`whoami.38c3.tschunk.social`) && Header(`x-auth-request-user`, `DragonHunter274`)";
       "traefik.http.routers.whoami2.tls.certResolver" = "letsencrypt";
     };
     log-driver = "journald";

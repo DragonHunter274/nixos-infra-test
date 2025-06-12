@@ -1,7 +1,12 @@
 # Android udev rules for NixOS
 # Converted from https://github.com/M0Rf30/android-udev-rules
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
 

@@ -23,7 +23,6 @@
     inputs.termfilepickers.nixosModules.default
   ];
 
-
   programs.adb.enable = true;
 
   boot.kernelModules = [
@@ -60,7 +59,6 @@
   services.udisks2.enable = true;
   services.lldpd.enable = true;
 
-
   virtualisation.docker.enable = true;
 
   services.tailscale.enable = true;
@@ -76,26 +74,25 @@
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
 
-
   ###TERMFILEPICKERS
 
   #imports = [ inputs.xdp-termfilepickers.nixosModules.default ];
 
- # services.xdg-desktop-portal-termfilepickers =
- #   let
- #     termfilepickers = inputs.termfilepickers.packages.${pkgs.system}.default;
- #   in
- #   {
- #     enable = true;
- #     package = termfilepickers;
- #     desktopEnvironments = [ "hyprland" ];
- #     config = {
- #       save_file_script_path = "${termfilepickers}/share/wrappers/yazi-save-file.nu";
- #       open_file_script_path = "${termfilepickers}/share/wrappers/yazi-open-file.nu";
- #       save_files_script_path = "${termfilepickers}/share/wrappers/yazi-save-file.nu";
- #       terminal_command = lib.getExe pkgs.kitty;
- #     };
- #   };
+  # services.xdg-desktop-portal-termfilepickers =
+  #   let
+  #     termfilepickers = inputs.termfilepickers.packages.${pkgs.system}.default;
+  #   in
+  #   {
+  #     enable = true;
+  #     package = termfilepickers;
+  #     desktopEnvironments = [ "hyprland" ];
+  #     config = {
+  #       save_file_script_path = "${termfilepickers}/share/wrappers/yazi-save-file.nu";
+  #       open_file_script_path = "${termfilepickers}/share/wrappers/yazi-open-file.nu";
+  #       save_files_script_path = "${termfilepickers}/share/wrappers/yazi-save-file.nu";
+  #       terminal_command = lib.getExe pkgs.kitty;
+  #     };
+  #   };
 
   xdg = {
     portal = {
@@ -133,7 +130,6 @@
   time.timeZone = "Europe/Berlin";
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
-
 
   home-manager = {
     useGlobalPkgs = true;
@@ -210,9 +206,9 @@
   services.spice-vdagentd.enable = true;
   # Install firefox.
   programs.firefox.enable = true;
- # programs.firefox.preferences = {
- #   "widget.use-xdg-desktop-portal.file-picker" = 1;
- # };
+  # programs.firefox.preferences = {
+  #   "widget.use-xdg-desktop-portal.file-picker" = 1;
+  # };
   programs.goldwarden.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

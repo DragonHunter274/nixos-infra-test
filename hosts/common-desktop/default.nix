@@ -1,4 +1,10 @@
-{ pkgs,inputs,config, lib, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  lib,
+  ...
+}:
 
 {
 
@@ -23,9 +29,9 @@
   services.flatpak.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
-  
+
   hardware.rtl-sdr.enable = true;
-  users.users.simon.extraGroups = ["plugdev"];
+  users.users.simon.extraGroups = [ "plugdev" ];
 
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
