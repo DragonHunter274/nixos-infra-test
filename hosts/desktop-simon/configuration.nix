@@ -134,6 +134,8 @@
       "docker"
       "adbusers"
       "wireshark"
+      "plugdev"
+      "dialout"
     ];
     packages = with pkgs; [
       kdePackages.kate
