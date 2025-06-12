@@ -189,6 +189,7 @@
     go
     jq
     sdrangel
+    limesuite
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
   ];
