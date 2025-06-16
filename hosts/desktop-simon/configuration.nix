@@ -20,7 +20,16 @@
     ../common-desktop
     #    ./modules/nixos/fingerprint.nix
     # inputs.termfilepickers.nixosModules.default
+    inputs.sops-nix.nixosModules.sops
   ];
+
+  sops.secrets."syncthing/key.pem" = {
+    sopsFile = ./secrets/secrets.yaml;
+  };
+
+  sops.secrets."syncthing/cert.pem" = {
+    sopsFile = ./secrets/secrets.yaml;
+  };
 
   services.flatpak.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
@@ -151,9 +160,9 @@
   services.spice-vdagentd.enable = true;
   # Install firefox.
   programs.firefox.enable = true;
- # programs.firefox.preferences = {
- #   "widget.use-xdg-desktop-portal.file-picker" = 1;
- # };
+  # programs.firefox.preferences = {
+  #   "widget.use-xdg-desktop-portal.file-picker" = 1;
+  # };
   programs.goldwarden.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
