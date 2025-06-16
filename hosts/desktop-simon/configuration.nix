@@ -31,6 +31,22 @@
     sopsFile = ./secrets/secrets.yaml;
   };
 
+  systemd.services.syncthing.environment.STNODEFAULTFOLDER = "true"; # Don't create default ~/Sync folder
+
+  services.syncthing = {
+    enable = true;
+    key = "/run/secrets/syncthing/key.pem";
+    cert = "/run/secrets/syncthing/cert.pem";
+    devices = {
+      "desktop-simon" = {
+        id = "VUCFNSU-BXPGRJH-QMXIPGU-7WRAMAS-SRYNVA7-BQXTFAH-XYNIM3W-EP5DCQZ";
+      };
+      "fablabmuc-38c3-minipc" = {
+        id = "7RQNXJ6-TBATF3N-NZNQBEB-6XF4GAC-OG6VXJV-HVXBJ73-CGOXJFW-EPHDIAU";
+      };
+    };
+  };
+
   services.flatpak.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
