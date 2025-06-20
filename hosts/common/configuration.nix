@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -12,11 +12,8 @@
     ./zfs.nix
     ./disko-config.nix
     ./traefik.nix
-    ./docker-compose/docker-compose.nix
-    ./docker-compose/minecraft.nix
+    ./docker-compose.nix
     ./unbound.nix
-    ./ftp_CCC.nix
-    ./logs_metrics.nix
     # ./sops_fetch.nix
   ];
   nix.settings.trusted-users = [ "@wheel" ];
@@ -42,11 +39,6 @@
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
-  services.devmon.enable = true;
-  services.gvfs.enable = true;
-  services.udisks2.enable = true;
-
-
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -62,89 +54,7 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-
-  # Enable nginx service
-  services.nginx = {
-    enable = true;
-    
-    # Define virtual host for port 1234
-    virtualHosts."localhost:1234" = {
-      listen = [
-        {
-          addr = "0.0.0.0";
-          port = 1234;
-        }
-      ];
-      
-      # Serve the IP address information
-      locations."/" = {
-        extraConfig = ''
-          # Set content type to plain text
-          add_header Content-Type text/plain;
-          
-          # Execute ip a command and return output
-          content_by_lua_block {
-            local handle = io.popen("ip a")
-            local result = handle:read("*a")
-            handle:close()
-            ngx.say(result)
-          }
-        '';
-      };
-    };
-  };
-
-  # Enable OpenResty (nginx with Lua support) instead of regular nginx
-  # This is needed for the content_by_lua_block directive
-  services.nginx.package = pkgs.openresty;
-
-  # Open port 1234 in the firewall
-  networking.firewall.allowedTCPPorts = [ 1234 ];
-
-  # Alternative approach using a simple CGI script if you prefer not to use Lua
-  # You can uncomment this section and comment out the Lua approach above
-  /*
-  services.nginx.virtualHosts."localhost:1234" = {
-    listen = [
-      {
-        addr = "0.0.0.0";
-        port = 1234;
-      }
-    ];
-    
-    locations."/" = {
-      extraConfig = ''
-        # Create a simple script that outputs ip a
-        root /var/www;
-        try_files $uri @fallback;
-      '';
-    };
-    
-    locations."@fallback" = {
-      extraConfig = ''
-        internal;
-        add_header Content-Type text/plain;
-        return 200 "Use the Lua version above for dynamic IP output";
-      '';
-    };
-  };
-  
-  # Create the directory and script
-  system.activationScripts.create-ip-script = ''
-    mkdir -p /var/www
-    cat > /var/www/index.html << 'EOF'
-    #!/bin/bash
-    echo "Content-Type: text/plain"
-    echo ""
-    /run/current-system/sw/bin/ip a
-    EOF
-    chmod +x /var/www/index.html
-  '';
-  */
-
-
-
-
+{
   systemd.services.ip-sender = {
     enable = true;
     description = "bar";
@@ -153,13 +63,13 @@
       # ...
     };
     serviceConfig = {
-      ExecStart = "${inputs.nur.packages.x86_64-linux.ip-sender}/bin/arduino-ip-monitor";
+      ExecStart = "${nur.ip-sender}/bin/ip-sender";
       # ...
     };
     wantedBy = [ "multi-user.target" ];
     # ...
   };
-
+}
 
 
   # Configure keymap in X11
@@ -200,9 +110,6 @@
     compose2nix
     tmux
     zenith
-    iproute2
-    htop
-    btop
   ];
 
   security.sudo.wheelNeedsPassword = false;
