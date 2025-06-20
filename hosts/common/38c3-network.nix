@@ -30,7 +30,7 @@
 
   # Firewall
   networking.firewall = {
-    enable = false;
+    enable = true;
 
     pingLimit = "--limit 1/minute --limit-burst 5";
 
