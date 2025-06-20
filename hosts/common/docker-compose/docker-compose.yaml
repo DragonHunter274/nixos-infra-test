@@ -20,84 +20,84 @@ services:
       - "traefik.http.routers.whoami2.tls.certResolver=letsencrypt"
       - "traefik.http.routers.whoami2.rule=Host(`whoami.38c3.tschunk.social`) && Header(`x-auth-request-user`, `DragonHunter274`)"
       - "traefik.http.routers.whoami2.middlewares=oauth2-auth@file"
-  radarr:
-    image: linuxserver/radarr:latest
-    container_name: radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/paris
-    volumes:
-      - radarr-data:/config
-      - /slow/media/radarr-out:/out
-      - /flash/downloads:/download
-    ports:
-      - 7676:7878
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.radarr.entryPoints=websecure"
-      - "traefik.http.routers.radarr.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.38c3.tschunk.social`)" # Edit here to change the domain name
-      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
-      - "traefik.http.routers.radarr.middlewares=oauth2-auth@file"
-
-  sonarr:
-    image: ghcr.io/linuxserver/sonarr:latest
-    container_name: sonarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/paris
-      - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
-      - TP_THEME=organizr
-    volumes:
-      - sonarr-data:/config
-      - /slow/media/sonarr-out:/out
-      - /flash/downloads:/download
-    ports:
-      - 7878:7878
-      - 8989:8989
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.entryPoints=websecure"
-      - "traefik.http.routers.sonarr.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.38c3.tschunk.social`)" # Edit here to change the domain name
-      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
-      - "traefik.port=8989"
-      - "traefik.http.routers.sonarr.middlewares=oauth2-auth@file"
-    restart: unless-stopped
-  prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      PUID: 1000
-      PGID: 1000
-      TZ: Europe/paris
-    volumes:
-      - prowlarr-data:/config
-    ports:
-      - 9696:9696
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prowlarr.entryPoints=websecure"
-      - "traefik.http.routers.prowlarr.tls.certResolver=letsencrypt"
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.38c3.tschunk.social`)" # Edit here to change the domain name
-      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
-      - "traefik.http.routers.prowlarr.middlewares=oauth2-auth@file"
-    restart: unless-stopped
+#  radarr:
+#    image: linuxserver/radarr:latest
+#    container_name: radarr
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Europe/paris
+#    volumes:
+#      - radarr-data:/config
+#      - /slow/media/radarr-out:/out
+#      - /flash/downloads:/download
+#    ports:
+#      - 7676:7878
+#    restart: unless-stopped
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.radarr.entryPoints=websecure"
+#      - "traefik.http.routers.radarr.tls.certResolver=letsencrypt"
+#      - "traefik.http.routers.radarr.rule=Host(`radarr.38c3.tschunk.social`)" # Edit here to change the domain name
+#      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+#      - "traefik.http.routers.radarr.middlewares=oauth2-auth@file"
+#
+#  sonarr:
+#    image: ghcr.io/linuxserver/sonarr:latest#
+#    container_name: sonarr
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Europe/paris
+#      - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
+#      - TP_THEME=organizr
+#    volumes:
+#      - sonarr-data:/config
+#      - /slow/media/sonarr-out:/out
+#      - /flash/downloads:/download
+#    ports:
+#      - 7878:7878
+#      - 8989:8989
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.sonarr.entryPoints=websecure"
+#      - "traefik.http.routers.sonarr.tls.certResolver=letsencrypt"
+#      - "traefik.http.routers.sonarr.rule=Host(`sonarr.38c3.tschunk.social`)" # Edit here to change the domain name
+#      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+#      - "traefik.port=8989"
+#      - "traefik.http.routers.sonarr.middlewares=oauth2-auth@file"
+#    restart: unless-stopped
+#  prowlarr:
+#    image: ghcr.io/linuxserver/prowlarr:latest
+#    container_name: prowlarr
+#    environment:
+#      PUID: 1000
+#      PGID: 1000
+#      TZ: Europe/paris
+#    volumes:
+#      - prowlarr-data:/config
+#    ports:
+#      - 9696:9696
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.prowlarr.entryPoints=websecure"
+#      - "traefik.http.routers.prowlarr.tls.certResolver=letsencrypt"
+#      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.38c3.tschunk.social`)" # Edit here to change the domain name
+#      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+#      - "traefik.http.routers.prowlarr.middlewares=oauth2-auth@file"
+#    restart: unless-stopped
   vsftpd:
     image: metabrainz/docker-anon-ftp
     container_name: ftpserver
     volumes:
-      - /upload:/var/ftp/
+      - /flash/media:/var/ftp/
     ports:
       - "21:21"
       - "20:20"
       - "65500-65515:65500-65515"
     environment:
-      PASV_ADDRESS: "151.217.62.81"
-      FTPD_BANNER: "Welcome to the Faboulous FTP Server! be gentle pls!"
+#      PASV_ADDRESS: "151.217.62.81"
+      FTPD_BANNER: "Welcome to the Faboulous FTP Mate Box!"
 #  file_index:
 #    image: awesometic/h5ai:latest
 #    container_name: file_index
