@@ -55,7 +55,7 @@
     };
 
     # Allow SSH on enp42s0 and tailscale0
-    interfaces.enp42s0 = {
+    interfaces.enp43s0 = {
       allowedTCPPorts = [ 22 ];
     };
 
