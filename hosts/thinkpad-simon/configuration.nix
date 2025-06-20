@@ -19,106 +19,11 @@
     ./modules/nixos/libvirt.nix
     ./modules/nixos/fingerprint.nix
     ./modules/nixos/udev-mtkclient.nix
-    ../../modules/ftp
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
-    ../../modules/goldwarden-legacy.nix
-    ./packages.nix
   ];
-
-  virtualisation.waydroid.enable = true;
-  services.irqbalance.enable = true;
-  nix.buildMachines = [
-    {
-      hostName = "nix-arm-builder";
-      systems = [ "aarch64-linux" ];
-      sshUser = "root";
-      maxJobs = 8;
-      speedFactor = 1;
-      supportedFeatures = [ "big-parallel" ];
-      sshKey = "/home/simon/.ssh/id_ed25519";
-    }
-  ];
-  nix.distributedBuilds = true;
-  nix.settings.builders-use-substitutes = true;
-
-  security.wrappers.renice = {
-    source = "${pkgs.util-linux}/bin/renice";
-    capabilities = "cap_sys_nice+ep";
-    owner = "root";
-    group = "root";
-  };
-
-  systemd.user.slices."app-graphical" = {
-    sliceConfig = {
-      Nice = 0;
-    };
-  };
-
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50;
-  };
-
-  networking.hosts = {
-    "127.0.0.1" = [ "nix-arm-builder" ];
-  };
-
-  programs.nix-ld.enable = true;
-
-  services.displayManager.sessionPackages = [
-    (
-      (pkgs.makeDesktopItem {
-        name = "uwsm-hyprland";
-        desktopName = "Hyprland (uwsm)";
-        exec = "uwsm start -N -5 -F /run/current-system/sw/bin/Hyprland";
-        comment = "Hyprland compositor managed by UWSM";
-        type = "Application";
-      }).overrideAttrs
-      (old: {
-        buildCommand = old.buildCommand + ''
-          mkdir -p $out/share/wayland-sessions
-          mv $out/share/applications/*.desktop $out/share/wayland-sessions/
-        '';
-        passthru.providedSessions = [ "uwsm-hyprland" ];
-      })
-    )
-  ];
-  programs.ssh.extraConfig = ''
-    Host nix-arm-builder
-      Port 2222
-      StrictHostKeyChecking no
-      UserKnownHostsFile /dev/null
-  '';
-
-  services.syncthingDeclarative = {
-    enable = true;
-    secrets = {
-      sopsFile = ./secrets/secrets.yaml;
-    };
-    devices = {
-      desktop-simon = {
-        id = "VUCFNSU-BXPGRJH-QMXIPGU-7WRAMAS-SRYNVA7-BQXTFAH-XYNIM3W-EP5DCQZ";
-      };
-      fablabmuc-38c3-minipc = {
-        id = "7RQNXJ6-TBATF3N-NZNQBEB-6XF4GAC-OG6VXJV-HVXBJ73-CGOXJFW-EPHDIAU";
-      };
-    };
-    folders = {
-      Projects = {
-        path = "/home/simon/Projects";
-        devices = [
-          "desktop-simon"
-        ];
-        createFolder = false;
-      };
-    };
-  };
 
   programs.adb.enable = true;
-
-  #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   boot.kernelModules = [
     "sg"
@@ -127,9 +32,6 @@
   services.printing.drivers = [
     pkgs.hplip
     pkgs.samsung-unified-linux-driver
-    (pkgs.writeTextDir "share/cups/model/brother_ql570_printer_en.ppd" (
-      builtins.readFile ./brother_ql570_printer_en.ppd
-    ))
   ];
 
   services.flatpak.enable = true;
@@ -141,7 +43,6 @@
   nix.settings.trusted-users = [ "@wheel" ];
   nixpkgs.config.permittedInsecurePackages = [
     "segger-jlink-qt4-796s"
-    "qtwebengine-5.15.19"
   ];
 
   nixpkgs.config.segger-jlink.acceptLicense = true;
@@ -193,16 +94,16 @@
   #     };
   #   };
 
-  # xdg = {
-  #   portal = {
-  #     enable = true;
-  #     extraPortals = [ pkgs.xdg-desktop-portal-gtk  ];
+  xdg = {
+    portal = {
+      enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
-  #      # Apparently, this can cause issues and was removed in NixOS 24.11. TODO: add it on a per-service basis
-  #      # gtkUsePortal = true;
-  #      xdgOpenUsePortal = true;
-  #    };
-  #  };
+      # Apparently, this can cause issues and was removed in NixOS 24.11. TODO: add it on a per-service basis
+      # gtkUsePortal = true;
+      xdgOpenUsePortal = true;
+    };
+  };
 
   ###END_TERMFILEPICKERS
   environment.variables = {
@@ -248,7 +149,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.theme = "Elegant";
-  #services.displayManager.defaultSession = "hyprland";
+  services.displayManager.defaultSession = "hyprland";
   #services.desktopManager.plasma6.enable = true;
   #services.xserver.desktopManager.gnome.enable = true;
 
@@ -279,14 +180,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  systemd.services.nix-daemon.serviceConfig = {
-    # Nice Nix daemon
-    Nice = lib.mkForce 15;
-    CPUWeight = 5;
-    IOSchedulingClass = lib.mkForce "idle";
-    IOSchedulingPriority = lib.mkForce 7;
-  };
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.simon = {
     isNormalUser = true;
@@ -299,7 +192,6 @@
       "cdrom"
       "adbusers"
       "plugdev"
-      "wireshark"
     ];
     packages = with pkgs; [
       kdePackages.kate
@@ -317,17 +209,35 @@
   # programs.firefox.preferences = {
   #   "widget.use-xdg-desktop-portal.file-picker" = 1;
   # };
-  services.goldwarden-legacy.enable = true;
+  programs.goldwarden.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  services.printing = {
-    listenAddresses = [ "*:631" ];
-    allowFrom = [ "all" ];
-    browsing = true;
-    defaultShared = true;
-    openFirewall = true;
-  };
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    cachix
+    nixfmt-rfc-style
+    tlp
+    goldwarden
+    bitwarden-desktop
+    kdePackages.qtsvg
+    inputs.pyprland.packages."x86_64-linux".pyprland
+    elegant-sddm
+    xdg-utils
+    android-tools
+    go
+    tinygo
+    gcc
+    stlink
+    openocd
+    adafruit-nrfutil
+    distrobox
+    # nur-packages.openbeken-flasher
+    # nur-packages.mtkclient
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -346,7 +256,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = true;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -359,10 +269,5 @@
     "nix-command"
     "flakes"
   ];
-
-  # nix-direnv and lorri
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
-  services.lorri.enable = true;
 
 }
