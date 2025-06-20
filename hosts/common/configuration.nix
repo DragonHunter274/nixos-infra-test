@@ -145,7 +145,7 @@
       # ...
     };
     serviceConfig = {
-      ExecStart = "${inputs.nur.packages.x86_64-linux.ip-sender}/bin/ip-sender";
+      ExecStart = "${inputs.nur.packages.x86_64-linux.ip-sender}/bin/arduino-ip-monitor";
       # ...
     };
     wantedBy = [ "multi-user.target" ];
