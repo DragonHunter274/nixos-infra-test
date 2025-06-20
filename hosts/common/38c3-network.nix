@@ -3,22 +3,22 @@
 {
   networking.tempAddresses = "disabled";
   #networking.interfaces.enp1s0.acceptRA = true;
-  networking.interfaces.enp43s0 = {
-    ipv4.addresses = [
-      {
-        address = "151.217.62.81";
-        prefixLength = 23;
-      }
-    ];
-  };
+#  networking.interfaces.enp43s0 = {
+#    ipv4.addresses = [
+#      {
+#        address = "151.217.62.81";
+#        prefixLength = 23;
+#      }
+#    ];
+#  };
   networking.networkmanager = {
     settings.connection."ipv6.addr-gen-mode" = "eui64";
     settings.connection."ipv6.ip6-privacy" = "0";
   };
   services.tailscale.enable = true;
 
-  networking.defaultGateway.interface = "enp43s0";
-  networking.defaultGateway.address = "151.217.62.1";
+#  networking.defaultGateway.interface = "enp43s0";
+#  networking.defaultGateway.address = "151.217.62.1";
 
   services.lldpd.enable = true;
 
