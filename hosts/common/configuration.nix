@@ -54,6 +54,24 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
+{
+  systemd.services.ip-sender = {
+    enable = true;
+    description = "bar";
+    unitConfig = {
+      Type = "simple";
+      # ...
+    };
+    serviceConfig = {
+      ExecStart = "${nur.ip-sender}/bin/ip-sender";
+      # ...
+    };
+    wantedBy = [ "multi-user.target" ];
+    # ...
+  };
+}
+
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
