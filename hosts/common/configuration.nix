@@ -12,7 +12,7 @@
     ./zfs.nix
     ./disko-config.nix
     ./traefik.nix
-    ./docker-compose.nix
+    ./docker-compose/docker-compose.nix
     ./unbound.nix
     # ./sops_fetch.nix
   ];
