@@ -91,6 +91,7 @@ services:
     container_name: ftpserver
     volumes:
       - /flash/media:/var/ftp/
+      - /etc/vsftpd.conf:/etc/vsftp.conf:ro
     ports:
       - "21:21"
       - "20:20"
