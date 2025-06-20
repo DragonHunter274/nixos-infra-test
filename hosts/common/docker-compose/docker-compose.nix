@@ -23,11 +23,10 @@
   virtualisation.oci-containers.containers."ftpserver" = {
     image = "metabrainz/docker-anon-ftp";
     environment = {
-      "FTPD_BANNER" = "Welcome to the Faboulous FTP Server! be gentle pls!";
-      "PASV_ADDRESS" = "151.217.62.81";
+      "FTPD_BANNER" = "Welcome to the Faboulous FTP Mate Box!";
     };
     volumes = [
-      "/upload:/var/ftp:rw"
+      "/flash/media:/var/ftp:rw"
     ];
     ports = [
       "21:21/tcp"
@@ -97,8 +96,7 @@
     labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.oauth2.entrypoints" = "websecure";
-      "traefik.http.routers.oauth2.rule" =
-        "(Host(`oauth2.38c3.tschunk.social`) && PathPrefix(`/oauth2/`)) || (PathPrefix(`/oauth2/`))";
+      "traefik.http.routers.oauth2.rule" = "(Host(`oauth2.38c3.tschunk.social`) && PathPrefix(`/oauth2/`)) || (PathPrefix(`/oauth2/`))";
       "traefik.http.routers.oauth2.tls" = "true";
       "traefik.http.routers.oauth2.tls.certResolver" = "letsencrypt";
       "traefik.http.services.oauth2.loadbalancer.server.port" = "4180";
@@ -118,52 +116,6 @@
     ];
     requires = [
       "podman-network-traefik-test_default.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
-  virtualisation.oci-containers.containers."prowlarr" = {
-    image = "ghcr.io/linuxserver/prowlarr:latest";
-    environment = {
-      "PGID" = "1000";
-      "PUID" = "1000";
-      "TZ" = "Europe/paris";
-    };
-    volumes = [
-      "traefik-test_prowlarr-data:/config:rw"
-    ];
-    ports = [
-      "9696:9696/tcp"
-    ];
-    labels = {
-      "traefik.enable" = "true";
-      "traefik.http.routers.prowlarr.entryPoints" = "websecure";
-      "traefik.http.routers.prowlarr.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.prowlarr.rule" = "Host(`prowlarr.38c3.tschunk.social`)";
-      "traefik.http.routers.prowlarr.tls.certResolver" = "letsencrypt";
-      "traefik.http.services.prowlarr.loadbalancer.server.port" = "9696";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=prowlarr"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-prowlarr" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_prowlarr-data.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_prowlarr-data.service"
     ];
     partOf = [
       "podman-compose-traefik-test-root.target"
@@ -219,54 +171,6 @@
       "podman-compose-traefik-test-root.target"
     ];
   };
-  virtualisation.oci-containers.containers."radarr" = {
-    image = "linuxserver/radarr:latest";
-    environment = {
-      "PGID" = "1000";
-      "PUID" = "1000";
-      "TZ" = "Europe/paris";
-    };
-    volumes = [
-      "/flash/downloads:/download:rw"
-      "/slow/media/radarr-out:/out:rw"
-      "traefik-test_radarr-data:/config:rw"
-    ];
-    ports = [
-      "7676:7878/tcp"
-    ];
-    labels = {
-      "traefik.enable" = "true";
-      "traefik.http.routers.radarr.entryPoints" = "websecure";
-      "traefik.http.routers.radarr.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.radarr.rule" = "Host(`radarr.38c3.tschunk.social`)";
-      "traefik.http.routers.radarr.tls.certResolver" = "letsencrypt";
-      "traefik.http.services.radarr.loadbalancer.server.port" = "7878";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=radarr"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-radarr" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_radarr-data.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_radarr-data.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."simple-service" = {
     image = "mendhak/http-https-echo";
     labels = {
@@ -299,66 +203,13 @@
       "podman-compose-traefik-test-root.target"
     ];
   };
-  virtualisation.oci-containers.containers."sonarr" = {
-    image = "ghcr.io/linuxserver/sonarr:latest";
-    environment = {
-      "DOCKER_MODS" = "ghcr.io/gilbn/theme.park:sonarr";
-      "PGID" = "1000";
-      "PUID" = "1000";
-      "TP_THEME" = "organizr";
-      "TZ" = "Europe/paris";
-    };
-    volumes = [
-      "/flash/downloads:/download:rw"
-      "/slow/media/sonarr-out:/out:rw"
-      "traefik-test_sonarr-data:/config:rw"
-    ];
-    ports = [
-      "7878:7878/tcp"
-      "8989:8989/tcp"
-    ];
-    labels = {
-      "traefik.enable" = "true";
-      "traefik.http.routers.sonarr.entryPoints" = "websecure";
-      "traefik.http.routers.sonarr.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.sonarr.rule" = "Host(`sonarr.38c3.tschunk.social`)";
-      "traefik.http.routers.sonarr.tls.certResolver" = "letsencrypt";
-      "traefik.http.services.sonarr.loadbalancer.server.port" = "8989";
-      "traefik.port" = "8989";
-    };
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=sonarr"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-sonarr" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "always";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_sonarr-data.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-      "podman-volume-traefik-test_sonarr-data.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."whoami" = {
     image = "traefik/whoami";
     labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.whoami2.entryPoints" = "websecure";
       "traefik.http.routers.whoami2.middlewares" = "oauth2-auth@file";
-      "traefik.http.routers.whoami2.rule" =
-        "Host(`whoami.38c3.tschunk.social`) && Header(`x-auth-request-user`, `DragonHunter274`)";
+      "traefik.http.routers.whoami2.rule" = "Host(`whoami.38c3.tschunk.social`) && Header(`x-auth-request-user`, `DragonHunter274`)";
       "traefik.http.routers.whoami2.tls.certResolver" = "letsencrypt";
     };
     log-driver = "journald";
@@ -401,18 +252,6 @@
   };
 
   # Volumes
-  systemd.services."podman-volume-traefik-test_prowlarr-data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_prowlarr-data || podman volume create traefik-test_prowlarr-data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
   systemd.services."podman-volume-traefik-test_qbittorrent-data" = {
     path = [ pkgs.podman ];
     serviceConfig = {
@@ -421,30 +260,6 @@
     };
     script = ''
       podman volume inspect traefik-test_qbittorrent-data || podman volume create traefik-test_qbittorrent-data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
-  systemd.services."podman-volume-traefik-test_radarr-data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_radarr-data || podman volume create traefik-test_radarr-data
-    '';
-    partOf = [ "podman-compose-traefik-test-root.target" ];
-    wantedBy = [ "podman-compose-traefik-test-root.target" ];
-  };
-  systemd.services."podman-volume-traefik-test_sonarr-data" = {
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      podman volume inspect traefik-test_sonarr-data || podman volume create traefik-test_sonarr-data
     '';
     partOf = [ "podman-compose-traefik-test-root.target" ];
     wantedBy = [ "podman-compose-traefik-test-root.target" ];
