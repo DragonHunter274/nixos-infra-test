@@ -26,6 +26,7 @@
       "FTPD_BANNER" = "Welcome to the Faboulous FTP Mate Box!";
     };
     volumes = [
+      "/etc/vsftpd.conf:/etc/vsftp.conf:ro"
       "/flash/media:/var/ftp:rw"
     ];
     ports = [
