@@ -21,6 +21,6 @@ services:
       OPS: |-
         Trampolinsprung
     volumes:
-      - "./data:/data"
+      - "/flash/minecraft:/data"
 
 
