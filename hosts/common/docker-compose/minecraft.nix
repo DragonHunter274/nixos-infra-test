@@ -36,7 +36,7 @@
       "USE_AIKAR_FLAGS" = "true";
     };
     volumes = [
-      "/home/runner/work/38c3-nixos/38c3-nixos/data:/data:rw"
+      "/flash/minecraft:/data:rw"
     ];
     ports = [
       "25565:25565/tcp"
