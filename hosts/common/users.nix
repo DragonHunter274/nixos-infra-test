@@ -59,6 +59,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "users"
     ];
     packages = with pkgs; [
       k9s
