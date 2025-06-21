@@ -49,12 +49,13 @@
       use_localtime=YES
       
       # Connection limits
-      max_clients=50
-      max_per_ip=5
+      max_clients=150
+      max_per_ip=0
+      anon_max_rate=0
       
       # Timeout settings
-      idle_session_timeout=300
-      data_connection_timeout=120
+      idle_session_timeout=600
+      data_connection_timeout=300
     '';
   };
   
