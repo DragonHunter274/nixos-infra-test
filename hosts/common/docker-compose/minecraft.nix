@@ -26,7 +26,7 @@
       "DIFFICULTY" = "2";
       "EULA" = "TRUE";
       "MAX_PLAYERS" = "100";
-      "MEMORY" = "8192M";
+      "MEMORY" = "6144M";
       "MOTD" = "GPN Lets go";
       "OPS" = "Trampolinsprung";
       "SEED" = "2830527040085797979";
