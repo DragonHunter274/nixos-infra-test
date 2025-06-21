@@ -16,6 +16,7 @@
     ./docker-compose/minecraft.nix
     ./unbound.nix
     ./ftp_CCC.nix
+    ./logs_metrics.nix
     # ./sops_fetch.nix
   ];
   nix.settings.trusted-users = [ "@wheel" ];
