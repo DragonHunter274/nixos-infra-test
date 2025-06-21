@@ -15,7 +15,6 @@
     
     # Anonymous user permissions
     anonymousUploadEnable = true;
-    anonymousMkdirWriteEnable = true;
     
     # Security and connection settings
     chrootlocalUser = false;
@@ -53,7 +52,7 @@
       
       # Timeout settings
       idle_session_timeout=300
-      data_connection_timeout=300
+      data_connection_timeout=120
     '';
   };
   
