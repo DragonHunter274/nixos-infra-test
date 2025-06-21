@@ -20,13 +20,15 @@
     chrootlocalUser = false;
     userlistEnable = false;
     
-    # Passive mode configuration (recommended for firewalls)
-    pasv_enable = true;
-    pasv_min_port = 21100;
-    pasv_max_port = 21110;
+    # Passive mode will be configured in extraConfig
     
     # Additional configuration
     extraConfig = ''
+      # Passive mode configuration (recommended for firewalls)
+      pasv_enable=YES
+      pasv_min_port=21100
+      pasv_max_port=21110
+      
       # Allow anonymous uploads and modifications
       anon_upload_enable=YES
       anon_mkdir_write_enable=YES
@@ -47,7 +49,7 @@
       use_localtime=YES
       
       # Connection limits
-      max_clients=100
+      max_clients=50
       max_per_ip=5
       
       # Timeout settings
