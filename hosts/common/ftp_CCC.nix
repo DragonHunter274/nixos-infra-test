@@ -48,12 +48,12 @@
       use_localtime=YES
       
       # Connection limits
-      max_clients=50
+      max_clients=100
       max_per_ip=5
       
       # Timeout settings
       idle_session_timeout=300
-      data_connection_timeout=120
+      data_connection_timeout=300
     '';
   };
   
