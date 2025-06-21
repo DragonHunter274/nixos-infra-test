@@ -11,7 +11,7 @@ services:
       EULA: "TRUE"
       TYPE: "FOLIA"
       VERSION: "1.21.5"
-      MEMORY: "6144M"
+      MEMORY: "8192M"
       MAX_PLAYERS: "100"
       MOTD: "GPN Lets go"
       USE_AIKAR_FLAGS: "true"
@@ -21,6 +21,8 @@ services:
       SEED: "2830527040085797979"
       OPS: |-
         Trampolinsprung
+        onatc
+        dragonhunter274
     volumes:
       - "/flash/minecraft:/data"
 
