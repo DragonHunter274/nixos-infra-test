@@ -26,9 +26,11 @@
       "DIFFICULTY" = "2";
       "EULA" = "TRUE";
       "MAX_PLAYERS" = "100";
-      "MEMORY" = "6144M";
+      "MEMORY" = "8192M";
       "MOTD" = "GPN Lets go";
-      "OPS" = "Trampolinsprung";
+      "OPS" = "Trampolinsprung
+  onatc
+  dragonhunter274";
       "SEED" = "2830527040085797979";
       "SIMULATION_DISTANCE" = "4";
       "TYPE" = "FOLIA";
