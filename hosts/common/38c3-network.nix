@@ -38,10 +38,11 @@
     allowedTCPPorts = [
       80
       443
+      21
+      22
     ];
 
   # Allow FTP and ssh on enp43s0
-    allowedTCPPorts = [ 21 ];  # FTP control port
     allowedTCPPortRanges = [
       { from = 21100; to = 21110; }  # Passive mode data ports
     ];
