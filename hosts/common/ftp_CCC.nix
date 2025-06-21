@@ -49,7 +49,7 @@
       use_localtime=YES
       
       # Connection limits
-      max_clients=150
+      max_clients=0
       max_per_ip=0
       anon_max_rate=0
       
