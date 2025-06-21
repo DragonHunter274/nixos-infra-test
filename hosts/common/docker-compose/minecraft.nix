@@ -27,10 +27,13 @@
       "EULA" = "TRUE";
       "MAX_PLAYERS" = "100";
       "MEMORY" = "8192M";
-      "MOTD" = "GPN Lets go";
+      "MOTD" = "\\u00a7fGPN23\\u00a7r Let's go. Powered by \\u00a74R\\u00a72G\\u00a73B\\u00a76 Mate Crate\\u00a7r\\n-- Anarchy --";
       "OPS" = "Trampolinsprung
   onatc
   dragonhunter274";
+      "PLUGINS" = "https://cdn.modrinth.com/data/MubyTbnA/versions/Ekuo9JI6/FreedomChat-Paper-1.7.3.jar
+  https://hangarcdn.papermc.io/plugins/pop4959/Chunky/versions/1.4.40/PAPER/Chunky-Bukkit-1.4.40.jar
+  https://ci.athion.net/job/FastAsyncWorldEdit/1119/artifact/artifacts/FastAsyncWorldEdit-Paper-2.13.1-SNAPSHOT-1119.jar";
       "SEED" = "2830527040085797979";
       "SIMULATION_DISTANCE" = "4";
       "TYPE" = "FOLIA";
