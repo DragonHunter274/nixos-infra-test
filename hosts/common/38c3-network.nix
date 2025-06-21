@@ -40,20 +40,11 @@
       443
     ];
 
-    # Allow FTP and ssh on enp43s0
-    interfaces.enp43s0 = {
-      allowedTCPPorts = [
-        20
-        21
-        22
-      ]; # Control and data ports
-      allowedTCPPortRanges = [
-        {
-          from = 65500;
-          to = 65515;
-        } # Passive port range
-      ];
-    };
+  # Allow FTP and ssh on enp43s0
+    allowedTCPPorts = [ 21 ];  # FTP control port
+    allowedTCPPortRanges = [
+      { from = 21100; to = 21110; }  # Passive mode data ports
+    ];
 
     interfaces.tailscale0 = {
       allowedTCPPorts = [ 22 ];
