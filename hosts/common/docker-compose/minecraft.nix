@@ -26,7 +26,7 @@
       "DIFFICULTY" = "2";
       "EULA" = "TRUE";
       "MAX_PLAYERS" = "100";
-      "MEMORY" = "8192M";
+      "MEMORY" = "4096M";
       "MOTD" = "\\u00a7fGPN23\\u00a7r Let's go. Powered by \\u00a74R\\u00a72G\\u00a73B\\u00a76 Mate Crate\\u00a7r\\n-- Anarchy --";
       "OPS" = "Trampolinsprung
   onatc
