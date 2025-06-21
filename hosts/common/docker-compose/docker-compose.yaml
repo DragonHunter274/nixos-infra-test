@@ -86,19 +86,19 @@ services:
 #      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
 #      - "traefik.http.routers.prowlarr.middlewares=oauth2-auth@file"
 #    restart: unless-stopped
-  vsftpd:
-    image: metabrainz/docker-anon-ftp
-    container_name: ftpserver
-    volumes:
-      - /flash/media:/mnt/upload
-      - /etc/vsftpd.conf:/etc/vsftp.conf:ro
-    ports:
-      - "21:21"
-      - "20:20"
-      - "65500-65515:65500-65515"
-    environment:
+#  vsftpd:
+#    image: metabrainz/docker-anon-ftp
+#    container_name: ftpserver
+#    volumes:
+#      - /flash/media:/mnt/upload
+#      - /etc/vsftpd.conf:/etc/vsftp.conf:ro
+#    ports:
+#      - "21:21"
+#      - "20:20"
+#      - "65500-65515:65500-65515"
+#    environment:
 #      PASV_ADDRESS: "151.217.62.81"
-      FTPD_BANNER: "Welcome to the Faboulous FTP Mate Box!"
+#      FTPD_BANNER: "Welcome to the Faboulous FTP Mate Box!"
 #  file_index:
 #    image: awesometic/h5ai:latest
 #    container_name: file_index
