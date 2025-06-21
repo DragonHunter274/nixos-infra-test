@@ -13,6 +13,7 @@
     ./disko-config.nix
     ./traefik.nix
     ./docker-compose/docker-compose.nix
+    ./docker-compose/minecraft.nix
     ./unbound.nix
     ./ftp_CCC.nix
     # ./sops_fetch.nix
