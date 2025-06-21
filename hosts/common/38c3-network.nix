@@ -40,6 +40,7 @@
       443
       21
       22
+      25565
     ];
 
   # Allow FTP and ssh on enp43s0
