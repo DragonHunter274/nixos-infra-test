@@ -34,6 +34,7 @@
       "TYPE" = "FOLIA";
       "TZ" = "Europe/Berlin";
       "USE_AIKAR_FLAGS" = "true";
+      "VERSION" = "1.21.5";
     };
     volumes = [
       "/flash/minecraft:/data:rw"
