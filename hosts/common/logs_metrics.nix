@@ -35,21 +35,25 @@
     ];
 
   };
+ 
+  # loki
+  services.loki = {
+    enable = true;
+    configFile = ./loki.yaml;
+  };
 
+  # promtail
+  systemd.services.promtail = {
+    description = "Promtail service for Loki";
+    wantedBy = [ "multi-user.target" ];
 
-  # nginx reverse proxy
-  services.nginx.virtualHosts.${config.services.grafana.domain} = {
-    listen = [
-      {
-        addr = "0.0.0.0";
-        port = 2222;
-      }
-    ];
-
-    locations."/grafana" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
-        proxyWebsockets = true;
+    serviceConfig = {
+      ExecStart = ''
+        ${pkgs.grafana-loki}/bin/promtail --config.file ${./promtail.yaml}
+      '';
     };
   };
+
+
 
 }
