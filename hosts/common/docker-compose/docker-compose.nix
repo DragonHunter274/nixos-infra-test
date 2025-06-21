@@ -27,7 +27,7 @@
     };
     volumes = [
       "/etc/vsftpd.conf:/etc/vsftp.conf:ro"
-      "/flash/media:/var/ftp:rw"
+      "/flash/media:/mnt/upload:rw"
     ];
     ports = [
       "21:21/tcp"
