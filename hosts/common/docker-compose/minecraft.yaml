@@ -10,7 +10,7 @@ services:
     environment:
       EULA: "TRUE"
       TYPE: "FOLIA"
-      MEMORY: "8192M"
+      MEMORY: "6144M"
       MAX_PLAYERS: "100"
       MOTD: "GPN Lets go"
       USE_AIKAR_FLAGS: "true"
