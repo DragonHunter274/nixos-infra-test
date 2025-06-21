@@ -20,58 +20,6 @@
   virtualisation.oci-containers.backend = "podman";
 
   # Containers
-  virtualisation.oci-containers.containers."ftpserver" = {
-    image = "metabrainz/docker-anon-ftp";
-    environment = {
-      "FTPD_BANNER" = "Welcome to the Faboulous FTP Mate Box!";
-    };
-    volumes = [
-      "/etc/vsftpd.conf:/etc/vsftp.conf:ro"
-      "/flash/media:/mnt/upload:rw"
-    ];
-    ports = [
-      "21:21/tcp"
-      "20:20/tcp"
-      "65500:65500/tcp"
-      "65501:65501/tcp"
-      "65502:65502/tcp"
-      "65503:65503/tcp"
-      "65504:65504/tcp"
-      "65505:65505/tcp"
-      "65506:65506/tcp"
-      "65507:65507/tcp"
-      "65508:65508/tcp"
-      "65509:65509/tcp"
-      "65510:65510/tcp"
-      "65511:65511/tcp"
-      "65512:65512/tcp"
-      "65513:65513/tcp"
-      "65514:65514/tcp"
-      "65515:65515/tcp"
-    ];
-    log-driver = "journald";
-    extraOptions = [
-      "--network-alias=vsftpd"
-      "--network=traefik-test_default"
-    ];
-  };
-  systemd.services."podman-ftpserver" = {
-    serviceConfig = {
-      Restart = lib.mkOverride 90 "no";
-    };
-    after = [
-      "podman-network-traefik-test_default.service"
-    ];
-    requires = [
-      "podman-network-traefik-test_default.service"
-    ];
-    partOf = [
-      "podman-compose-traefik-test-root.target"
-    ];
-    wantedBy = [
-      "podman-compose-traefik-test-root.target"
-    ];
-  };
   virtualisation.oci-containers.containers."oauth2-proxy" = {
     image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
     environment = {
