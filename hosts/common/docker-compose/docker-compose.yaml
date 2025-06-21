@@ -90,7 +90,7 @@ services:
     image: metabrainz/docker-anon-ftp
     container_name: ftpserver
     volumes:
-      - /flash/media:/var/ftp/
+      - /flash/media:/mnt/upload
       - /etc/vsftpd.conf:/etc/vsftp.conf:ro
     ports:
       - "21:21"
