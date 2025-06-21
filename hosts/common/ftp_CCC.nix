@@ -57,13 +57,6 @@
     '';
   };
   
-  # Open firewall ports
-  networking.firewall = {
-    allowedTCPPorts = [ 21 ];  # FTP control port
-    allowedTCPPortRanges = [
-      { from = 21100; to = 21110; }  # Passive mode data ports
-    ];
-  };
   
   # Ensure the media directory exists and has proper permissions
   system.activationScripts.ftpSetup = ''
