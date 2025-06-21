@@ -49,8 +49,8 @@
       use_localtime=YES
       
       # Connection limits
-      max_clients=0
-      max_per_ip=0
+      max_clients=1000
+      max_per_ip=10
       anon_max_rate=0
       
       # Timeout settings
