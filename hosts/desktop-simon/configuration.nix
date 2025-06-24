@@ -31,6 +31,14 @@
     sopsFile = ./secrets/secrets.yaml;
   };
 
+  hardware.usb.wakeupDisabled = [
+    {
+      # Logitech wireless mouse receiver
+      vendor = "046d";
+      product = "c539";
+    }
+  ];
+
   systemd.services.syncthing.environment.STNODEFAULTFOLDER = "true"; # Don't create default ~/Sync folder
 
   services.syncthing = {

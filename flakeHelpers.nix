@@ -13,6 +13,7 @@ let
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.comin.nixosModules.comin
+    ./modules/usb-wakeup-disable.nix
     # Setup overlays
     (
       { pkgs, ... }:
