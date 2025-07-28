@@ -99,6 +99,17 @@
     ffmpeg
   ];
 
+  programs.atuin = {
+    enable = true;
+    #    flags = [ "--disable-up-arrow" ];
+    enableBashIntegration = true;
+    daemon.enable = true;
+    settings = {
+      dialect = "uk";
+      enter_accept = true;
+    };
+  };
+
   # Program-specific configurations
   programs.bash = {
     enable = true;

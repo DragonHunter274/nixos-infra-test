@@ -53,13 +53,12 @@ in
       specialArgs = {
         inherit inputs;
       };
-      modules =
-        [
-          ./hosts/${machineHostname}/configuration.nix
-          (homeManagerCfg extraHmUsers)
-        ]
-        ++ commonModules
-        ++ extraModules;
+      modules = [
+        ./hosts/${machineHostname}/configuration.nix
+        (homeManagerCfg extraHmUsers)
+      ]
+      ++ commonModules
+      ++ extraModules;
     };
   };
 
