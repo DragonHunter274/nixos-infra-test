@@ -217,29 +217,28 @@ in
         ++ lib.optionals (cfg.services.local-storage == false) [ "local-storage" ]
         ++ lib.optionals (cfg.services.metrics-server == false) [ "metrics-server" ]
         ++ lib.optionals (cfg.services.traefik == false) [ "traefik" ];
-      k3sExtraFlags =
-        [
-          "--kubelet-arg=config=/etc/rancher/k3s/kubelet.config"
-          "--node-label \"k3s-upgrade=false\""
-          "--kube-apiserver-arg anonymous-auth=true"
-          "--kube-controller-manager-arg bind-address=0.0.0.0"
-          "--kube-scheduler-arg bind-address=0.0.0.0"
-          "--etcd-expose-metrics"
-          "--secrets-encryption"
-          "--write-kubeconfig-mode 0644"
-          "--kube-apiserver-arg='enable-admission-plugins=${lib.concatStringsSep "," k3sAdmissionPlugins}'"
-        ]
-        ++ lib.lists.optionals (cfg.services.flannel == false) [
-          "--flannel-backend=none"
-          "--disable-network-policy"
-        ]
-        ++ lib.optionals (cfg.services.kube-proxy == false) [
-          "--disable-cloud-controller"
-          "--disable-kube-proxy"
-        ]
-        ++ lib.optionals cfg.prepare.cilium [
-          "--kubelet-arg=register-with-taints=node.cilium.io/agent-not-ready:NoExecute"
-        ];
+      k3sExtraFlags = [
+        "--kubelet-arg=config=/etc/rancher/k3s/kubelet.config"
+        "--node-label \"k3s-upgrade=false\""
+        "--kube-apiserver-arg anonymous-auth=true"
+        "--kube-controller-manager-arg bind-address=0.0.0.0"
+        "--kube-scheduler-arg bind-address=0.0.0.0"
+        "--etcd-expose-metrics"
+        "--secrets-encryption"
+        "--write-kubeconfig-mode 0644"
+        "--kube-apiserver-arg='enable-admission-plugins=${lib.concatStringsSep "," k3sAdmissionPlugins}'"
+      ]
+      ++ lib.lists.optionals (cfg.services.flannel == false) [
+        "--flannel-backend=none"
+        "--disable-network-policy"
+      ]
+      ++ lib.optionals (cfg.services.kube-proxy == false) [
+        "--disable-cloud-controller"
+        "--disable-kube-proxy"
+      ]
+      ++ lib.optionals cfg.prepare.cilium [
+        "--kubelet-arg=register-with-taints=node.cilium.io/agent-not-ready:NoExecute"
+      ];
       k3sDisableFlags = builtins.map (service: "--disable ${service}") k3sDisabledServices;
       k3sCombinedFlags = lib.concatLists [
         k3sDisableFlags
