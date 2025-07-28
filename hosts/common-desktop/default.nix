@@ -88,5 +88,7 @@
     nur-packages.docker-credential-ghcr-login
     gh
     wireshark
+    gnumake
+    btop
   ];
 }
