@@ -1,0 +1,30 @@
+{
+  "enabled": 1,
+  "hidden": false,
+  "description": "NixOS Infrastructure jobset evaluation",
+  "nixexprinput": "nixexpr",
+  "nixexprpath": ".hydra/jobsets.nix",
+  "checkinterval": 3600,
+  "schedulingshares": 100,
+  "enableemail": false,
+  "emailoverride": "",
+  "keepnr": 3,
+  "type": 0,
+  "inputs": {
+    "nixexpr": {
+      "value": "https://github.com/dragonhunter274/nixos-infra-test main",
+      "type": "git",
+      "emailresponsible": false
+    },
+    "nixpkgs": {
+      "value": "https://github.com/NixOS/nixpkgs nixos-unstable",
+      "type": "git",
+      "emailresponsible": false
+    },
+    "pulls": {
+      "type": "githubpulls",
+      "value": "dragonhunter274 nixos-infra-test",
+      "emailresponsible": false
+    }
+  }
+}

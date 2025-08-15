@@ -23,7 +23,30 @@
     inputs.termfilepickers.nixosModules.default
   ];
 
+  nix.buildMachines = [
+    {
+      hostName = "91.98.67.240";
+      system = "aarch64-linux";
+      protocol = "ssh";
+      maxJobs = 8;
+      speedFactor = 4;
+      supportedFeatures = [
+        "nixos-test"
+        "benchmark"
+        "big-parallel"
+        "kvm"
+      ];
+      mandatoryFeatures = [ ];
+      sshUser = "root";
+      sshKey = "/home/simon/.ssh/id_ed25519";
+    }
+  ];
+  nix.distributedBuilds = true;
+  nix.settings.builders-use-substitutes = true;
+
   programs.adb.enable = true;
+
+  #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   boot.kernelModules = [
     "sg"
@@ -233,6 +256,7 @@
     openocd
     adafruit-nrfutil
     distrobox
+    (limesuite.override { withGui = true; })
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
