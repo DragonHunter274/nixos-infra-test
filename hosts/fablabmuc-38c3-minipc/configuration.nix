@@ -9,7 +9,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/configuration.nix
-    inputs.sops-nix.nixosModules.sops
+    #    inputs.sops-nix.nixosModules.sops
   ];
 
   disko.devices.disk.main.device = "/dev/nvme0n1";

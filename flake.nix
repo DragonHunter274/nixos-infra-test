@@ -23,7 +23,6 @@
     pyprland.url = "github:hyprland-community/pyprland";
     hyprlock.url = "github:hyprwm/hyprlock";
     termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
-
     nixos-06cb-009a-fingerprint-sensor = {
       url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
@@ -33,18 +32,20 @@
     { nixpkgs, ... }@inputs:
     let
       helpers = import ./flakeHelpers.nix inputs;
-      inherit (helpers) mkMerge mkNixos;
+      inherit (helpers) mkFlakeWithHydra mkNixos mkRaspberryPi;
     in
-    mkMerge [
+    mkFlakeWithHydra [
       {
         formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
+        formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-rfc-style;
       }
       (mkNixos "fablabmuc-38c3" { } [ ])
-      (mkNixos "fablabmuc-38c3-minipc" { } [ ./modules/k3s.nix ])
+      (mkNixos "fablabmuc-38c3-minipc" { } [ ])
       (mkNixos "desktop-simon" { } [ ])
       (mkNixos "thinkpad-simon" { } [
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
       ])
+      (mkRaspberryPi "fablabmuc-tv" {pi = import ./home/pi.nix; } [ ])
     ];
 }
