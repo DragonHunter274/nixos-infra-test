@@ -2,53 +2,37 @@
 let
   pkgs = import nixpkgs { };
   prs = builtins.fromJSON (builtins.readFile pulls);
-
+  
   # ===== CONFIGURATION =====
-  keepClosedPRsForDays = 30; # <-- ADJUST THIS VALUE
-
+  keepClosedPRsForDays = 30;
+  
   # Simple time-based cleanup
-  shouldKeepPR =
-    info:
+  shouldKeepPR = info:
     if info.state == "open" then
-      true # Always keep open PRs
+      true
     else
-      # For closed PRs, check if they're recent enough
       let
-        # Use closed_at timestamp (always available for closed PRs)
-        # GitHub format: "2023-12-01T10:30:00Z"
         closedAt = info.closed_at or null;
-
-        # Simple date comparison using string comparison
-        # This works because ISO 8601 dates are lexicographically sortable
         now = builtins.currentTime;
-
-        # Convert days to seconds and calculate cutoff
         cutoffSeconds = keepClosedPRsForDays * 24 * 60 * 60;
         cutoffTime = now - cutoffSeconds;
-
-        # Parse the GitHub timestamp to Unix time (simplified)
-        parseTimestamp =
-          ts:
-          if ts == null then
-            0
+        
+        parseTimestamp = ts:
+          if ts == null then 0
           else
-            # This is a rough approximation - for exact parsing, use the full version above
             let
-              # Extract year-month-day part: "2023-12-01T10:30:00Z" -> "2023-12-01"
               datePart = builtins.head (builtins.split "T" ts);
-              # Simple heuristic: assume recent dates if they look recent
-              # This is imprecise but works for typical use cases
             in
             if builtins.compareVersions datePart "2024-01-01" >= 0 then
-              now - (7 * 24 * 60 * 60) # Treat as recent
+              now - (7 * 24 * 60 * 60)
             else
-              cutoffTime - 1; # Treat as old
-
+              cutoffTime - 1;
+              
         closedTime = parseTimestamp closedAt;
       in
       closedTime > cutoffTime;
 
-  # Generate jobsets for pull requests with time-based cleanup
+  # Generate jobsets for pull requests
   prJobsets = pkgs.lib.filterAttrs (_: info: shouldKeepPR info) (
     pkgs.lib.mapAttrs (num: info: {
       enabled = if info.state == "open" then 1 else 0;
@@ -68,8 +52,8 @@ let
   mkFlakeJobset = branch: schedulingshares: {
     inherit schedulingshares;
     description = "Build ${branch} branch";
-    checkinterval = "3600";
-    enabled = "1";
+    checkinterval = 3600;  # Integer, not string
+    enabled = 1;           # Integer, not string
     enableemail = false;
     emailoverride = "";
     keepnr = 3;
@@ -78,33 +62,45 @@ let
     flake = "github:dragonhunter274/nixos-infra-test/${branch}";
   };
 
-  # Define all jobsets
+  # Define all jobsets - ALWAYS include main
   desc = prJobsets // {
     "main" = mkFlakeJobset "main" 100;
   };
 
-  # Debug info showing cleanup stats
+  # Debug info
   log = {
     config = {
       keepClosedPRsForDays = keepClosedPRsForDays;
       totalPRsFromGitHub = builtins.length (builtins.attrNames prs);
       keptPRJobsets = builtins.length (builtins.attrNames prJobsets);
-      filteredOutPRs =
-        (builtins.length (builtins.attrNames prs)) - (builtins.length (builtins.attrNames prJobsets));
+      filteredOutPRs = (builtins.length (builtins.attrNames prs)) - (builtins.length (builtins.attrNames prJobsets));
+      createdJobsets = builtins.attrNames desc;
+      totalCreated = builtins.length (builtins.attrNames desc);
     };
     jobsets = desc;
   };
 in
 {
   jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
+    # Create the jobsets JSON file
     cat >$out <<EOF
     ${builtins.toJSON desc}
     EOF
-    # Show cleanup statistics in build log
+    
+    # Show debug info in build log
     echo "=== Cleanup Statistics ==="
-    cat <<EOF
+    cat >debug.json <<EOF
     ${builtins.toJSON log.config}
     EOF
-    ${pkgs.jq}/bin/jq . tmp 2>/dev/null || true
+    cat debug.json
+    
+    echo ""
+    echo "=== Generated Jobsets ==="
+    echo "Jobsets file contents:"
+    cat $out
+    
+    echo ""
+    echo "=== Pretty JSON ==="
+    ${pkgs.jq}/bin/jq . $out 2>/dev/null || echo "jq failed, showing raw JSON above"
   '';
 }
