@@ -1,28 +1,30 @@
 { nixpkgs, declInput, ... }:
-
-{
-  main = {
-    enabled = 1;
-    hidden = false;
-    description = "Main branch";
-    nixexprinput = "src";
-    nixexprpath = "flake.nix";
-    checkinterval = 300;
-    schedulingshares = 100;
-    enableemail = false;
-    emailoverride = "";
-    keepnr = 10;
-    inputs = {
-      src = {
-        type = "git";
-        value = "https://github.com/dragonhunter274/nixos-infra-test.git main";
-        emailresponsible = false;
-      };
-      nixpkgs = {
-        type = "git";
-        value = "https://github.com/NixOS/nixpkgs.git nixos-unstable";
-        emailresponsible = false;
-      };
+let
+  pkgs = import nixpkgs { };
+  
+  # Minimal jobset definition
+  jobsets = {
+    "test" = {
+      enabled = 1;
+      hidden = false;
+      description = "Test jobset";
+      checkinterval = 3600;
+      schedulingshares = 10;
+      enableemail = false;
+      emailoverride = "";
+      keepnr = 1;
+      type = 1;
+      flake = "github:dragonhunter274/nixos-infra-test/main";
     };
   };
+in
+{
+  jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
+    echo "Creating jobsets JSON..."
+    cat >$out <<EOF
+    ${builtins.toJSON jobsets}
+    EOF
+    echo "Generated JSON:"
+    cat $out
+  '';
 }
