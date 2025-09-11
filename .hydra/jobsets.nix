@@ -1,18 +1,13 @@
-{ nixpkgs, pulls ? "default", declInput, ... }:
+{ nixpkgs, pulls ? {}, declInput, ... }:
 let
   pkgs = import nixpkgs { };
   
-  # Try to safely inspect pulls without processing it
-  pullsInfo = {
+  # Now we know pulls is a set, let's see what's in it
+  pullsDebug = {
     type = builtins.typeOf pulls;
-    isPath = builtins.typeOf pulls == "path";
-    isString = builtins.typeOf pulls == "string"; 
-    isSet = builtins.typeOf pulls == "set";
-    isList = builtins.typeOf pulls == "list";
-    # Only try toString if it's safe
-    asString = if builtins.typeOf pulls == "string" || builtins.typeOf pulls == "path" 
-               then toString pulls 
-               else "cannot convert to string";
+    hasAttrs = pulls != {};
+    attrNames = builtins.attrNames pulls;
+    attrCount = builtins.length (builtins.attrNames pulls);
   };
   
   jobsets = {
@@ -32,9 +27,9 @@ let
 in
 {
   jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
-    echo "=== Pulls Debug ===" >&2
+    echo "=== Pulls Structure ===" >&2
     cat >&2 <<EOF
-    ${builtins.toJSON pullsInfo}
+    ${builtins.toJSON pullsDebug}
     EOF
     
     cat >$out <<EOF
