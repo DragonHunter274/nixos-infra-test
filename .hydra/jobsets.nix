@@ -3,14 +3,23 @@ let
   pkgs = import nixpkgs { };
   
   # Safely parse pulls input
-  prs = if pulls == "{}" || pulls == "" then {} 
-        else builtins.fromJSON (builtins.readFile pulls);
+  rawPulls = if pulls == "{}" || pulls == "" then {} 
+             else builtins.fromJSON (builtins.readFile pulls);
+  
+  # The pulls input might be a list or an attrset, handle both cases
+  prs = if builtins.isList rawPulls then
+          # Convert list to attrset using PR number as key
+          builtins.listToAttrs (map (pr: {
+            name = toString pr.number;
+            value = pr;
+          }) rawPulls)
+        else rawPulls;
   
   # Simple PR jobsets - only open PRs, no complex time logic
   prJobsets = pkgs.lib.mapAttrs (num: info: {
-    enabled = if info.state == "open" then 1 else 0;
-    hidden = info.state != "open";
-    description = "PR ${num}: ${builtins.substring 0 50 info.title}";  # Truncate long titles
+    enabled = if (info.state or "unknown") == "open" then 1 else 0;
+    hidden = (info.state or "unknown") != "open";
+    description = "PR ${num}: ${builtins.substring 0 50 (info.title or "Unknown PR")}";
     checkinterval = 300;
     schedulingshares = 20;
     enableemail = false;
@@ -41,10 +50,12 @@ let
   
   # Debug info
   debug = {
+    pullsType = builtins.typeOf rawPulls;
     totalPRs = builtins.length (builtins.attrNames prs);
-    openPRs = builtins.length (pkgs.lib.filterAttrs (_: info: info.state == "open") prs);
+    openPRs = builtins.length (pkgs.lib.filterAttrs (_: info: (info.state or "unknown") == "open") prs);
     totalJobsets = builtins.length (builtins.attrNames allJobsets);
     jobsetNames = builtins.attrNames allJobsets;
+    prNumbers = builtins.attrNames prs;
   };
 in
 {
