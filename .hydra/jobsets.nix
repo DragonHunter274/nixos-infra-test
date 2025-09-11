@@ -1,30 +1,42 @@
-{ nixpkgs, declInput, ... }:
+{ nixpkgs, pulls ? "{}", declInput, ... }:
 let
   pkgs = import nixpkgs { };
   
-  # Minimal jobset definition
+  # Only create main jobset for now - no PR handling
   jobsets = {
-    "test" = {
+    "main" = {
       enabled = 1;
       hidden = false;
-      description = "Test jobset";
-      checkinterval = 3600;
-      schedulingshares = 10;
+      description = "Build main branch";
+      checkinterval = 300;
+      schedulingshares = 100;
       enableemail = false;
       emailoverride = "";
-      keepnr = 1;
+      keepnr = 10;
       type = 1;
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
   };
+  
+  # Simple debug info
+  debug = {
+    totalJobsets = builtins.length (builtins.attrNames jobsets);
+    jobsetNames = builtins.attrNames jobsets;
+  };
 in
 {
   jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
-    echo "Creating jobsets JSON..."
+    echo "=== Jobsets Debug ==="
+    cat <<EOF
+    ${builtins.toJSON debug}
+    EOF
+    
+    echo "=== Generated Jobsets ==="
     cat >$out <<EOF
     ${builtins.toJSON jobsets}
     EOF
-    echo "Generated JSON:"
+    
+    echo "Contents:"
     cat $out
   '';
 }
