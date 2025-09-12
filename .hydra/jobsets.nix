@@ -1,16 +1,26 @@
-{ nixpkgs, pulls ? {}, declInput, ... }:
+{ nixpkgs, pulls, declInput, ... }:
 let
   pkgs = import nixpkgs { };
   
-  # Now we know pulls is a set, let's see what's in it
-  pullsDebug = {
-    type = builtins.typeOf pulls;
-    hasAttrs = pulls != {};
-    attrNames = builtins.attrNames pulls;
-    attrCount = builtins.length (builtins.attrNames pulls);
-  };
+  # The pulls should be the path to the JSON file we just saw
+  prs = builtins.fromJSON (builtins.readFile pulls);
   
-  jobsets = {
+  # Create PR jobsets using the correct JSON structure
+  prJobsets = pkgs.lib.mapAttrs (num: info: {
+    enabled = if info.state == "open" then 1 else 0;
+    hidden = info.state != "open";
+    description = "PR ${num}: ${info.title}";
+    checkinterval = 60;
+    schedulingshares = 20;
+    enableemail = false;
+    emailoverride = "";
+    keepnr = 3;
+    type = 1;
+    flake = "github:dragonhunter274/nixos-infra-test/pull/${num}/head";
+  }) prs;
+  
+  # Main jobset
+  mainJobset = {
     "main" = {
       enabled = 1;
       hidden = false;
@@ -24,16 +34,13 @@ let
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
   };
+  
+  allJobsets = prJobsets // mainJobset;
 in
 {
   jobsets = pkgs.runCommand "spec-jobsets.json" { } ''
-    echo "=== Pulls Structure ===" >&2
-    cat >&2 <<EOF
-    ${builtins.toJSON pullsDebug}
-    EOF
-    
     cat >$out <<EOF
-    ${builtins.toJSON jobsets}
+    ${builtins.toJSON allJobsets}
     EOF
   '';
 }
