@@ -235,4 +235,140 @@
 
     '';
   };
+
+  xdg.configFile."hypr/waybar/scripts/waybar_mvg.sh" = {
+    text = ''
+      #!/usr/bin/env bash
+
+      # Configuration
+      OFFSET_MINUTES=6  # Skip departures within this many minutes (like the Python code)
+      MAX_RETRIES=3     # Number of retry attempts
+      RETRY_DELAY=1     # Seconds to wait between retries
+
+      # Function to fetch departures with retry logic
+      fetch_departures() {
+          local attempt=1
+          
+          while [ $attempt -le $MAX_RETRIES ]; do
+              departures=$(curl -s "https://www.mvg.de/api/bgw-pt/v3/routes?originStationGlobalId=de:09162:1150&destinationStationGlobalId=de:09162:920&routingDateTime=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")&routingDateTimeIsArrival=false&transportTypes=UBAHN" --compressed \
+              -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0' \
+              -H 'Accept: application/json, text/plain, */*' \
+              -H 'Accept-Language: en-US,en;q=0.5' \
+              -H 'Accept-Encoding: gzip, deflate, br, zstd' \
+              -H 'Content-Type: application/json' \
+              -H 'Connection: keep-alive' \
+              -H 'Referer: https://www.mvg.de/' \
+              -H 'Cookie: NSC_MC_xxx.nwh.ef=4bb3a3d85f3858577f5d7529667fd23acd40c0bb578f658859908bab63528bb01d97d79c' \
+              -H 'Sec-Fetch-Dest: empty' \
+              -H 'Sec-Fetch-Mode: cors' \
+              -H 'Sec-Fetch-Site: same-origin' \
+              -H 'Priority: u=0' \
+              -H 'TE: trailers' 2>/dev/null)
+              
+              # Check if we got valid data
+              if [ ! -z "$departures" ] && echo "$departures" | jq . >/dev/null 2>&1; then
+                  # Check if we have actual departure data (not empty array)
+                  if [ "$(echo "$departures" | jq 'length')" -gt 0 ]; then
+                      return 0  # Success
+                  fi
+              fi
+              
+              # If we're here, the request failed or returned empty data
+              if [ $attempt -lt $MAX_RETRIES ]; then
+                  sleep $RETRY_DELAY
+              fi
+              attempt=$((attempt + 1))
+          done
+          
+          return 1  # All retries failed
+      }
+
+      # Try to fetch departures with retries
+      if ! fetch_departures; then
+          echo '{"text":"N/A","tooltip":"API unavailable after retries","class":"mvg-error"}'
+          exit 0
+      fi
+
+      # Filter departures by offset (skip those leaving too soon)
+      current_time=$(date -u +%s)
+      
+      filter_by_offset() {
+          local departure_time="$1"
+          local departure_timestamp=$(date -d "$departure_time" +%s 2>/dev/null)
+          if [ $? -eq 0 ]; then
+              local minutes_diff=$(( (departure_timestamp - current_time) / 60 ))
+              [ $minutes_diff -ge $OFFSET_MINUTES ]
+          else
+              false
+          fi
+      }
+
+      # Get departures with offset filtering
+      get_filtered_departure() {
+          local index=$1
+          local count=0
+          local i=0
+          
+          while [ $count -le $index ]; do
+              local departure=$(echo "$departures" | jq -r ".[$i].parts[0].from.plannedDeparture // \"\"" 2>/dev/null)
+              if [ -z "$departure" ] || [ "$departure" = "null" ]; then
+                  echo ""
+                  return
+              fi
+              
+              if filter_by_offset "$departure"; then
+                  if [ $count -eq $index ]; then
+                      echo "$departure"
+                      return
+                  fi
+                  count=$((count + 1))
+              fi
+              i=$((i + 1))
+          done
+          echo ""
+      }
+
+      # Get first 4 filtered departures
+      first_departure=$(get_filtered_departure 0)
+      second_departure=$(get_filtered_departure 1)
+      third_departure=$(get_filtered_departure 2)
+      fourth_departure=$(get_filtered_departure 3)
+
+      # Check if we got any valid filtered departures
+      if [ -z "$first_departure" ]; then
+          echo '{"text":"N/A","tooltip":"No departures (with offset)","class":"mvg-error"}'
+          exit 0
+      fi
+
+      # Format display time (HH:MM)
+      display_time=$(echo "$first_departure" | cut -d'T' -f2 | cut -d':' -f1,2)
+
+      # Format times for tooltip (remove milliseconds and timezone)
+      format_time() {
+          echo "$1" | sed 's/T/ /' | cut -d'.' -f1
+      }
+
+      first_formatted=$(format_time "$first_departure")
+      tooltip="Next: $first_formatted"
+
+      if [ ! -z "$second_departure" ]; then
+          second_formatted=$(format_time "$second_departure")
+          tooltip="$tooltip\\nThen: $second_formatted"
+      fi
+
+      if [ ! -z "$third_departure" ]; then
+          third_formatted=$(format_time "$third_departure")
+          tooltip="$tooltip\\n      $third_formatted"
+      fi
+
+      if [ ! -z "$fourth_departure" ]; then
+          fourth_formatted=$(format_time "$fourth_departure")
+          tooltip="$tooltip\\n      $fourth_formatted"
+      fi
+
+      # Output valid JSON with proper newline escapes
+      echo "{\"text\":\"$display_time\",\"tooltip\":\"$tooltip\",\"class\":\"mvg-departures\"}"
+    '';
+    executable = true;
+  };
 }

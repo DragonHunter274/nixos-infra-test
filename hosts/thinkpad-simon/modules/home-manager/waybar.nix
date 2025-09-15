@@ -21,12 +21,19 @@ in
         // Choose the order of the modules
         "modules-left": ["hyprland/workspaces", "hyprland/window"],
         //"modules-center": ["hyprland/window"],
-        "modules-right": ["custom/swaync", "custom/menu", "tray", "pulseaudio", "cpu", "memory", "backlight", "battery", "battery#bat2", "custom/scripted_clock", "custom/powermenu"],
+        "modules-right": ["custom/mvg", "custom/swaync", "custom/menu", "tray", "pulseaudio", "cpu", "memory", "backlight", "battery", "battery#bat2", "custom/scripted_clock", "custom/powermenu"],
         // Modules configuration
         "custom/powermenu": {
     	"format": " ",
     	"on-click": "~/.config/hypr/waybar/scripts/powermenu.sh",
     	"tooltip": false,
+        },
+        "custom/mvg": {
+        "exec": "~/.config/hypr/waybar/scripts/waybar_mvg.sh",
+        "return-type": "json",
+        "interval": 20,
+        "format": "󰔬 {}",
+        "tooltip": true
         },
         "custom/swaync": {
     	"format": " ",
@@ -145,7 +152,8 @@ in
                 "warning": 30,
                 "critical": 15
             },
-            "format": "{capacity}% {icon}",
+            "interval": 10,
+            "format": "{capacity}% {icon} {power}W",
             "format-charging": "{capacity}%  ",
             "format-plugged": "{capacity}%  ",
             "format-alt": "{time} {icon}",
