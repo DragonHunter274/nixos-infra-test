@@ -291,7 +291,7 @@
 
       # Filter departures by offset (skip those leaving too soon)
       current_time=$(date -u +%s)
-      
+
       filter_by_offset() {
           local departure_time="$1"
           local departure_timestamp=$(date -d "$departure_time" +%s 2>/dev/null)
