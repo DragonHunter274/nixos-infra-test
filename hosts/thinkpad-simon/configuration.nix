@@ -117,16 +117,16 @@
   #     };
   #   };
 
-  xdg = {
-    portal = {
-      enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  # xdg = {
+  #   portal = {
+  #     enable = true;
+  #     extraPortals = [ pkgs.xdg-desktop-portal-gtk  ];
 
-      # Apparently, this can cause issues and was removed in NixOS 24.11. TODO: add it on a per-service basis
-      # gtkUsePortal = true;
-      xdgOpenUsePortal = true;
-    };
-  };
+  #      # Apparently, this can cause issues and was removed in NixOS 24.11. TODO: add it on a per-service basis
+  #      # gtkUsePortal = true;
+  #      xdgOpenUsePortal = true;
+  #    };
+  #  };
 
   ###END_TERMFILEPICKERS
   environment.variables = {
@@ -172,7 +172,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.theme = "Elegant";
-  services.displayManager.defaultSession = "hyprland";
+  #services.displayManager.defaultSession = "hyprland";
   #services.desktopManager.plasma6.enable = true;
   #services.xserver.desktopManager.gnome.enable = true;
 

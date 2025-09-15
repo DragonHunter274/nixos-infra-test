@@ -23,10 +23,11 @@ let
   '';
 in
 {
+  programs.bash.enable = true;
   wayland.windowManager.hyprland = {
     enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    #    systemd.enable = false;
+    systemd.enable = false;
     settings = {
       debug.disable_logs = false;
       exec-once = ''${startupScript}/bin/start'';
