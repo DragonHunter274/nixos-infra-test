@@ -1,10 +1,15 @@
-{ nixpkgs, pulls, declInput, ... }:
+{
+  nixpkgs,
+  pulls,
+  declInput,
+  ...
+}:
 let
   pkgs = import nixpkgs { };
-  
+
   # The pulls should be the path to the JSON file we just saw
   prs = builtins.fromJSON (builtins.readFile pulls);
-  
+
   # Create PR jobsets using the correct JSON structure
   prJobsets = pkgs.lib.mapAttrs (num: info: {
     enabled = if info.state == "open" then 1 else 0;
@@ -18,7 +23,7 @@ let
     type = 1;
     flake = "github:dragonhunter274/nixos-infra-test/pull/${num}/head";
   }) prs;
-  
+
   # Main jobset
   mainJobset = {
     "main" = {
@@ -34,7 +39,7 @@ let
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
   };
-  
+
   allJobsets = prJobsets // mainJobset;
 in
 {

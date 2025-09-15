@@ -15,13 +15,13 @@
     firefox
     vlc
     mpv
-    
-    # System tools  
+
+    # System tools
     htop
     git
     wget
     curl
-    
+
     # Development tools (if needed)
     vim
     nano
