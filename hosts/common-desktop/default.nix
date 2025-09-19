@@ -25,7 +25,7 @@
     pulse.enable = true;
     jack.enable = true;
   };
-
+  services.geoclue2.enable = true;
   services.flatpak.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
