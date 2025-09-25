@@ -21,13 +21,16 @@
     ./modules/nixos/udev-mtkclient.nix
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
+    "${inputs."nixpkgs-25-05"}/nixos/modules/programs/goldwarden.nix"
   ];
+
+  virtualisation.waydroid.enable = true;
 
   nix.buildMachines = [
     {
-      hostName = "91.98.67.240";
+      hostName = "91.99.171.194";
       system = "aarch64-linux";
-      protocol = "ssh";
+      protocol = "ssh-ng";
       maxJobs = 8;
       speedFactor = 4;
       supportedFeatures = [
@@ -66,6 +69,7 @@
   nix.settings.trusted-users = [ "@wheel" ];
   nixpkgs.config.permittedInsecurePackages = [
     "segger-jlink-qt4-796s"
+    "qtwebengine-5.15.19"
   ];
 
   nixpkgs.config.segger-jlink.acceptLicense = true;
@@ -233,6 +237,7 @@
   #   "widget.use-xdg-desktop-portal.file-picker" = 1;
   # };
   programs.goldwarden.enable = true;
+  programs.goldwarden.package = inputs.nixpkgs-25-05.legacyPackages.${pkgs.system}.goldwarden;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -242,7 +247,6 @@
     cachix
     nixfmt-rfc-style
     tlp
-    goldwarden
     bitwarden-desktop
     kdePackages.qtsvg
     inputs.pyprland.packages."x86_64-linux".pyprland

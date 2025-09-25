@@ -21,6 +21,7 @@
     #    ./modules/nixos/fingerprint.nix
     # inputs.termfilepickers.nixosModules.default
     inputs.sops-nix.nixosModules.sops
+    "${inputs."nixpkgs-25-05"}/nixos/modules/programs/goldwarden.nix"
   ];
 
   sops.secrets."syncthing/key.pem" = {
@@ -188,6 +189,7 @@
   #   "widget.use-xdg-desktop-portal.file-picker" = 1;
   # };
   programs.goldwarden.enable = true;
+  programs.goldwarden.package = inputs.nixpkgs-25-05.legacyPackages.${pkgs.system}.goldwarden;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   programs.obs-studio = {
@@ -204,7 +206,6 @@
     cachix
     nixfmt-rfc-style
     tlp
-    goldwarden
     bitwarden-desktop
     kdePackages.qtsvg
     inputs.pyprland.packages."x86_64-linux".pyprland
