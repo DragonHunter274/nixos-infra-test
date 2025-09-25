@@ -21,7 +21,7 @@
     #    ./modules/nixos/fingerprint.nix
     # inputs.termfilepickers.nixosModules.default
     inputs.sops-nix.nixosModules.sops
-    "${inputs."nixpkgs-25-05"}/nixos/modules/programs/goldwarden.nix"
+    ../../modules/goldwarden-legacy.nix
   ];
 
   sops.secrets."syncthing/key.pem" = {
@@ -192,8 +192,7 @@
   # programs.firefox.preferences = {
   #   "widget.use-xdg-desktop-portal.file-picker" = 1;
   # };
-  programs.goldwarden.enable = true;
-  programs.goldwarden.package = inputs.nixpkgs-25-05.legacyPackages.${pkgs.system}.goldwarden;
+  services.goldwarden-legacy.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   programs.obs-studio = {
