@@ -28,6 +28,10 @@
     sopsFile = ./secrets/secrets.yaml;
   };
 
+  disabledModules = [
+    "programs/goldwarden.nix" # This disables the current nixpkgs goldwarden module
+  ];
+
   sops.secrets."syncthing/cert.pem" = {
     sopsFile = ./secrets/secrets.yaml;
   };

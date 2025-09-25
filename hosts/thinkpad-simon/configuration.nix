@@ -24,6 +24,10 @@
     "${inputs."nixpkgs-25-05"}/nixos/modules/programs/goldwarden.nix"
   ];
 
+  disabledModules = [
+    "programs/goldwarden.nix" # This disables the current nixpkgs goldwarden module
+  ];
+
   virtualisation.waydroid.enable = true;
 
   nix.buildMachines = [
