@@ -21,12 +21,9 @@
     ./modules/nixos/udev-mtkclient.nix
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
-    "${inputs."nixpkgs-25-05"}/nixos/modules/programs/goldwarden.nix"
+    ../../modules/goldwarden-legacy.nix
   ];
 
-  disabledModules = [
-    "programs/goldwarden.nix" # This disables the current nixpkgs goldwarden module
-  ];
 
   virtualisation.waydroid.enable = true;
 
@@ -240,8 +237,7 @@
   # programs.firefox.preferences = {
   #   "widget.use-xdg-desktop-portal.file-picker" = 1;
   # };
-  programs.goldwarden.enable = true;
-  programs.goldwarden.package = inputs.nixpkgs-25-05.legacyPackages.${pkgs.system}.goldwarden;
+  services.goldwarden-legacy.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
