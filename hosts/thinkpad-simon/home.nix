@@ -97,6 +97,8 @@
     nur-packages.mtkclient
     handbrake
     ffmpeg
+    nur-packages.rbw-run
+    rbw
   ];
 
   programs.atuin = {

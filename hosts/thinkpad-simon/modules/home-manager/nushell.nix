@@ -31,6 +31,7 @@
         prepend /home/myuser/.apps |
         append /usr/bin/env
         )
+        $env.PATH ++= [ "~/.nix-profile/bin" ]
       '';
       shellAliases = {
         #  vim = "hx";
