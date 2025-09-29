@@ -10,6 +10,15 @@
 
   imports = [ ./hyprland.nix ];
   # System configuration
+
+  services.displayManager.sddm.enable = true;
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "pi";  # Replace with your actual username
+  };
+
+  services.displayManager.sddm.wayland.enable = true;
+
   system.stateVersion = "24.05";
 
   # Hostname
