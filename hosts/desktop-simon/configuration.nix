@@ -24,6 +24,10 @@
     ../../modules/goldwarden-legacy.nix
   ];
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "qtwebengine-5.15.19"
+  ];
+
   sops.secrets."syncthing/key.pem" = {
     sopsFile = ./secrets/secrets.yaml;
   };
