@@ -69,7 +69,7 @@
     vim
     google-chrome
     swaynotificationcenter
-    jellyfin-media-player
+    #jellyfin-media-player
     networkmanagerapplet
     signal-desktop
     thunderbird
