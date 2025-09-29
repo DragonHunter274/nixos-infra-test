@@ -7,6 +7,8 @@
 }:
 
 {
+
+  imports = [ ./hyprland.nix ];
   # System configuration
   system.stateVersion = "24.05";
 
