@@ -13,7 +13,6 @@
   # Hostname
   networking.hostName = "fablabmuc-tv";
 
-
   networking.networkmanager.enable = true;
 
   # Enable the boot import feature
@@ -31,6 +30,9 @@
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
     };
+    extraConfig = ''
+      MaxAuthTries 20
+    '';
   };
 
   # User configuration
