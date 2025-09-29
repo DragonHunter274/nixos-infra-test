@@ -11,13 +11,18 @@
   imports = [ ./hyprland.nix ];
   # System configuration
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 30;
+  };
   services.displayManager.sddm.enable = true;
   services.displayManager.autoLogin = {
     enable = true;
-    user = "pi";  # Replace with your actual username
+    user = "pi"; # Replace with your actual username
   };
 
-    services.avahi = {
+  services.avahi = {
     enable = true;
     nssmdns4 = true; # for IPv4
     nssmdns6 = true; # for IPv6 if you need it
