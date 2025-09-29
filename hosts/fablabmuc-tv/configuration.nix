@@ -17,6 +17,18 @@
     user = "pi";  # Replace with your actual username
   };
 
+    services.avahi = {
+    enable = true;
+    nssmdns4 = true; # for IPv4
+    nssmdns6 = true; # for IPv6 if you need it
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+    };
+    openFirewall = true; # This handles the firewall rules automatically
+  };
+
   services.displayManager.sddm.wayland.enable = true;
 
   system.stateVersion = "24.05";
