@@ -13,15 +13,15 @@
   # Hostname
   networking.hostName = "fablabmuc-tv";
 
-  # Enable networking
-  networking = {
-    wireless.enable = true;
-    wireless.networks = {
-      # Configure your WiFi networks here
-      # "MyWiFi" = {
-      #   psk = "password";
-      # };
-    };
+
+  networking.networkmanager.enable = true;
+
+  # Enable the boot import feature
+  services.networkmanager.bootImport = {
+    enable = true;
+    # Optional: customize these settings
+    # bootPath = "/boot";  # Default location
+    # removeAfterImport = true;  # Remove files after importing
   };
 
   # Enable SSH
@@ -43,6 +43,7 @@
     openssh.authorizedKeys.keys = [
       # Add your SSH public key here
       # "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..."
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPIPn/hG5HBmP/tTElEiBVKADNze2QOljhbbzNXnGV2 fablabmuc-tv"
     ];
   };
 

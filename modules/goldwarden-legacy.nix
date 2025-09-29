@@ -1,22 +1,28 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 let
-  pkgs-25-05 = import inputs."nixpkgs-25-05" { 
-    system = pkgs.system; 
+  pkgs-25-05 = import inputs."nixpkgs-25-05" {
+    system = pkgs.system;
     config.allowUnfree = true;
   };
-  
+
   cfg = config.services.goldwarden-legacy;
 in
 {
   options.services.goldwarden-legacy = {
     enable = lib.mkEnableOption "Goldwarden (legacy from nixpkgs-25.05)";
-    
+
     package = lib.mkOption {
       type = lib.types.package;
       default = pkgs-25-05.goldwarden;
       description = "The goldwarden package to use";
     };
-    
+
     useSshAgent = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -25,15 +31,19 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [{
-      assertion = cfg.useSshAgent -> !config.programs.ssh.startAgent;
-      message = "Only one ssh-agent can be used at a time.";
-    }];
+    assertions = [
+      {
+        assertion = cfg.useSshAgent -> !config.programs.ssh.startAgent;
+        message = "Only one ssh-agent can be used at a time.";
+      }
+    ];
 
     environment = {
       etc = lib.mkIf config.programs.chromium.enable {
-        "chromium/native-messaging-hosts/com.8bit.bitwarden.json".source = "${cfg.package}/etc/chromium/native-messaging-hosts/com.8bit.bitwarden.json";
-        "opt/chrome/native-messaging-hosts/com.8bit.bitwarden.json".source = "${cfg.package}/etc/chrome/native-messaging-hosts/com.8bit.bitwarden.json";
+        "chromium/native-messaging-hosts/com.8bit.bitwarden.json".source =
+          "${cfg.package}/etc/chromium/native-messaging-hosts/com.8bit.bitwarden.json";
+        "opt/chrome/native-messaging-hosts/com.8bit.bitwarden.json".source =
+          "${cfg.package}/etc/chrome/native-messaging-hosts/com.8bit.bitwarden.json";
       };
 
       sessionVariables = lib.mkIf cfg.useSshAgent {
