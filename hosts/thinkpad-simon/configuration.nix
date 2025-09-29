@@ -19,34 +19,38 @@
     ./modules/nixos/libvirt.nix
     ./modules/nixos/fingerprint.nix
     ./modules/nixos/udev-mtkclient.nix
+    ../../modules/ftp.nix
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
     ../../modules/goldwarden-legacy.nix
   ];
 
-
   virtualisation.waydroid.enable = true;
 
   nix.buildMachines = [
     {
-      hostName = "91.99.171.194";
-      system = "aarch64-linux";
-      protocol = "ssh-ng";
-      maxJobs = 8;
-      speedFactor = 4;
-      supportedFeatures = [
-        "nixos-test"
-        "benchmark"
-        "big-parallel"
-        "kvm"
-      ];
-      mandatoryFeatures = [ ];
+      hostName = "nix-arm-builder";
+      systems = [ "aarch64-linux" ];
       sshUser = "root";
+      maxJobs = 8;
+      speedFactor = 1;
+      supportedFeatures = [ "big-parallel" ];
       sshKey = "/home/simon/.ssh/id_ed25519";
     }
   ];
   nix.distributedBuilds = true;
   nix.settings.builders-use-substitutes = true;
+
+  networking.hosts = {
+    "127.0.0.1" = [ "nix-arm-builder" ];
+  };
+
+  programs.ssh.extraConfig = ''
+    Host nix-arm-builder
+      Port 2222
+      StrictHostKeyChecking no
+      UserKnownHostsFile /dev/null
+  '';
 
   programs.adb.enable = true;
 

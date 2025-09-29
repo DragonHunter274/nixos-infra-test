@@ -47,6 +47,6 @@
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
       ])
-      (mkRaspberryPi "fablabmuc-tv" { pi = import ./home/pi.nix; } [ ])
+      (mkRaspberryPi "fablabmuc-tv" { pi = import ./home/pi.nix; } [./modules/nmimport.nix ])
     ];
 }
