@@ -56,6 +56,10 @@ in
         workspace_swipe = true;
 
       };
+      gesture = [
+        "3, horizontal, workspace"
+
+      ];
 
       "$mod" = "SUPER";
       bind = [
