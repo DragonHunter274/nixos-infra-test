@@ -102,6 +102,9 @@
     unzip
     rsync
     kitty
+    feh
+    firefox
+    ffmpeg
   ];
 
   # Enable Nix flakes
