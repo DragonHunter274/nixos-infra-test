@@ -16,6 +16,26 @@
     algorithm = "zstd";
     memoryPercent = 30;
   };
+
+  hardware.deviceTree = {
+    enable = true;
+    filter = lib.mkForce "bcm2711-rpi-4-b.dtb";
+    overlays = [
+      "${pkgs.linuxKernel.kernels.linux_rpi4}/dtbs/overlays/tc358743.dtbo"
+    ];
+  };
+
+  environment.variables = {
+    QML2_IMPORT_PATH =
+      let
+        qtModules = with pkgs.qt6; [
+          qtwebsockets
+          # Add more here
+        ];
+      in
+      builtins.concatStringsSep ":" (map (pkg: "${pkg}/${pkgs.qt6.qtbase.qtQmlPrefix}") qtModules);
+  };
+
   services.displayManager.sddm.enable = true;
   services.displayManager.autoLogin = {
     enable = true;
