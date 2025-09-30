@@ -105,6 +105,10 @@
     feh
     firefox
     ffmpeg
+    quickshell
+    qt6.qtwebsockets
+    qt6.qtdeclarative
+    qt6.qtbase
   ];
 
   # Enable Nix flakes
