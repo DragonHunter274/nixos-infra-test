@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -43,7 +48,7 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "NetworkManager.service" ];
       before = [ "network-online.target" ];
-      
+
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
@@ -63,7 +68,7 @@ in
         # Find all .nmconnection files in boot partition
         shopt -s nullglob
         connections=("$BOOT_PATH"/*.nmconnection)
-        
+
         if [ ''${#connections[@]} -eq 0 ]; then
           echo "No .nmconnection files found in $BOOT_PATH"
           exit 0
@@ -94,7 +99,7 @@ in
         # Reload NetworkManager to pick up new connections
         echo "Reloading NetworkManager..."
         ${pkgs.systemd}/bin/systemctl reload NetworkManager.service || true
-        
+
         echo "NetworkManager connection import complete"
       '';
     };

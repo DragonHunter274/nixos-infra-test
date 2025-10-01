@@ -510,7 +510,7 @@ in
             Unit = "k3s-helm-bootstrap.service";
           };
         };
-        timers."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux {
+        timers."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux.enable {
           wantedBy = [ "timers.target" ];
           timerConfig = {
             OnBootSec = "3m";
@@ -540,7 +540,7 @@ in
         };
       };
 
-      systemd.services."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux {
+      systemd.services."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux.enable {
         script = ''
           export PATH="$PATH:${pkgs.git}/bin"
           if ${pkgs.kubectl}/bin/kubectl get CustomResourceDefinition -A | grep -q "toolkit.fluxcd.io" ; then
@@ -550,7 +550,7 @@ in
           if ${pkgs.kubectl}/bin/kubectl get CustomResourceDefinition -A | grep -q "toolkit.fluxcd.io" ; then
             exit 0
           fi
-          ${pkgs.kubectl}/bin/kubectl apply --kustomize TODO
+          ${pkgs.kubectl}/bin/kubectl apply --kustomize ${cfg.services.flux.bootstrap-url}
         '';
         after = [ "k3s.service" ];
         serviceConfig = {
