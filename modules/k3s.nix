@@ -548,7 +548,24 @@ in
             
             echo "Waiting for k3s to be ready..."
             sleep 30
+
+            # Create or update SOPS age secret
+            echo "Creating/updating SOPS age secret..."
+            AGE_KEY_FILE="${ageKeyPath}"
             
+            if [ -f "$AGE_KEY_FILE" ]; then
+              cat "$AGE_KEY_FILE" | \
+              ${pkgs.kubectl}/bin/kubectl create secret generic sops-age \
+                --namespace=flux-system \
+                --from-file=age.agekey=/dev/stdin \
+                --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
+              echo "SOPS age secret created/updated"
+            else
+              echo "Warning: SOPS age key not found at $AGE_KEY_FILE"
+              echo "SOPS decryption will not work without this key"
+            fi            
+
+
             # Install Flux if CRDs don't exist
             if ! ${pkgs.kubectl}/bin/kubectl get CustomResourceDefinition -A | grep -q "toolkit.fluxcd.io" ; then
               echo "Installing Flux..."
@@ -567,21 +584,6 @@ in
               echo "Flux CRDs already installed"
             fi
             
-            # Create or update SOPS age secret
-            echo "Creating/updating SOPS age secret..."
-            AGE_KEY_FILE="${ageKeyPath}"
-            
-            if [ -f "$AGE_KEY_FILE" ]; then
-              cat "$AGE_KEY_FILE" | \
-              ${pkgs.kubectl}/bin/kubectl create secret generic sops-age \
-                --namespace=flux-system \
-                --from-file=age.agekey=/dev/stdin \
-                --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
-              echo "SOPS age secret created/updated"
-            else
-              echo "Warning: SOPS age key not found at $AGE_KEY_FILE"
-              echo "SOPS decryption will not work without this key"
-            fi
             
             # Create or update GitRepository
             echo "Creating/updating GitRepository..."
