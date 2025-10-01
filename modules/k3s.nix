@@ -123,13 +123,6 @@ in
         '';
       };
 
-      nvidia = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = ''
-          If enabled setup nvidia containerd runtime on k3s cluster
-        '';
-      };
     };
 
     addons = {
@@ -247,16 +240,6 @@ in
     in
     lib.mkIf cfg.enable {
 
-      templates = lib.mkIf cfg.services.nvidia {
-        hardware = {
-          nvidia.enable = true;
-        };
-      };
-
-      hardware.nvidia-container-toolkit = lib.mkIf cfg.services.nvidia {
-        enable = true;
-      };
-
       environment = {
         systemPackages = lib.mkMerge [
           [
@@ -313,10 +296,6 @@ in
               reboot
             '')
           ]
-          (lib.mkIf cfg.services.nvidia [
-            pkgs.nvtopPackages.nvidia
-            pkgs.nvidia-docker # Note, using docker here is a workaround, it will install nvidia-container-runtime and that will cause it to be accessible via /run/current-system/sw/bin/nvidia-container-runtime, currently its not directly accessible in nixpkgs.
-          ])
         ];
 
         etc = {
@@ -334,30 +313,6 @@ in
               K3S_KUBECONFIG_MODE="644"
             '';
           };
-          "rancher/k3s/nvidia/config.toml.tmpl" = lib.mkIf cfg.services.nvidia {
-            mode = "0750";
-            text = ''
-              {{ template "base" . }}
-
-              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
-                runtime_type = "io.containerd.runc.v2"
-
-              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
-                BinaryName = "/run/current-system/sw/bin/nvidia-container-runtime.cdi"
-            '';
-          };
-          "rancher/k3s/nvidia/nvidia-runtime.yaml" = lib.mkIf cfg.services.nvidia {
-            mode = "0750";
-            text = ''
-              apiVersion: node.k8s.io/v1
-              handler: nvidia
-              kind: RuntimeClass
-              metadata:
-                labels:
-                  app.kubernetes.io/component: gpu-operator
-                name: nvidia
-            '';
-          };
         };
       };
 
@@ -369,10 +324,6 @@ in
         (lib.mkIf cfg.addons.nfs.enable [
           "d ${cfg.addons.nfs.path} 0775 root root -"
           "d ${cfg.addons.nfs.path}/pv 0775 root root -"
-        ])
-        (lib.mkIf cfg.services.nvidia [
-          "L /var/lib/rancher/k3s/server/manifests/nvidia-runtime.yaml - - - - /etc/rancher/k3s/nvidia/nvidia-runtime.yaml"
-          "L /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl - - - - /etc/rancher/k3s/nvidia/config.toml.tmpl"
         ])
       ];
 
