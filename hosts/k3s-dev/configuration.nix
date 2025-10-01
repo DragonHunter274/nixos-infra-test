@@ -26,9 +26,13 @@
 
   templates.services.k3s = {
     enable = true;
+
     services.flux = {
       enable = true;
-      bootstrap-url = "https://github.com/dragonhunter274/home-ops//environments/dev?ref=dev";
+      url = "https://github.com/dragonhunter274/home-ops";
+      branch = "dev";
+      path = "./environments/dev";
+      sopsAgeKeyFile = /root/.config/sops/age/keys.txt; # Optional, defaults to ~/.config/sops/age/keys.txt
     };
   };
 
