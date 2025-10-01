@@ -398,7 +398,7 @@ in
 
       services = {
         prometheus.exporters.node = {
-          enable = true;
+          enable = false;
         };
         openiscsi = {
           enable = true;
