@@ -265,6 +265,7 @@
     adafruit-nrfutil
     distrobox
     (limesuite.override { withGui = true; })
+    nfs-utils
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
