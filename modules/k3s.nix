@@ -398,7 +398,7 @@ in
 
       services = {
         prometheus.exporters.node = {
-          enable = false;
+          enable = true;
         };
         openiscsi = {
           enable = true;
@@ -548,8 +548,12 @@ in
             
             echo "Waiting for k3s to be ready..."
             sleep 30
-
-            # Create or update SOPS age secret
+            
+            # Ensure flux-system namespace exists
+            echo "Ensuring flux-system namespace exists..."
+            ${pkgs.kubectl}/bin/kubectl create namespace flux-system --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
+            
+            # Create or update SOPS age secret BEFORE installing Flux
             echo "Creating/updating SOPS age secret..."
             AGE_KEY_FILE="${ageKeyPath}"
             
@@ -563,9 +567,8 @@ in
             else
               echo "Warning: SOPS age key not found at $AGE_KEY_FILE"
               echo "SOPS decryption will not work without this key"
-            fi            
-
-
+            fi
+            
             # Install Flux if CRDs don't exist
             if ! ${pkgs.kubectl}/bin/kubectl get CustomResourceDefinition -A | grep -q "toolkit.fluxcd.io" ; then
               echo "Installing Flux..."
@@ -583,7 +586,6 @@ in
             else
               echo "Flux CRDs already installed"
             fi
-            
             
             # Create or update GitRepository
             echo "Creating/updating GitRepository..."
