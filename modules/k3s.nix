@@ -84,14 +84,14 @@ in
           default = false;
           description = "Enable flux service for K3S Cluster.";
         };
-        
+
         url = lib.mkOption {
           type = lib.types.str;
           description = ''
             Git repository URL for Flux (e.g., https://github.com/user/repo)
           '';
         };
-        
+
         branch = lib.mkOption {
           type = lib.types.str;
           default = "main";
@@ -99,7 +99,7 @@ in
             Git branch to track (e.g., dev, staging, main)
           '';
         };
-        
+
         path = lib.mkOption {
           type = lib.types.str;
           description = ''
@@ -107,7 +107,7 @@ in
             (e.g., ./environments/dev)
           '';
         };
-        
+
         sopsAgeKeyFile = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
           default = null;
@@ -116,7 +116,7 @@ in
           '';
         };
       };
-      
+
       servicelb = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -518,15 +518,17 @@ in
       };
 
       systemd.services."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux.enable {
-        script = 
+        script =
           let
-            ageKeyPath = if cfg.services.flux.sopsAgeKeyFile != null 
-                        then toString cfg.services.flux.sopsAgeKeyFile
-                        else "/root/.config/sops/age/keys.txt";
+            ageKeyPath =
+              if cfg.services.flux.sopsAgeKeyFile != null then
+                toString cfg.services.flux.sopsAgeKeyFile
+              else
+                "/root/.config/sops/age/keys.txt";
           in
           ''
             export PATH="$PATH:${pkgs.git}/bin:${pkgs.fluxcd}/bin:${pkgs.kubectl}/bin"
-            
+
             # Check if bootstrap is complete (GitRepository and Kustomization exist and are ready)
             if ${pkgs.kubectl}/bin/kubectl get gitrepository flux-system -n flux-system &>/dev/null && \
                ${pkgs.kubectl}/bin/kubectl get kustomization flux-system -n flux-system &>/dev/null; then
@@ -545,18 +547,18 @@ in
                 echo "Flux resources exist but are not healthy, will attempt to fix..."
               fi
             fi
-            
+
             echo "Waiting for k3s to be ready..."
             sleep 30
-            
+
             # Ensure flux-system namespace exists
             echo "Ensuring flux-system namespace exists..."
             ${pkgs.kubectl}/bin/kubectl create namespace flux-system --dry-run=client -o yaml | ${pkgs.kubectl}/bin/kubectl apply -f -
-            
+
             # Create or update SOPS age secret BEFORE installing Flux
             echo "Creating/updating SOPS age secret..."
             AGE_KEY_FILE="${ageKeyPath}"
-            
+
             if [ -f "$AGE_KEY_FILE" ]; then
               cat "$AGE_KEY_FILE" | \
               ${pkgs.kubectl}/bin/kubectl create secret generic sops-age \
@@ -568,7 +570,7 @@ in
               echo "Warning: SOPS age key not found at $AGE_KEY_FILE"
               echo "SOPS decryption will not work without this key"
             fi
-            
+
             # Install Flux if CRDs don't exist
             if ! ${pkgs.kubectl}/bin/kubectl get CustomResourceDefinition -A | grep -q "toolkit.fluxcd.io" ; then
               echo "Installing Flux..."
@@ -586,7 +588,7 @@ in
             else
               echo "Flux CRDs already installed"
             fi
-            
+
             # Create or update GitRepository
             echo "Creating/updating GitRepository..."
             if ${pkgs.kubectl}/bin/kubectl get gitrepository flux-system -n flux-system &>/dev/null; then
@@ -612,7 +614,7 @@ in
                 --interval=1m \
                 --namespace=flux-system
             fi
-            
+
             # Create or update Kustomization
             echo "Creating/updating Kustomization..."
             if ${pkgs.kubectl}/bin/kubectl get kustomization flux-system -n flux-system &>/dev/null; then
@@ -639,18 +641,18 @@ in
                 --interval=10m \
                 --namespace=flux-system
             fi
-            
+
             echo "Triggering reconciliation..."
             ${pkgs.fluxcd}/bin/flux reconcile source git flux-system --timeout=2m
             ${pkgs.fluxcd}/bin/flux reconcile kustomization flux-system --timeout=5m
-            
+
             echo "Verifying bootstrap status..."
             sleep 5
-            
+
             # Final health check
             GIT_READY=$(${pkgs.kubectl}/bin/kubectl get gitrepository flux-system -n flux-system -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null || echo "False")
             KUST_READY=$(${pkgs.kubectl}/bin/kubectl get kustomization flux-system -n flux-system -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null || echo "False")
-            
+
             if [ "$GIT_READY" = "True" ] && [ "$KUST_READY" = "True" ]; then
               echo "✅ Flux bootstrap complete and healthy!"
               exit 0

@@ -52,6 +52,29 @@
       UserKnownHostsFile /dev/null
   '';
 
+  services.syncthingDeclarative = {
+    enable = true;
+    secrets = {
+      sopsFile = ./secrets/secrets.yaml;
+    };
+    devices = {
+      desktop-simon = {
+        id = "VUCFNSU-BXPGRJH-QMXIPGU-7WRAMAS-SRYNVA7-BQXTFAH-XYNIM3W-EP5DCQZ";
+      };
+      fablabmuc-38c3-minipc = {
+        id = "7RQNXJ6-TBATF3N-NZNQBEB-6XF4GAC-OG6VXJV-HVXBJ73-CGOXJFW-EPHDIAU";
+      };
+    };
+    folders = {
+      Projects = {
+        path = "/home/simon/Projects";
+        devices = [
+          "desktop-simon"
+        ];
+      };
+    };
+  };
+
   programs.adb.enable = true;
 
   #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -266,6 +289,7 @@
     distrobox
     (limesuite.override { withGui = true; })
     nfs-utils
+    nodejs_24
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
