@@ -1,11 +1,16 @@
 {
   description = "system flake";
+  
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-24-05.url = "nixpkgs/nixos-24.05";
     nixpkgs-25-05.url = "nixpkgs/nixos-25.05";
     nixpkgs-23-11.url = "nixpkgs/nixos-23.11";
     makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
+    
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    nix-netboot-serve.url = "github:DeterminateSystems/nix-netboot-serve";
+    
     sops-nix.url = "github:Mic92/sops-nix";
     disko = {
       url = "github:nix-community/disko";
@@ -29,26 +34,19 @@
       inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
   };
-  outputs =
-    { nixpkgs, ... }@inputs:
-    let
-      helpers = import ./flakeHelpers.nix inputs;
-      inherit (helpers) mkFlakeWithHydra mkNixos mkRaspberryPi;
-    in
-    mkFlakeWithHydra [
-      {
-        formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
-        formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-rfc-style;
-      }
-      (mkNixos "fablabmuc-38c3" { } [ ])
-      (mkNixos "fablabmuc-38c3-minipc" { } [ ])
-      (mkNixos "desktop-simon" { } [ ])
-      (mkNixos "thinkpad-simon" { } [
-        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
-        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
-        ./modules/syncthing.nix
-      ])
-      (mkNixos "k3s-dev" { } [ ./modules/k3s.nix ])
-      (mkRaspberryPi "fablabmuc-tv" { pi = import ./home/pi.nix; } [ ./modules/nmimport.nix ])
-    ];
+
+  outputs = inputs @ { flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      
+      imports = [
+        ./parts/hosts.nix
+        ./parts/hydra.nix
+        ./parts/dev-shells.nix
+      ];
+
+      perSystem = { system, pkgs, ... }: {
+        formatter = pkgs.nixfmt-rfc-style;
+      };
+    };
 }
