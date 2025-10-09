@@ -28,19 +28,19 @@ in
 
     user = mkOption {
       type = types.str;
-      default = config.services.syncthing.user;
+      default = "syncthing";  # Fixed: Use a literal default instead of referencing config
       description = "User account under which Syncthing runs";
     };
 
     group = mkOption {
       type = types.str;
-      default = config.services.syncthing.group;
+      default = "syncthing";  # Fixed: Use a literal default instead of referencing config
       description = "Group under which Syncthing runs";
     };
 
     dataDir = mkOption {
       type = types.str;
-      default = config.services.syncthing.dataDir;
+      default = "/var/lib/syncthing";  # Fixed: Use a literal default instead of referencing config
       description = "Path to Syncthing's data directory";
     };
 
@@ -260,13 +260,15 @@ in
         overrideDevices = true;
         overrideFolders = true;
 
-        devices = mapAttrs (name: deviceCfg: {
-          id = deviceCfg.id;
-          addresses = deviceCfg.addresses;
-          introducer = deviceCfg.introducer;
-        }) cfg.devices;
+        settings = {
+          devices = mapAttrs (name: deviceCfg: {
+            id = deviceCfg.id;
+            addresses = deviceCfg.addresses;
+            introducer = deviceCfg.introducer;
+          }) cfg.devices;
 
-        folders = mapAttrs mkFolderConfig cfg.folders;
+          folders = mapAttrs mkFolderConfig cfg.folders;
+        };
       }
 
       # Use sops-managed secrets if enabled, otherwise use manual paths

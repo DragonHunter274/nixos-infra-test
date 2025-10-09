@@ -122,11 +122,11 @@
 
   # Bootloader.
 
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/nvme0n1";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.grub.enable = lib.mkDefault true;
+  boot.loader.grub.device = lib.mkDefault "/dev/nvme0n1";
+  boot.loader.grub.useOSProber = lib.mkDefault true;
 
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
   services.tlp.enable = true;
   services.power-profiles-daemon.enable = false;
   networking.hostName = "desktop-simon"; # Define your hostname.
