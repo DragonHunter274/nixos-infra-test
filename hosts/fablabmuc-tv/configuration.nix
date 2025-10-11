@@ -44,7 +44,15 @@
   #  };
 
   nixpkgs.overlays = [
-    (self: super: { libcec = super.libcec.override { withLibraspberrypi = true; }; })
+    # Fix libraspberrypi for CMake 4.0 compatibility
+    (self: super: {
+      libraspberrypi = super.libraspberrypi.overrideAttrs (oldAttrs: {
+        patches = (oldAttrs.patches or []) ++ [
+          ./patches/libraspberrypi-cmake-v4.patch
+        ];
+      });
+      libcec = super.libcec.override { withLibraspberrypi = true; };
+    })
   ];
 
   hardware = {
