@@ -17,13 +17,30 @@
     memoryPercent = 30;
   };
 
-  hardware.deviceTree = {
-    enable = true;
-    filter = lib.mkForce "bcm2711-rpi-4-b.dtb";
-    overlays = [
-      "${pkgs.linuxKernel.kernels.linux_rpi4}/dtbs/overlays/tc358743.dtbo"
-    ];
+  #  hardware.deviceTree = {
+  #    enable = true;
+  #    filter = lib.mkForce "bcm2711-rpi-4-b.dtb";
+  #    overlays = [
+  #      "${pkgs.linuxKernel.kernels.linux_rpi4}/dtbs/overlays/tc358743.dtbo"
+  #    ];
+  #  };
+
+  nixpkgs.overlays = [
+    (self: super: { libcec = super.libcec.override { withLibraspberrypi = true; }; })
+  ];
+
+  hardware = {
+    raspberry-pi."4".apply-overlays-dtmerge.enable = true;
+    raspberry-pi."4".tc358743.enable = true;
+    deviceTree = {
+      enable = true;
+    };
   };
+
+  services.udev.extraRules = ''
+    # allow access to raspi cec device for video group (and optionally register it as a systemd device, used below)
+    KERNEL=="vchiq", GROUP="video", MODE="0660", TAG+="systemd", ENV{SYSTEMD_ALIAS}="/dev/vchiq"
+  '';
 
   environment.variables = {
     QML2_IMPORT_PATH =
@@ -125,6 +142,7 @@
     feh
     firefox
     ffmpeg
+    libcec
     quickshell
     qt6.qtwebsockets
     qt6.qtdeclarative

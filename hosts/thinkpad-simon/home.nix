@@ -81,6 +81,8 @@
     dnsutils
     ripgrep
     jq
+    yq-go
+    kubernetes-controller-tools
     neovim
     kicad
     roboto
@@ -126,6 +128,13 @@
     userName = "DragonHunter274";
     userEmail = "schurgel@gmail.com";
   };
+
+  home.file.".docker/config.json".text = builtins.toJSON {
+    credHelpers = {
+      "ghcr.io" = "ghcr-login";
+    };
+  };
+
   # You can access system configuration values via the systemConfig argument
   # For example:
   # programs.some-program.enable = systemConfig.services.some-service.enable;
