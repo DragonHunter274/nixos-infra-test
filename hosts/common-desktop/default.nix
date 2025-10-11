@@ -33,6 +33,13 @@
   hardware.rtl-sdr.enable = true;
   users.users.simon.extraGroups = [ "plugdev" ];
 
+  programs.nh = {
+    enable = true;
+    clean.enable = false;
+    flake = "/home/simon/nixos-infra-test";
+  };
+
+
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
   sops.age.keyFile = "/home/simon/.config/sops/age/keys.txt";
@@ -73,7 +80,7 @@
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
   environment.etc."docker/config.json".text = builtins.toJSON {
-    credsHelpers = {
+    credHelpers = {
       "ghcr.io" = "ghcr-login";
     };
   };
@@ -85,7 +92,7 @@
   programs.wireshark.enable = true;
 
   environment.systemPackages = with pkgs; [
-    #nur-packages.docker-credential-ghcr-login
+    nur-packages.docker-credential-ghcr-login
     gh
     wireshark
     gnumake

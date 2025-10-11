@@ -1,7 +1,7 @@
 keys:
   - &dh274 age10wjzxqwstyddl6zy02drchuy76a3fph3jznnp8agu5t9gkqjdegsj4a0ls
   - &simon-desktop age1cl0av8knan6p5fhd3gelfa004z2xgkv6nv5sharhl7fcdkhlv5tqjcjrhx
-
+  - &thinkpad-simon age13m4xrxfslawn2q5nc0hdh8lm7r2dshpnhntcur7szay2nj08kecqel7r96
 
 creation_rules:
   # Sops-Nix specific rules for secrets (YAML, JSON, env, ini)
@@ -10,6 +10,7 @@ creation_rules:
     - age:
       - *dh274
       - *simon-desktop
+      - *thinkpad-simon
 
 
 

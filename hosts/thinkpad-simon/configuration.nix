@@ -26,7 +26,7 @@
   ];
 
   virtualisation.waydroid.enable = true;
-
+  services.irqbalance.enable=true;
   nix.buildMachines = [
     {
       hostName = "nix-arm-builder";
@@ -71,6 +71,7 @@
         devices = [
           "desktop-simon"
         ];
+        createFolder = false;
       };
     };
   };
@@ -326,5 +327,10 @@
     "nix-command"
     "flakes"
   ];
+
+  # nix-direnv and lorri
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
+  services.lorri.enable = true;
 
 }

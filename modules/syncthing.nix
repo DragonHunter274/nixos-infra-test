@@ -168,6 +168,24 @@ in
               description = "Ignore permission changes";
             };
 
+            user = mkOption {
+              type = types.str;
+              default = cfg.user;
+              description = "User owner of the folder";
+            };
+
+            group = mkOption {
+              type = types.str;
+              default = cfg.group;
+              description = "Group owner of the folder";
+            };
+
+            createFolder = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Whether to automatically create and manage folder ownership via tmpfiles";
+            };
+
             rescanInterval = mkOption {
               type = types.int;
               default = 3600;
@@ -288,9 +306,10 @@ in
       STNODEFAULTFOLDER = "true";
     };
 
-    # Ensure folder paths exist with correct permissions
-    systemd.tmpfiles.rules = mapAttrsToList (
-      name: folderCfg: "d '${folderCfg.path}' 0750 ${cfg.user} ${cfg.group} - -"
-    ) cfg.folders;
+    # Ensure folder paths exist with correct permissions (only for folders with createFolder = true)
+    systemd.tmpfiles.rules =
+      mapAttrsToList (
+        name: folderCfg: "d '${folderCfg.path}' 0750 ${folderCfg.user} ${folderCfg.group} - -"
+      ) (filterAttrs (_: folderCfg: folderCfg.createFolder) cfg.folders);
   };
 }
