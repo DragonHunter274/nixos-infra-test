@@ -9,6 +9,24 @@
 {
 
   imports = [ ./hyprland.nix ];
+
+  # Filter out non-existent kernel modules from SD image initrd
+  boot.initrd.includeDefaultModules = lib.mkForce false;
+  boot.initrd.availableKernelModules = lib.mkForce [
+    # Core storage drivers
+    "ext2" "ext4" "ahci" "nvme" "uas" "usb_storage" "sd_mod" "sdhci_pci"
+    # USB and HID
+    "usbhid" "hid_generic" "hid_apple" "hid_cherry" "hid_corsair"
+    "hid_lenovo" "hid_logitech_dj" "hid_logitech_hidpp" "hid_microsoft" "hid_roccat"
+    # USB host controllers
+    "ehci_hcd" "ehci_pci" "ohci_hcd" "ohci_pci" "uhci_hcd" "xhci_hcd" "xhci_pci"
+    # MMC for Raspberry Pi SD card
+    "mmc_block"
+    # Virtio (useful for virtualization during build)
+    "virtio_balloon" "virtio_blk" "virtio_console" "virtio_mmio" "virtio_net" "virtio_pci" "virtio_scsi"
+    # VC4 GPU driver for Raspberry Pi
+    "vc4"
+  ];
   # System configuration
 
   zramSwap = {

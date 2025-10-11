@@ -9,9 +9,8 @@
         git
         nixfmt-rfc-style
         sops
-        inputs.nix-netboot-serve.packages.${system}.default
       ] ++ lib.optionals (system == "x86_64-linux") [
-        # Add x86_64-specific tools here if needed
+        inputs.nix-netboot-serve.packages.${system}.default
       ];
 
       shellHook = ''
