@@ -93,7 +93,7 @@
     filezilla
     python3
     segger-jlink-headless
-    cutecom
+    #cutecom
     python313Packages.pip
     nur-packages.rofi-nixsearch
     nur-packages.mtkclient
