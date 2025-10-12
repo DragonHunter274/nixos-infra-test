@@ -16,6 +16,7 @@ in
       ../modules/syncthing.nix
     ] { };
     "k3s-dev" = mkNixos "k3s-dev" "x86_64-linux" { } [ ../modules/k3s.nix ] { };
+    "hydra" = mkNixos "hydra" "x86_64-linux" { } [ ] { };
 
     # Raspberry Pi hosts
     "fablabmuc-tv" = mkRaspberryPi "fablabmuc-tv"
