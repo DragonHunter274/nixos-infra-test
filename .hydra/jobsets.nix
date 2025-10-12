@@ -38,6 +38,19 @@ let
       type = 1;
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
+    # ISO images jobset with minimal retention
+    "main-isos" = {
+      enabled = 1;
+      hidden = false;
+      description = "Build ISO images (main branch)";
+      checkinterval = 300;
+      schedulingshares = 50;
+      enableemail = false;
+      emailoverride = "";
+      keepnr = 1;  # Only keep 1 evaluation to save storage
+      type = 1;
+      flake = "github:dragonhunter274/nixos-infra-test/main#isoImages";
+    };
   };
 
   allJobsets = prJobsets // mainJobset;

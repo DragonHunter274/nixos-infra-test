@@ -12,24 +12,22 @@
         self.nixosConfigurations);
 
     # Build SD images for Raspberry Pi systems
-    sdImages = lib.mapAttrs 
+    sdImages = lib.mapAttrs
       (_: cfg: cfg.config.system.build.sdImage)
-      (lib.filterAttrs 
-        (name: cfg: cfg.config.system.build ? sdImage) 
+      (lib.filterAttrs
+        (name: cfg: cfg.config.system.build ? sdImage)
         self.nixosConfigurations);
 
-    # Build ISO images for installer systems
-    isoImages = lib.mapAttrs 
-      (_: cfg: cfg.config.system.build.isoImage)
-      (lib.filterAttrs 
-        (name: cfg: cfg.config.system.build ? isoImage) 
-        self.nixosConfigurations);
+    # ISO images are NOT included in the main hydraJobs to save storage
+    # They are built in a separate Hydra jobset (main-isos) with keepnr=1
+    # See .hydra/jobsets.nix for the dedicated ISO jobset configuration
+    # Manual builds: nix build .#nixosConfigurations.<hostname>-iso.config.system.build.isoImage
 
     # Build netboot artifacts for netboot-enabled systems
-    netboot = lib.mapAttrs 
+    netboot = lib.mapAttrs
       (_: cfg: cfg.config.system.build.netboot)
-      (lib.filterAttrs 
-        (name: cfg: cfg.config.system.build ? netboot) 
+      (lib.filterAttrs
+        (name: cfg: cfg.config.system.build ? netboot)
         self.nixosConfigurations);
 
     # Build custom packages
@@ -38,4 +36,11 @@
       aarch64-linux = inputs.nur.packages.aarch64-linux or { };
     };
   };
+
+  # ISO images output - available for manual builds and the dedicated Hydra jobset
+  flake.isoImages = lib.mapAttrs
+    (_: cfg: cfg.config.system.build.isoImage)
+    (lib.filterAttrs
+      (name: cfg: cfg.config.system.build ? isoImage)
+      self.nixosConfigurations);
 }
