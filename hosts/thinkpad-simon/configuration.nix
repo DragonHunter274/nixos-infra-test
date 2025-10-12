@@ -288,7 +288,7 @@
     openocd
     adafruit-nrfutil
     distrobox
-    (limesuite.override { withGui = true; })
+   # (limesuite.override { withGui = true; })
     nfs-utils
     nodejs_24
     # nur-packages.openbeken-flasher
