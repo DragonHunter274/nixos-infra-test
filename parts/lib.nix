@@ -6,7 +6,8 @@ let
     inputs.sops-nix.nixosModules.sops
     inputs.comin.nixosModules.comin
     ../modules/usb-wakeup-disable.nix
-    
+    ../modules/binary-caches.nix
+
     # Overlays module
     ({ pkgs, ... }: {
       nixpkgs.overlays = [
@@ -15,23 +16,23 @@ let
         (final: prev: { pkgs-makemkv = inputs.makemkv.legacyPackages.${system} or prev.pkgs-makemkv; })
       ];
     })
-    
+
     # Home-manager setup
     inputs.home-manager.nixosModules.home-manager
-    
-    # Comin gitops
-    ({ ... }: {
-      services.comin = {
-        enable = true;
-        allowForcePushMain = true;
-        remotes = [{
-          name = "origin";
-          url = "https://github.com/dragonhunter274/nixos-infra-test.git";
-          branches.main.name = "main";
-        }];
-      };
-    })
   ];
+
+  # Comin gitops configuration module
+  cominModule = { ... }: {
+    services.comin = {
+      enable = true;
+      allowForcePushMain = true;
+      remotes = [{
+        name = "origin";
+        url = "https://github.com/dragonhunter274/nixos-infra-test.git";
+        branches.main.name = "main";
+      }];
+    };
+  };
 
   # Home-manager configuration helper
   homeManagerCfg = system: extraImports: { ... }: {
@@ -88,7 +89,7 @@ let
 in
 {
   # Helper to create a NixOS system
-  mkNixos = hostname: system: extraHmUsers: extraModules:
+  mkNixos = hostname: system: extraHmUsers: extraModules: { enableComin ? true }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
@@ -96,12 +97,13 @@ in
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system extraHmUsers)
         (commonModules system)
+        (if enableComin then [ cominModule ] else [ ])
         extraModules
       ];
     };
 
   # Helper to create a Raspberry Pi system
-  mkRaspberryPi = hostname: extraHmUsers: extraModules:
+  mkRaspberryPi = hostname: extraHmUsers: extraModules: { enableComin ? true }:
     inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       specialArgs = { inherit inputs; };
@@ -109,6 +111,7 @@ in
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg "aarch64-linux" extraHmUsers)
         (commonModules "aarch64-linux")
+        (if enableComin then [ cominModule ] else [ ])
         rpiModules
         extraModules
         [
@@ -123,13 +126,14 @@ in
     };
 
   # Helper to create an ISO installer system
-  mkISO = hostname: system: extraModules:
+  mkISO = hostname: system: extraModules: { enableComin ? false }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
       modules = inputs.nixpkgs.lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (commonModules system)
+        (if enableComin then [ cominModule ] else [ ])
         isoModules
         extraModules
       ];
