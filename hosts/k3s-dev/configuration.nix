@@ -48,16 +48,6 @@
     ];
     max-jobs = "auto";
     cores = 0; # Use all available cores
-    substituters = [
-      "https://cache.nixos.org/"
-      "https://nix-community.cachix.org"
-      "https://attic.dh274.com/dragonhunter274"
-    ];
-    trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "dragonhunter274:YOJMbBYzAnReiYABcWPFDX0TYlQuO5R4W1jRgN2yN1k="
-    ];
   };
 
   system.stateVersion = "25.05";
