@@ -68,6 +68,7 @@
     notificationSender = "hydra@localhost";
     buildMachinesFiles = [ ];
     useSubstitutes = true;
+    listenHost = "0.0.0.0";
   };
 
   # Open firewall for Hydra web interface
