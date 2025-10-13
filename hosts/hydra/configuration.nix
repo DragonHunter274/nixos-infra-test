@@ -122,19 +122,22 @@ in
     hydra-www.extraGroups = [ hydraGroup ];
   };
 
-  # SOPS secrets for Hydra
-  sops.secrets = {
-    hydra-gh-auth = {
-      sopsFile = ./secrets/secrets.yaml;
-      owner = hydraUser;
-      group = hydraGroup;
-      mode = "0440";
-    };
-    nix-ssh-key = {
-      sopsFile = ./secrets/secrets.yaml;
-      owner = hydraUser;
-      group = hydraGroup;
-      mode = "0440";
+  # SOPS configuration
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    age.keyFile = "/root/.config/sops/age/keys.txt";
+
+    secrets = {
+      hydra-gh-auth = {
+        owner = hydraUser;
+        group = hydraGroup;
+        mode = "0440";
+      };
+      nix-ssh-key = {
+        owner = hydraUser;
+        group = hydraGroup;
+        mode = "0440";
+      };
     };
   };
 
