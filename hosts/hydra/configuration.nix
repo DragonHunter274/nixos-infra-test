@@ -1,8 +1,13 @@
-{ config, modulesPath, pkgs, lib, ... }:
+{ config, modulesPath, pkgs, lib, inputs, ... }:
+let
+  hydraUser = config.users.users.hydra.name;
+  hydraGroup = config.users.users.hydra.group;
+in
 {
   imports = [
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
     ./hardware-configuration.nix
+    inputs.sops-nix.nixosModules.sops
   ];
 
   networking.hostName = "hydra";
@@ -83,7 +88,21 @@
         ./flake-output-selection.patch
       ];
     });
+    extraConfig = ''
+      Include ${config.sops.secrets.hydra-gh-auth.path}
+      max_unsupported_time = 30
+      <githubstatus>
+        jobs = .*
+        useShortContext = true
+      </githubstatus>
+    '';
+    extraEnv = {
+      HYDRA_DISALLOW_UNFREE = "0";
+    };
   };
+
+  # https://github.com/NixOS/nix/issues/4178#issuecomment-738886808
+  systemd.services.hydra-evaluator.environment.GC_DONT_GC = "true";
 
   # Open firewall for Hydra web interface
   networking.firewall.allowedTCPPorts = [ 3000 ];
@@ -96,6 +115,28 @@
     tmux
     openssh
   ];
+
+  # Configure Hydra service users to have access to secrets
+  users.users = {
+    hydra-queue-runner.extraGroups = [ hydraGroup ];
+    hydra-www.extraGroups = [ hydraGroup ];
+  };
+
+  # SOPS secrets for Hydra
+  sops.secrets = {
+    hydra-gh-auth = {
+      sopsFile = ./secrets/secrets.yaml;
+      owner = hydraUser;
+      group = hydraGroup;
+      mode = "0440";
+    };
+    nix-ssh-key = {
+      sopsFile = ./secrets/secrets.yaml;
+      owner = hydraUser;
+      group = hydraGroup;
+      mode = "0440";
+    };
+  };
 
   system.stateVersion = "25.05";
 }
