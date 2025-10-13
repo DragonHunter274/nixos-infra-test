@@ -30,6 +30,11 @@ in
     ];
   };
 
+  # Configure Nix to use GitHub access token (avoid rate limiting)
+  nix.extraOptions = ''
+    !include ${config.sops.secrets.nix-github-token.path}
+  '';
+
   # Automatic garbage collection
   nix.gc = {
     automatic = true;
@@ -136,6 +141,9 @@ in
       nix-ssh-key = {
         owner = hydraUser;
         group = hydraGroup;
+        mode = "0440";
+      };
+      nix-github-token = {
         mode = "0440";
       };
     };
