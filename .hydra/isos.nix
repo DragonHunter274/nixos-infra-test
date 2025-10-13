@@ -3,6 +3,13 @@
 # ISO images are NOT in the main hydraJobs output to avoid building them twice
 { nixexpr }:
 let
-  flake = builtins.getFlake (toString nixexpr + "/.");
+  lock = builtins.fromJSON (builtins.readFile (nixexpr + "/flake.lock"));
+
+  flake-compat = fetchTarball {
+    url = "https://github.com/edolstra/flake-compat/archive/master.tar.gz";
+    sha256 = "0m9grvfsbwmvgwaxvdzv6cmyvjnlww004gfxjvcl806ndqaxzy4j";
+  };
+
+  flake = (import flake-compat { src = nixexpr; }).defaultNix;
 in
-flake.outputs.isoImages or {}
+flake.isoImages or {}
