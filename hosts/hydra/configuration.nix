@@ -91,6 +91,8 @@ in
     package = pkgs.hydra_unstable.overrideAttrs (oldAttrs: {
       patches = (oldAttrs.patches or []) ++ [
         ./flake-output-selection.patch
+        ./disable-maintainer-notifications.patch
+        ./ntfy-notification-plugin.patch
       ];
     });
     extraConfig = ''

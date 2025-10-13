@@ -248,6 +248,7 @@
       "cdrom"
       "adbusers"
       "plugdev"
+      "wireshark"
     ];
     packages = with pkgs; [
       kdePackages.kate
