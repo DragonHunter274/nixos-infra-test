@@ -54,7 +54,7 @@ let
       inputs = {
         nixexpr = {
           value = "https://github.com/dragonhunter274/nixos-infra-test main";
-          type = "git";
+          type = "git"; 
           emailresponsible = false;
         };
       };
