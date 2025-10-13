@@ -40,31 +40,31 @@
   };
 
 
-  sops.defaultSopsFile = ../../secrets/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  # sops.age.keyFile = "/home/simon/.config/sops/age/keys.txt";
-  # Using SSH host key derivation instead - sops-nix automatically imports
-  # /etc/ssh/ssh_host_ed25519_key as an age key
+  # sops.defaultSopsFile = ../../secrets/secrets.yaml;
+  # sops.defaultSopsFormat = "yaml";
+  # # sops.age.keyFile = "/home/simon/.config/sops/age/keys.txt";
+  # # Using SSH host key derivation instead - sops-nix automatically imports
+  # # /etc/ssh/ssh_host_ed25519_key as an age key
 
-  sops.secrets.example_key = { };
-  sops.secrets."myservice/my_subdir/my_secret" = { };
+  # sops.secrets.example_key = { };
+  # sops.secrets."myservice/my_subdir/my_secret" = { };
 
-  systemd.services."sometestservice" = {
-    script = ''
-      echo "
-      Hey bro! I'm a service, and imma send this secure password:
-      $(cat ${config.sops.secrets."myservice/my_subdir/my_secret".path})
-      located in:
-      ${config.sops.secrets."myservice/my_subdir/my_secret".path}
-      to database and hack the mainframe
-      " > /var/lib/sometestservice/testfile
-    '';
-    serviceConfig = {
-      User = "sometestservice";
-      WorkingDirectory = "/var/lib/sometestservice";
-      Type = "oneshot";
-    };
-  };
+  # systemd.services."sometestservice" = {
+  #   script = ''
+  #     echo "
+  #     Hey bro! I'm a service, and imma send this secure password:
+  #     $(cat ${config.sops.secrets."myservice/my_subdir/my_secret".path})
+  #     located in:
+  #     ${config.sops.secrets."myservice/my_subdir/my_secret".path}
+  #     to database and hack the mainframe
+  #     " > /var/lib/sometestservice/testfile
+  #   '';
+  #   serviceConfig = {
+  #     User = "sometestservice";
+  #     WorkingDirectory = "/var/lib/sometestservice";
+  #     Type = "oneshot";
+  #   };
+  # };
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "de_DE.UTF-8";
