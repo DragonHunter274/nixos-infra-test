@@ -54,7 +54,12 @@ let
       inputs = {
         nixexpr = {
           value = "https://github.com/dragonhunter274/nixos-infra-test main";
-          type = "git"; 
+          type = "git";
+          emailresponsible = false;
+        };
+        flake-compat = {
+          value = "https://github.com/edolstra/flake-compat master";
+          type = "git";
           emailresponsible = false;
         };
       };
