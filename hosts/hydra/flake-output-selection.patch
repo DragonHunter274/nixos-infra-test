@@ -1,0 +1,69 @@
+diff --git a/src/script/hydra-eval-jobset b/src/script/hydra-eval-jobset
+index eeea742f..6d7cc6e4 100755
+--- a/src/script/hydra-eval-jobset
++++ b/src/script/hydra-eval-jobset
+@@ -351,20 +351,32 @@ sub inputsToArgs {
+
+
+ sub evalJobs {
+-    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef) = @_;
++    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef, $flakeOutput) = @_;
+
+     print STDERR "($jobsetName) Evaluating...\n";
+
+     my @cmd;
+
+     if (defined $flakeRef) {
+-        my $nix_expr =
+-            "let " .
+-            "flake = builtins.getFlake (toString \"$flakeRef\"); " .
+-            "in " .
+-            "flake.hydraJobs " .
+-            "or flake.checks " .
+-            "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
++        my $nix_expr;
++        if (defined $flakeOutput) {
++            # Use the specified flake output attribute
++            $nix_expr =
++                "let " .
++                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "in " .
++                "flake.$flakeOutput " .
++                "or (throw \"flake '$flakeRef' does not provide output '$flakeOutput'\")";
++        } else {
++            # Use default fallback chain
++            $nix_expr =
++                "let " .
++                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "in " .
++                "flake.hydraJobs " .
++                "or flake.checks " .
++                "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
++        }
+
+         @cmd = ("nix-eval-jobs",
+                 # Disable the eval cache to prevent SQLite database contention.
+@@ -712,7 +724,14 @@ sub checkJobsetWrapped {
+     my $fetchError = $@;
+
+     my $flakeRef = $jobset->flake;
++    my $flakeOutput;
+     if (defined $flakeRef) {
++        # Extract output attribute if specified using flakeref#output syntax
++        if ($flakeRef =~ /^(.+)#([^#]+)$/) {
++            $flakeRef = $1;
++            $flakeOutput = $2;
++        }
++
+         (my $res, my $json, my $stderr) = captureStdoutStderr(
+             600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
+         die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
+@@ -758,7 +777,7 @@ sub checkJobsetWrapped {
+     # Evaluate the job expression.
+     my $evalStart = clock_gettime(CLOCK_MONOTONIC);
+     my $evalStop;
+-    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef);
++    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef, $flakeOutput);
+
+     if ($dryRun) {
+         while (defined(my $job = $jobsIter->())) {

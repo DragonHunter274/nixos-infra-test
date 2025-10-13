@@ -78,6 +78,11 @@
     buildMachinesFiles = [ ];
     useSubstitutes = true;
     listenHost = "0.0.0.0";
+    package = pkgs.hydra_unstable.overrideAttrs (oldAttrs: {
+      patches = (oldAttrs.patches or []) ++ [
+        ./flake-output-selection.patch
+      ];
+    });
   };
 
   # Open firewall for Hydra web interface

@@ -38,31 +38,19 @@ let
       type = 1;
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
-    # ISO images jobset with minimal retention (legacy mode)
+    # ISO images jobset with minimal retention
+    # Uses patched Hydra with flakeref#output support
     "main-isos" = {
       enabled = 1;
       hidden = false;
       description = "Build ISO images (main branch)";
-      nixexprinput = "nixexpr";
-      nixexprpath = ".hydra/isos.nix";
       checkinterval = 300;
       schedulingshares = 50;
       enableemail = false;
       emailoverride = "";
       keepnr = 1;  # Only keep 1 evaluation to save storage
-      type = 0;  # Legacy mode to use custom .nix file
-      inputs = {
-        nixexpr = {
-          value = "https://github.com/dragonhunter274/nixos-infra-test main";
-          type = "git";
-          emailresponsible = false;
-        };
-        flake-compat = {
-          value = "https://github.com/edolstra/flake-compat master";
-          type = "git";
-          emailresponsible = false;
-        };
-      };
+      type = 1;  # Flake mode with output selection
+      flake = "github:dragonhunter274/nixos-infra-test/main#isoImages";
     };
   };
 
