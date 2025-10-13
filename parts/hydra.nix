@@ -20,7 +20,7 @@
 
     # ISO images are NOT included in the main hydraJobs to save storage
     # They are built in a separate Hydra jobset (main-isos) with keepnr=1
-    # See .hydra/jobsets.nix and .hydra/isos.nix for the dedicated ISO jobset
+    # using the flakeref#isoImages syntax (requires patched Hydra)
 
     # Build netboot artifacts for netboot-enabled systems
     netboot = lib.mapAttrs
@@ -37,7 +37,7 @@
   };
 
   # Separate output for ISO images - NOT in hydraJobs to avoid building in main jobset
-  # Used by dedicated Hydra jobset via .hydra/isos.nix with keepnr=1
+  # Built only in dedicated jobset using flakeref#isoImages with keepnr=1
   flake.isoImages = lib.mapAttrs
     (_: cfg: cfg.config.system.build.isoImage)
     (lib.filterAttrs
