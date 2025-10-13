@@ -1,0 +1,18 @@
+keys:
+  - &dh274 age10wjzxqwstyddl6zy02drchuy76a3fph3jznnp8agu5t9gkqjdegsj4a0ls
+  - &simon-desktop age1cl0av8knan6p5fhd3gelfa004z2xgkv6nv5sharhl7fcdkhlv5tqjcjrhx
+  - &thinkpad-simon age13m4xrxfslawn2q5nc0hdh8lm7r2dshpnhntcur7szay2nj08kecqel7r96
+  - &hydra age1c0am8hd6s078chd948l6excx9ru9t9tjd25q5u5396fsr96fxy7qv0mxqr
+
+creation_rules:
+  # Sops-Nix specific rules for secrets (YAML, JSON, env, ini)
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *dh274
+      - *simon-desktop
+      - *thinkpad-simon
+      - *hydra
+
+
+
