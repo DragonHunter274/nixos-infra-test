@@ -8,7 +8,7 @@
 
 let
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    ${pkgs.waybar}/bin/waybar &
+#    ${pkgs.waybar}/bin/waybar &
     pypr &
     ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
     ${pkgs.swww}/bin/swww init &
@@ -17,6 +17,7 @@ let
     ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator & disown
     ${pkgs.signal-desktop}/bin/signal-desktop --start-in-tray & disown
     ${pkgs.pulseaudio}/bin/pactl load-module module-raop-discover
+    /run/wrappers/bin/renice -n -5 -p $(pgrep -f /run/current-system/sw/bin/Hyprland)
     sleep 1
 
 
@@ -32,7 +33,8 @@ in
       debug.disable_logs = false;
       exec-once = ''${startupScript}/bin/start'';
       general = {
-        monitor = "eDP-1, 1920x1080, 0x0, 1";
+        monitor = ["eDP-1, 1920x1080, 0x0, 1"
+                    ", 1920x1080, 1920x0, 1"];
         layout = "master";
         gaps_in = 2;
         gaps_out = 5;
@@ -61,9 +63,9 @@ in
       bind = [
         "$mod_SHIFT, Return, exec, kitty"
         "$mod_SHIFT, Q, killactive"
-        "$mod, P, exec, grimblast --notify save screen"
+        "$mod, P, exec, ${pkgs.grimblast}/bin/grimblast --notify save screen"
         ", Print, exec, grimblast --freeze copy area"
-        "$mod, R, exec, killall rofi || rofi -show"
+        "$mod, R, exec, killall rofi || rofi -show drun  -run-command 'nice -n 0 uwsm app -- {cmd}'"
         "$mod, S, exec, killall rofi || rofi-nixossearch"
         "$mod, L, exec, loginctl lock-session"
         "$mod, bracketright, exec, kitty yazi"
@@ -78,7 +80,16 @@ in
         "$mod, O, exec, killall .ironbar-wrapper inotifywait pactl || ironbar"
         "$mod, M, focusmonitor, +1"
         "$mod_SHIFT, M, focusmonitor, -1"
-
+        "$mod, 1, workspace, 1"
+        "$mod, 2, workspace, 2"
+        "$mod, 3, workspace, 3"
+        "$mod, 4, workspace, 4"
+        "$mod, 5, workspace, 5"
+        "$mod, 6, workspace, 6"
+        "$mod, 7, workspace, 7"
+        "$mod, 8, workspace, 8"
+        "$mod, 9, workspace, 9"
+        "$mod, 0, workspace, 10"
         "$mod, Return, layoutmsg, swapwithmaster master"
         "$mod, J, layoutmsg, cyclenext"
         "$mod, K, layoutmsg, cycleprev"
@@ -194,7 +205,7 @@ in
         before_sleep_cmd = "loginctl lock-session";
         after_sleep_cmd = "hyprctl dispatch dpms on";
         ignore_dbus_inhibit = false;
-        lock_cmd = "pidof hyprlock || hyprlock";
+        lock_cmd = "pidof hyprlock || nice -n -5 hyprlock";
       };
 
       listener = [

@@ -10,12 +10,13 @@
     "rofi/config.rasi".text = ''
 
       configuration {
-          modi: "drun,run";
+          modi: "drun,run,window";
           lines: 5;
           font: "JetBrains Mono Nerd Font Bold 14";
           show-icons: true;
           terminal: "alacritty";
           drun-display-format: "{icon} {name}";
+          window-format: "{icon} {t}";
           location: 0;
           disable-history: false;
           hide-scrollbar: true;

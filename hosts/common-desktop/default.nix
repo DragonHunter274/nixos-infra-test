@@ -92,9 +92,10 @@
   };
 
   programs.wireshark.enable = true;
+  programs.wireshark.package = pkgs.nur-packages.wireshark;
 
   environment.systemPackages = with pkgs; [
-    nur-packages.docker-credential-ghcr-login
+    pkgs.nur-packages.docker-credential-ghcr-login
     gh
     wireshark
     gnumake

@@ -41,10 +41,42 @@
   nix.distributedBuilds = true;
   nix.settings.builders-use-substitutes = true;
 
+security.wrappers.renice = {
+  source = "${pkgs.util-linux}/bin/renice";
+  capabilities = "cap_sys_nice+ep";
+  owner = "root";
+  group = "root";
+};
+
+
+systemd.user.slices."app-graphical" = {
+  sliceConfig = {
+    Nice = 0;
+  };
+};
+
   networking.hosts = {
     "127.0.0.1" = [ "nix-arm-builder" ];
   };
 
+
+
+
+services.displayManager.sessionPackages = [
+  ((pkgs.makeDesktopItem {
+    name = "uwsm-hyprland";
+    desktopName = "Hyprland (uwsm)";
+    exec = "uwsm start -N -5 -F /run/current-system/sw/bin/Hyprland";
+    comment = "Hyprland compositor managed by UWSM";
+    type = "Application";
+  }).overrideAttrs (old: {
+    buildCommand = old.buildCommand + ''
+      mkdir -p $out/share/wayland-sessions
+      mv $out/share/applications/*.desktop $out/share/wayland-sessions/
+    '';
+    passthru.providedSessions = [ "uwsm-hyprland" ];
+  }))
+];
   programs.ssh.extraConfig = ''
     Host nix-arm-builder
       Port 2222
@@ -274,6 +306,10 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     cachix
+    (python3.withPackages (ps: with ps; [
+      pyserial
+      kconfiglib
+    ]))
     nixfmt-rfc-style
     tlp
     bitwarden-desktop
@@ -292,6 +328,7 @@
    # (limesuite.override { withGui = true; })
     nfs-utils
     nodejs_24
+    pico-sdk
     # nur-packages.openbeken-flasher
     # nur-packages.mtkclient
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.

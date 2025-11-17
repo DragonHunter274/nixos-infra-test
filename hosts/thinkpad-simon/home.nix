@@ -57,6 +57,20 @@
     };
   };
 
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      ll = "ls -l";
+      update = "sudo nixos-rebuild switch --flake /home/simon/nixos-laptop/";
+    };
+    initExtra = ''
+      # Update Kitty window title with current directory
+      if [[ "$TERM" == "xterm-kitty" ]]; then
+        # Append to PROMPT_COMMAND instead of replacing it
+        PROMPT_COMMAND="''${PROMPT_COMMAND:+$PROMPT_COMMAND; }echo -ne '\033]0;''${PWD/#$HOME/~}\007'"
+      fi
+    '';
+  };
   # Packages to install
   home.packages = with pkgs; [
     git
@@ -91,10 +105,13 @@
     # openscad-unstable
     element-desktop
     filezilla
-    python3
+    (python3.withPackages (ps: with ps; [
+      pyserial
+      pip
+      kconfiglib
+    ]))
     segger-jlink-headless
     #cutecom
-    python313Packages.pip
     nur-packages.rofi-nixsearch
     nur-packages.mtkclient
     handbrake
@@ -115,13 +132,6 @@
   };
 
   # Program-specific configurations
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      ll = "ls -l";
-      update = "sudo nixos-rebuild switch --flake /home/simon/nixos-laptop/";
-    };
-  };
 
   programs.git = {
     enable = true;
