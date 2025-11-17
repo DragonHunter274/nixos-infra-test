@@ -73,7 +73,7 @@
       let
         qtModules = with pkgs.qt6; [
           qtwebsockets
-          quickshell
+          # quickshell
           # Add more here
         ];
       in
