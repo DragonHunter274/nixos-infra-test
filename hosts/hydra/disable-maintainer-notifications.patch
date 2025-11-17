@@ -1,0 +1,35 @@
+diff --git a/src/lib/Hydra/Plugin/EmailNotification.pm b/src/lib/Hydra/Plugin/EmailNotification.pm
+index a622f938..8073eef6 100644
+--- a/src/lib/Hydra/Plugin/EmailNotification.pm
++++ b/src/lib/Hydra/Plugin/EmailNotification.pm
+@@ -69,9 +69,11 @@ sub buildFinished {
+             next if defined $prevBuild && ($build->buildstatus == $prevBuild->buildstatus);
+         }
+ 
+-        my $to = $build->jobset->emailoverride ne "" ? $build->jobset->emailoverride : $build->maintainers;
++        # Only use emailoverride, never send to package maintainers
++        my $to = $build->jobset->emailoverride;
++        next if $to eq "";
+ 
+-        foreach my $address (split ",", ($to // "")) {
++        foreach my $address (split ",", $to) {
+             $address = trim $address;
+ 
+             $addresses{$address} //= { builds => [] };
+@@ -79,6 +81,7 @@ sub buildFinished {
+         }
+     }
+ 
++    # Still get author info for the email body, but don't add them as recipients
+     my ($authors, $nrCommits, $emailable_authors) = getResponsibleAuthors($topbuild, $self->{plugins});
+     my $authorList;
+     my $prevBuild = getPreviousBuild($topbuild);
+@@ -86,7 +89,7 @@ sub buildFinished {
+         ((!defined $prevBuild) || ($topbuild->buildstatus != $prevBuild->buildstatus))) {
+         my @x = map { "$_ <$authors->{$_}>" } (sort keys %{$authors});
+         $authorList = join(" or ", scalar @x > 1 ? join(", ", @x[0..scalar @x - 2]): (), $x[-1]);
+-        $addresses{$_} = { builds => [ $topbuild ] } foreach (@{$emailable_authors});
++        # Do NOT add authors as email recipients
+     }
+ 
+     # Send an email to each interested address.

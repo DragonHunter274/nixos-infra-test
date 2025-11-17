@@ -88,7 +88,7 @@ in
     buildMachinesFiles = [ ];
     useSubstitutes = true;
     listenHost = "0.0.0.0";
-    package = pkgs.hydra_unstable.overrideAttrs (oldAttrs: {
+    package = pkgs.hydra.overrideAttrs (oldAttrs: {
       patches = (oldAttrs.patches or []) ++ [
         ./flake-output-selection.patch
         ./disable-maintainer-notifications.patch
