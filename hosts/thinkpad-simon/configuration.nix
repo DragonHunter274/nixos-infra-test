@@ -323,7 +323,7 @@ services.displayManager.sessionPackages = [
     gcc
     stlink
     openocd
-    adafruit-nrfutil
+    #adafruit-nrfutil
     distrobox
    # (limesuite.override { withGui = true; })
     nfs-utils
