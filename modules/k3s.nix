@@ -442,7 +442,7 @@ in
               (lib.mkIf cfg.addons.nfs.enable [ "nfs-server.service" ])
             ];
             serviceConfig = {
-              TimeoutStartSec = (120 + cfg.delay);
+              lib.mkForce(TimeoutStartSec = (120 + cfg.delay));
             };
           };
           minio-init = lib.mkIf cfg.addons.minio.enable {
