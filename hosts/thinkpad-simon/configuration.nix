@@ -59,7 +59,7 @@ systemd.user.slices."app-graphical" = {
     "127.0.0.1" = [ "nix-arm-builder" ];
   };
 
-
+  programs.nix-ld.enable = true;
 
 
 services.displayManager.sessionPackages = [
@@ -333,6 +333,8 @@ services.displayManager.sessionPackages = [
     # nur-packages.mtkclient
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
+    icu
+    icu.dev
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

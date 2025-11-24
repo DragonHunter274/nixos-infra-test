@@ -9,5 +9,5 @@ let
 in
 {
   inherit imports;
-  nix.settings.substituters = [ "https://cache.nixos.org/" ];
+  nix.settings.substituters = lib.mkDefault [ "https://cache.nixos.org/" ];
 }
