@@ -112,7 +112,7 @@ in
   systemd.services.hydra-evaluator.environment.GC_DONT_GC = "true";
 
   # Open firewall for Hydra web interface
-  networking.firewall.allowedTCPPorts = [ 3000 ];
+  networking.firewall.allowedTCPPorts = [ 3000 5000 ];
 
   environment.systemPackages = with pkgs; [
     vim
