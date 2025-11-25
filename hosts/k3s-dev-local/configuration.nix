@@ -7,7 +7,7 @@
 
   # Specify the disk device for disko partitioning
   # Adjust this to match your actual disk device (e.g., /dev/sda, /dev/nvme0n1)
-  disko.devices.disk.main.device = "/dev/sda";
+  disko.devices.disk.main.device = "/dev/nvme0n1";
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
