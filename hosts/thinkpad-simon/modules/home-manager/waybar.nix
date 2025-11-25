@@ -38,7 +38,7 @@ in
 
         "custom/tailscale" : {
             "exec": "~/.config/hypr/waybar/scripts/waybar-tailscale/waybar-tailscale.sh --status",
-            "on-click": "exec ~/.config/hypr/scripts/waybar-tailscale/waybar-tailscale.sh --toggle",
+            "on-click": "exec ~/.config/hypr/waybar/scripts/waybar-tailscale/waybar-tailscale.sh --toggle",
             "exec-on-event": true,
             "format": "VPN: {icon}",
             "format-icons": {
@@ -48,7 +48,7 @@ in
             "tooltip": true,
             "return-type": "json",
             "interval": 3,
-        }
+        },
 
         "custom/swaync": {
     	"format": " ",
