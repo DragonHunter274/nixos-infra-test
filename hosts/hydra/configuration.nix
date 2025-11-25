@@ -146,6 +146,8 @@ in
         mode = "0440";
       };
       nix-github-token = {
+        owner = hydraUser;
+        group = hydraGroup;
         mode = "0440";
       };
     };
