@@ -21,7 +21,7 @@ in
         // Choose the order of the modules
         "modules-left": ["hyprland/workspaces", "hyprland/window"],
         //"modules-center": ["hyprland/window"],
-        "modules-right": ["custom/mvg", "custom/swaync", "custom/menu", "tray", "pulseaudio", "cpu", "memory", "backlight", "battery", "battery#bat2", "custom/scripted_clock", "custom/powermenu"],
+        "modules-right": ["custom/mvg", "custom/tailscale", "custom/swaync", "custom/menu", "tray", "pulseaudio", "cpu", "memory", "backlight", "battery", "battery#bat2", "custom/scripted_clock", "custom/powermenu"],
         // Modules configuration
         "custom/powermenu": {
     	"format": " ",
@@ -35,6 +35,21 @@ in
         "format": "󰔬 {}",
         "tooltip": true
         },
+
+        "custom/tailscale" : {
+            "exec": "~/.config/hypr/waybar/scripts/waybar-tailscale/waybar-tailscale.sh --status",
+            "on-click": "exec ~/.config/hypr/scripts/waybar-tailscale/waybar-tailscale.sh --toggle",
+            "exec-on-event": true,
+            "format": "VPN: {icon}",
+            "format-icons": {
+                "connected": "on",        
+                "stopped": "off"
+            },
+            "tooltip": true,
+            "return-type": "json",
+            "interval": 3,
+        }
+
         "custom/swaync": {
     	"format": " ",
     	"on-click": "~/.config/hypr/swaync/scripts/tray_waybar.sh",
