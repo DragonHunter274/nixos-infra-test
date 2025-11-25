@@ -40,14 +40,14 @@ in
             "exec": "~/.config/hypr/waybar/scripts/waybar-tailscale/waybar-tailscale.sh --status",
             "on-click": "exec ~/.config/hypr/waybar/scripts/waybar-tailscale/waybar-tailscale.sh --toggle",
             "exec-on-event": true,
-            "format": "VPN: {icon}",
+            "format": "VPN",
             "format-icons": {
                 "connected": "on",        
                 "stopped": "off"
             },
             "tooltip": true,
             "return-type": "json",
-            "interval": 3,
+            "interval": 1,
         },
 
         "custom/swaync": {
@@ -307,6 +307,8 @@ in
     #scratchpad,
     #custom-swaync,
     #custom-menu,
+    #custom-tailscale,
+    #custom-mvg,
     #mpd {
         padding: 0 10px;
         color: #ffffff;
@@ -353,6 +355,42 @@ in
         margin-bottom: 2px;
         padding-left: 13px;
         padding-right: 9px;
+    }
+
+    #custom-mvg {
+        background-color: #2aa198;
+        color: #002b36;
+        font-family: JetBrainsMono Nerd Font, monospace;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-bottom: 8px solid #008279;
+        border-radius: 5px;
+        margin-bottom: 2px;
+        padding-left: 13px;
+        padding-right: 9px;
+    }
+
+    #custom-tailscale {
+        color: #002b36;
+        font-family: JetBrainsMono Nerd Font, monospace;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 2px;
+        padding-left: 13px;
+        padding-right: 9px;
+    }
+
+    #custom-tailscale.connected {
+        background-color: #2be013;
+        border-bottom: 8px solid #1fa00f;
+    }
+
+    #custom-tailscale.stopped {
+        background-color: #dc322f;
+        border-bottom: 8px solid #ba0018;
     }
 
     #custom-menu {
