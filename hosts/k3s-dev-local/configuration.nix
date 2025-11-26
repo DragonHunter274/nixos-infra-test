@@ -43,7 +43,7 @@
 
       sopsAgeKeyFile = /root/.config/sops/age/keys.txt; # Optional, defaults to ~/.config/sops/age/keys.txt
     };
-    services.servicelb = true;
+    services.servicelb = false;
     services.traefik = true;
     services.local-storage = true;
   };
