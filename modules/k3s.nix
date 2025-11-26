@@ -441,6 +441,12 @@ in
               (lib.mkIf cfg.addons.minio.enable [ "minio.service" ])
               (lib.mkIf cfg.addons.nfs.enable [ "nfs-server.service" ])
             ];
+            path = with pkgs; [
+              iptables
+              iproute2
+              utillinux
+              coreutils
+            ];
             serviceConfig = {
               TimeoutStartSec = lib.mkForce (120 + cfg.delay);
             };
