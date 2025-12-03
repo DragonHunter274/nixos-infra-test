@@ -14,16 +14,43 @@
   boot.initrd.includeDefaultModules = lib.mkForce false;
   boot.initrd.availableKernelModules = lib.mkForce [
     # Core storage drivers
-    "ext2" "ext4" "ahci" "nvme" "uas" "usb_storage" "sd_mod" "sdhci_pci"
+    "ext2"
+    "ext4"
+    "ahci"
+    "nvme"
+    "uas"
+    "usb_storage"
+    "sd_mod"
+    "sdhci_pci"
     # USB and HID
-    "usbhid" "hid_generic" "hid_apple" "hid_cherry" "hid_corsair"
-    "hid_lenovo" "hid_logitech_dj" "hid_logitech_hidpp" "hid_microsoft" "hid_roccat"
+    "usbhid"
+    "hid_generic"
+    "hid_apple"
+    "hid_cherry"
+    "hid_corsair"
+    "hid_lenovo"
+    "hid_logitech_dj"
+    "hid_logitech_hidpp"
+    "hid_microsoft"
+    "hid_roccat"
     # USB host controllers
-    "ehci_hcd" "ehci_pci" "ohci_hcd" "ohci_pci" "uhci_hcd" "xhci_hcd" "xhci_pci"
+    "ehci_hcd"
+    "ehci_pci"
+    "ohci_hcd"
+    "ohci_pci"
+    "uhci_hcd"
+    "xhci_hcd"
+    "xhci_pci"
     # MMC for Raspberry Pi SD card
     "mmc_block"
     # Virtio (useful for virtualization during build)
-    "virtio_balloon" "virtio_blk" "virtio_console" "virtio_mmio" "virtio_net" "virtio_pci" "virtio_scsi"
+    "virtio_balloon"
+    "virtio_blk"
+    "virtio_console"
+    "virtio_mmio"
+    "virtio_net"
+    "virtio_pci"
+    "virtio_scsi"
     # VC4 GPU driver for Raspberry Pi
     "vc4"
   ];
@@ -47,7 +74,7 @@
     # Fix libraspberrypi for CMake 4.0 compatibility
     (self: super: {
       libraspberrypi = super.libraspberrypi.overrideAttrs (oldAttrs: {
-        patches = (oldAttrs.patches or []) ++ [
+        patches = (oldAttrs.patches or [ ]) ++ [
           ./patches/libraspberrypi-cmake-v4.patch
         ];
       });
@@ -126,7 +153,7 @@
       MaxAuthTries 20
     '';
   };
-hardware.raspberry-pi."4".fkms-3d.enable = true;
+  hardware.raspberry-pi."4".fkms-3d.enable = true;
   # User configuration
   users.users.pi = {
     isNormalUser = true;

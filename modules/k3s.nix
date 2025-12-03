@@ -6,6 +6,32 @@
 }:
 let
   cfg = config.templates.services.k3s;
+
+  # Create a wrapper script for iptables that CNI plugins can execute
+  iptablesWrapper = pkgs.writeScriptBin "iptables" ''
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.iptables}/bin/iptables "$@"
+  '';
+
+  iptablesSaveWrapper = pkgs.writeScriptBin "iptables-save" ''
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.iptables}/bin/iptables-save "$@"
+  '';
+
+  iptablesRestoreWrapper = pkgs.writeScriptBin "iptables-restore" ''
+    #!${pkgs.runtimeShell}
+    exec ${pkgs.iptables}/bin/iptables-restore "$@"
+  '';
+
+  # Build a composite environment with CNI plugins and iptables wrappers
+  cniWithIptables = pkgs.buildEnv {
+    name = "cni-with-iptables";
+    paths = [
+      iptablesWrapper
+      iptablesSaveWrapper
+      iptablesRestoreWrapper
+    ];
+  };
 in
 {
   options.templates.services.k3s = {
@@ -346,6 +372,10 @@ in
         [
           "d /root/.kube 0755 root root -"
           "L /root/.kube/config  - - - - /etc/rancher/k3s/k3s.yaml"
+          # Symlink iptables wrappers into K3s CNI bin directory for CNI plugins
+          "L+ /var/lib/rancher/k3s/data/current/bin/iptables - - - - ${cniWithIptables}/bin/iptables"
+          "L+ /var/lib/rancher/k3s/data/current/bin/iptables-save - - - - ${cniWithIptables}/bin/iptables-save"
+          "L+ /var/lib/rancher/k3s/data/current/bin/iptables-restore - - - - ${cniWithIptables}/bin/iptables-restore"
         ]
         (lib.mkIf cfg.addons.nfs.enable [
           "d ${cfg.addons.nfs.path} 0775 root root -"
@@ -442,11 +472,11 @@ in
               (lib.mkIf cfg.addons.nfs.enable [ "nfs-server.service" ])
             ];
             path = with pkgs; [
-              iptables
-              iproute2
-              utillinux
-              coreutils
-            ];
+  iptables
+  iproute2
+  utillinux
+  coreutils
+];
             serviceConfig = {
               TimeoutStartSec = lib.mkForce (120 + cfg.delay);
             };

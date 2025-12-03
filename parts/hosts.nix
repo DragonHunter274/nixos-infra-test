@@ -20,10 +20,9 @@ in
     "hydra" = mkNixos "hydra" "x86_64-linux" { } [ ] { };
 
     # Raspberry Pi hosts
-    "fablabmuc-tv" = mkRaspberryPi "fablabmuc-tv"
-      { pi = import ../home/pi.nix; }
-      [ ../modules/nmimport.nix ]
-      { };
+    "fablabmuc-tv" = mkRaspberryPi "fablabmuc-tv" { pi = import ../home/pi.nix; } [
+      ../modules/nmimport.nix
+    ] { };
 
     # ISO installers
     "desktop-simon-iso" = mkISO "desktop-simon" "x86_64-linux" [ ] { };

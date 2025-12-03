@@ -5,7 +5,7 @@
     substituters = [
       "https://cache.nixos.org/"
       "https://nix-community.cachix.org"
-#      "https://attic.dh274.com/dragonhunter274"
+      #      "https://attic.dh274.com/dragonhunter274"
       "https://hydra-cache.dh274.com"
     ];
     trusted-public-keys = [

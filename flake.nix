@@ -1,6 +1,6 @@
 {
   description = "system flake";
-  
+
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-24-05.url = "nixpkgs/nixos-24.05";
@@ -9,10 +9,10 @@
     makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    
+
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-netboot-serve.url = "github:DeterminateSystems/nix-netboot-serve";
-    
+
     sops-nix.url = "github:Mic92/sops-nix";
     disko = {
       url = "github:nix-community/disko";
@@ -37,18 +37,24 @@
     };
   };
 
-  outputs = inputs @ { flake-parts, ... }:
+  outputs =
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+
       imports = [
         ./parts/hosts.nix
         ./parts/hydra.nix
         ./parts/dev-shells.nix
       ];
 
-      perSystem = { system, pkgs, ... }: {
-        formatter = pkgs.nixfmt-rfc-style;
-      };
+      perSystem =
+        { system, pkgs, ... }:
+        {
+          formatter = pkgs.nixfmt-rfc-style;
+        };
     };
 }

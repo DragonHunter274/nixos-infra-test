@@ -48,8 +48,8 @@ let
       schedulingshares = 50;
       enableemail = false;
       emailoverride = "";
-      keepnr = 1;  # Only keep 1 evaluation to save storage
-      type = 1;  # Flake mode with output selection
+      keepnr = 1; # Only keep 1 evaluation to save storage
+      type = 1; # Flake mode with output selection
       flake = "github:dragonhunter274/nixos-infra-test/main#isoImages";
     };
   };
