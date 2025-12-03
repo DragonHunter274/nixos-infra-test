@@ -1,4 +1,11 @@
-{ config, modulesPath, pkgs, lib, inputs, ... }:
+{
+  config,
+  modulesPath,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 let
   hydraUser = config.users.users.hydra.name;
   hydraGroup = config.users.users.hydra.group;
@@ -89,7 +96,7 @@ in
     useSubstitutes = true;
     listenHost = "0.0.0.0";
     package = pkgs.hydra.overrideAttrs (oldAttrs: {
-      patches = (oldAttrs.patches or []) ++ [
+      patches = (oldAttrs.patches or [ ]) ++ [
         ./flake-output-selection.patch
         ./disable-maintainer-notifications.patch
         ./ntfy-notification-plugin.patch
@@ -112,7 +119,10 @@ in
   systemd.services.hydra-evaluator.environment.GC_DONT_GC = "true";
 
   # Open firewall for Hydra web interface
-  networking.firewall.allowedTCPPorts = [ 3000 5000 ];
+  networking.firewall.allowedTCPPorts = [
+    3000
+    5000
+  ];
 
   environment.systemPackages = with pkgs; [
     vim

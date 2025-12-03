@@ -8,17 +8,17 @@
 
 let
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-#    ${pkgs.waybar}/bin/waybar &
-    pypr &
-    ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
-    ${pkgs.swww}/bin/swww init &
-    goldwarden daemonize &
-    ${pkgs.swaynotificationcenter}/bin/swaync &
-    ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator & disown
-    ${pkgs.signal-desktop}/bin/signal-desktop --start-in-tray & disown
-    ${pkgs.pulseaudio}/bin/pactl load-module module-raop-discover
-    /run/wrappers/bin/renice -n -5 -p $(pgrep -f /run/current-system/sw/bin/Hyprland)
-    sleep 1
+    #    ${pkgs.waybar}/bin/waybar &
+        pypr &
+        ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
+        ${pkgs.swww}/bin/swww init &
+        goldwarden daemonize &
+        ${pkgs.swaynotificationcenter}/bin/swaync &
+        ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator & disown
+        ${pkgs.signal-desktop}/bin/signal-desktop --start-in-tray & disown
+        ${pkgs.pulseaudio}/bin/pactl load-module module-raop-discover
+        /run/wrappers/bin/renice -n -5 -p $(pgrep -f /run/current-system/sw/bin/Hyprland)
+        sleep 1
 
 
   '';
@@ -33,8 +33,10 @@ in
       debug.disable_logs = false;
       exec-once = ''${startupScript}/bin/start'';
       general = {
-        monitor = ["eDP-1, 1920x1080, 0x0, 1"
-                    ", 1920x1080, 1920x0, 1"];
+        monitor = [
+          "eDP-1, 1920x1080, 0x0, 1"
+          ", 1920x1080, 1920x0, 1"
+        ];
         layout = "master";
         gaps_in = 2;
         gaps_out = 5;

@@ -105,11 +105,13 @@
     # openscad-unstable
     element-desktop
     filezilla
-    (python3.withPackages (ps: with ps; [
-      pyserial
-      pip
-      kconfiglib
-    ]))
+    (python3.withPackages (
+      ps: with ps; [
+        pyserial
+        pip
+        kconfiglib
+      ]
+    ))
     segger-jlink-headless
     #cutecom
     nur-packages.rofi-nixsearch

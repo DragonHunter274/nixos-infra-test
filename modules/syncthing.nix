@@ -28,19 +28,19 @@ in
 
     user = mkOption {
       type = types.str;
-      default = "syncthing";  # Fixed: Use a literal default instead of referencing config
+      default = "syncthing"; # Fixed: Use a literal default instead of referencing config
       description = "User account under which Syncthing runs";
     };
 
     group = mkOption {
       type = types.str;
-      default = "syncthing";  # Fixed: Use a literal default instead of referencing config
+      default = "syncthing"; # Fixed: Use a literal default instead of referencing config
       description = "Group under which Syncthing runs";
     };
 
     dataDir = mkOption {
       type = types.str;
-      default = "/var/lib/syncthing";  # Fixed: Use a literal default instead of referencing config
+      default = "/var/lib/syncthing"; # Fixed: Use a literal default instead of referencing config
       description = "Path to Syncthing's data directory";
     };
 
@@ -307,9 +307,8 @@ in
     };
 
     # Ensure folder paths exist with correct permissions (only for folders with createFolder = true)
-    systemd.tmpfiles.rules =
-      mapAttrsToList (
-        name: folderCfg: "d '${folderCfg.path}' 0750 ${folderCfg.user} ${folderCfg.group} - -"
-      ) (filterAttrs (_: folderCfg: folderCfg.createFolder) cfg.folders);
+    systemd.tmpfiles.rules = mapAttrsToList (
+      name: folderCfg: "d '${folderCfg.path}' 0750 ${folderCfg.user} ${folderCfg.group} - -"
+    ) (filterAttrs (_: folderCfg: folderCfg.createFolder) cfg.folders);
   };
 }

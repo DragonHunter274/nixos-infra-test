@@ -26,7 +26,7 @@
   ];
 
   virtualisation.waydroid.enable = true;
-  services.irqbalance.enable=true;
+  services.irqbalance.enable = true;
   nix.buildMachines = [
     {
       hostName = "nix-arm-builder";
@@ -41,19 +41,25 @@
   nix.distributedBuilds = true;
   nix.settings.builders-use-substitutes = true;
 
-security.wrappers.renice = {
-  source = "${pkgs.util-linux}/bin/renice";
-  capabilities = "cap_sys_nice+ep";
-  owner = "root";
-  group = "root";
-};
-
-
-systemd.user.slices."app-graphical" = {
-  sliceConfig = {
-    Nice = 0;
+  security.wrappers.renice = {
+    source = "${pkgs.util-linux}/bin/renice";
+    capabilities = "cap_sys_nice+ep";
+    owner = "root";
+    group = "root";
   };
-};
+
+  systemd.user.slices."app-graphical" = {
+    sliceConfig = {
+      Nice = 0;
+    };
+  };
+
+
+  zramSwap = {   
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
 
   networking.hosts = {
     "127.0.0.1" = [ "nix-arm-builder" ];
@@ -61,22 +67,24 @@ systemd.user.slices."app-graphical" = {
 
   programs.nix-ld.enable = true;
 
-
-services.displayManager.sessionPackages = [
-  ((pkgs.makeDesktopItem {
-    name = "uwsm-hyprland";
-    desktopName = "Hyprland (uwsm)";
-    exec = "uwsm start -N -5 -F /run/current-system/sw/bin/Hyprland";
-    comment = "Hyprland compositor managed by UWSM";
-    type = "Application";
-  }).overrideAttrs (old: {
-    buildCommand = old.buildCommand + ''
-      mkdir -p $out/share/wayland-sessions
-      mv $out/share/applications/*.desktop $out/share/wayland-sessions/
-    '';
-    passthru.providedSessions = [ "uwsm-hyprland" ];
-  }))
-];
+  services.displayManager.sessionPackages = [
+    (
+      (pkgs.makeDesktopItem {
+        name = "uwsm-hyprland";
+        desktopName = "Hyprland (uwsm)";
+        exec = "uwsm start -N -5 -F /run/current-system/sw/bin/Hyprland";
+        comment = "Hyprland compositor managed by UWSM";
+        type = "Application";
+      }).overrideAttrs
+      (old: {
+        buildCommand = old.buildCommand + ''
+          mkdir -p $out/share/wayland-sessions
+          mv $out/share/applications/*.desktop $out/share/wayland-sessions/
+        '';
+        passthru.providedSessions = [ "uwsm-hyprland" ];
+      })
+    )
+  ];
   programs.ssh.extraConfig = ''
     Host nix-arm-builder
       Port 2222
@@ -306,10 +314,12 @@ services.displayManager.sessionPackages = [
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     cachix
-    (python3.withPackages (ps: with ps; [
-      pyserial
-      kconfiglib
-    ]))
+    (python3.withPackages (
+      ps: with ps; [
+        pyserial
+        kconfiglib
+      ]
+    ))
     nixfmt-rfc-style
     tlp
     bitwarden-desktop
@@ -325,7 +335,7 @@ services.displayManager.sessionPackages = [
     openocd
     #adafruit-nrfutil
     distrobox
-   # (limesuite.override { withGui = true; })
+    # (limesuite.override { withGui = true; })
     nfs-utils
     nodejs_24
     pico-sdk
@@ -335,6 +345,7 @@ services.displayManager.sessionPackages = [
     #  wget
     icu
     icu.dev
+    sops
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
