@@ -1,8 +1,8 @@
 diff --git a/src/script/hydra-eval-jobset b/src/script/hydra-eval-jobset
-index eeea742f..fdcde4a4 100755
+index eeea742f..3ded8f3c 100755
 --- a/src/script/hydra-eval-jobset
 +++ b/src/script/hydra-eval-jobset
-@@ -351,20 +351,44 @@ sub inputsToArgs {
+@@ -351,20 +351,40 @@ sub inputsToArgs {
  
  
  sub evalJobs {
@@ -27,19 +27,15 @@ index eeea742f..fdcde4a4 100755
 +            # This supports both direct attributes and package references
 +            $nix_expr =
 +                "let " .
-+                "  flake = builtins.getFlake (toString \"$flakeRef\"); " .
-+                "  outputAttr = \"$flakeOutput\"; " .
-+                "  # Try to find the output in order of precedence: " .
-+                "  # 1. Direct attribute (e.g., hydraJobs.foo) " .
-+                "  # 2. Package for current system (e.g., packages.\${system}.foo) " .
-+                "  # 3. Package from legacyPackages for current system (e.g., nixpkgs packages) " .
-+                "  result = " .
-+                "    if flake ? \${outputAttr} then flake.\${outputAttr} " .
-+                "    else if flake ? packages.\${builtins.currentSystem}.\${outputAttr} then " .
-+                "      { \${outputAttr} = flake.packages.\${builtins.currentSystem}.\${outputAttr}; } " .
-+                "    else if flake ? legacyPackages.\${builtins.currentSystem}.\${outputAttr} then " .
-+                "      { \${outputAttr} = flake.legacyPackages.\${builtins.currentSystem}.\${outputAttr}; } " .
-+                "    else throw \"flake '$flakeRef' does not provide output '$flakeOutput' (checked: direct, packages.\${builtins.currentSystem}, legacyPackages.\${builtins.currentSystem})\"; " .
++                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "outputAttr = \"$flakeOutput\"; " .
++                "result = " .
++                "if flake ? \$\{outputAttr\} then flake.\$\{outputAttr\} " .
++                "else if flake ? packages.\$\{builtins.currentSystem\}.\$\{outputAttr\} then " .
++                "{ \$\{outputAttr\} = flake.packages.\$\{builtins.currentSystem\}.\$\{outputAttr\}; } " .
++                "else if flake ? legacyPackages.\$\{builtins.currentSystem\}.\$\{outputAttr\} then " .
++                "{ \$\{outputAttr\} = flake.legacyPackages.\$\{builtins.currentSystem\}.\$\{outputAttr\}; } " .
++                "else throw \"flake does not provide output '$flakeOutput'\"; " .
 +                "in " .
 +                "result";
 +        } else {
@@ -55,7 +51,7 @@ index eeea742f..fdcde4a4 100755
  
          @cmd = ("nix-eval-jobs",
                  # Disable the eval cache to prevent SQLite database contention.
-@@ -712,7 +736,14 @@ sub checkJobsetWrapped {
+@@ -712,7 +732,14 @@ sub checkJobsetWrapped {
      my $fetchError = $@;
  
      my $flakeRef = $jobset->flake;
@@ -70,7 +66,7 @@ index eeea742f..fdcde4a4 100755
          (my $res, my $json, my $stderr) = captureStdoutStderr(
              600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
          die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
-@@ -758,7 +789,7 @@ sub checkJobsetWrapped {
+@@ -758,7 +785,7 @@ sub checkJobsetWrapped {
      # Evaluate the job expression.
      my $evalStart = clock_gettime(CLOCK_MONOTONIC);
      my $evalStop;
