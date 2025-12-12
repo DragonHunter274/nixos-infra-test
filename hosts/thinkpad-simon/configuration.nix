@@ -347,6 +347,7 @@
     icu.dev
     sops
     jetbrains.clion
+    claude-code
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
