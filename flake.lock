@@ -944,11 +944,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1765656927,
-        "narHash": "sha256-VrAtxtQKdv92KCXvep1NdOgQQ7pQXWejw9DtAgd3pQA=",
+        "lastModified": 1765668939,
+        "narHash": "sha256-UBriZe3BZb8oFrjO6ERcw7JEdbNjVlICxhAmWqdcjHA=",
         "owner": "DragonHunter274",
         "repo": "pyprland",
-        "rev": "4221898b0d2aa71aa7b1cbc82ce64a58199cdaad",
+        "rev": "ca7e32bae61581a359b74ab279b709f26356042c",
         "type": "github"
       },
       "original": {
