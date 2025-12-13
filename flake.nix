@@ -28,7 +28,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.url = "github:hyprwm/Hyprland";
-    pyprland.url = "github:hyprland-community/pyprland";
+    pyprland.url = "github:DragonHunter274/pyprland/fix-nix-flake";
     hyprlock.url = "github:hyprwm/hyprlock";
     termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
     nixos-06cb-009a-fingerprint-sensor = {
