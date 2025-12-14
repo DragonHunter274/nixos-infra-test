@@ -348,7 +348,7 @@
     sops
     jetbrains.clion
     claude-code
-    zed-editor
+    zed-editor-fhs
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
