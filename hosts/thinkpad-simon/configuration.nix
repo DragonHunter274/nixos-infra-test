@@ -55,7 +55,7 @@
   };
 
 
-  zramSwap = {   
+  zramSwap = {
     enable = true;
     algorithm = "zstd";
     memoryPercent = 50;
@@ -349,6 +349,7 @@
     jetbrains.clion
     claude-code
     zed-editor-fhs
+    nixd
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
