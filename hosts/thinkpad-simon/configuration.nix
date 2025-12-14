@@ -54,7 +54,6 @@
     };
   };
 
-
   zramSwap = {
     enable = true;
     algorithm = "zstd";
@@ -350,6 +349,7 @@
     claude-code
     zed-editor-fhs
     nixd
+    nil
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
