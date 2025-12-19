@@ -7,7 +7,9 @@ in
 {
   flake.nixosConfigurations = {
     # x86_64 hosts
-    "fablabmuc-38c3" = mkNixos "fablabmuc-38c3" "x86_64-linux" { } [ ] { };
+    "fablabmuc-38c3" = mkNixos "fablabmuc-38c3" "x86_64-linux" { } [
+      inputs.copyparty.nixosModules.default
+    ] { };
     "fablabmuc-38c3-minipc" = mkNixos "fablabmuc-38c3-minipc" "x86_64-linux" { } [ ] { };
     "desktop-simon" = mkNixos "desktop-simon" "x86_64-linux" { } [ ] { };
     "thinkpad-simon" = mkNixos "thinkpad-simon" "x86_64-linux" { } [
