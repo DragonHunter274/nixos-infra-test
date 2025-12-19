@@ -5,8 +5,8 @@ let
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.comin.nixosModules.comin
-    ../modules/usb-wakeup-disable.nix
-    ../modules/binary-caches.nix
+    ../modules/usb-wakeup-disable
+    ../modules/binary-caches
 
     # Overlays module
     (
