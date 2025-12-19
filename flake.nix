@@ -7,7 +7,7 @@
     nixpkgs-25-05.url = "nixpkgs/nixos-25.05";
     nixpkgs-23-11.url = "nixpkgs/nixos-23.11";
     makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
-
+    copyparty.url = "github:9001/copyparty";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
