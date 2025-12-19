@@ -19,7 +19,7 @@
     ./modules/nixos/libvirt.nix
     ./modules/nixos/fingerprint.nix
     ./modules/nixos/udev-mtkclient.nix
-    ../../modules/ftp.nix
+    ../../modules/ftp
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
     ../../modules/goldwarden-legacy.nix
@@ -274,6 +274,14 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
+
+  systemd.services.nix-daemon.serviceConfig = {
+    # Nice Nix daemon
+    Nice = lib.mkForce 15;
+    CPUWeight = 5;
+    IOSchedulingClass = lib.mkForce "idle";
+    IOSchedulingPriority = lib.mkForce 7;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.simon = {
