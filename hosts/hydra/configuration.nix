@@ -15,7 +15,7 @@ in
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
     ./hardware-configuration.nix
     inputs.sops-nix.nixosModules.sops
-    inputs.hydra-tools.nixosModules.default
+    inputs.hydra-tools.nixosModules.hydra-github-bridge
   ];
 
   networking.hostName = "hydra";
