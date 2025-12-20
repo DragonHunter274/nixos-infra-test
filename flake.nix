@@ -35,6 +35,10 @@
       url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
+    hydra-tools = {
+      url = "github:zw3rk/hydra-tools";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
