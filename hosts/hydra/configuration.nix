@@ -143,7 +143,7 @@ in
   # Hydra GitHub Bridge - reports build status to GitHub
   services.hydra-github-bridge.default = {
     enable = true;
-    ghAppId = config.sops.secrets.github-app-id.path;
+    ghAppId = 2507762; # TODO: Replace with your actual GitHub App ID number
     ghAppKeyFile = config.sops.secrets.github-app-key.path;
     ghUserAgent = "hydra-github-bridge/1.0 (hydra.dh274.com)";
     hydraHost = "https://hydra.dh274.com";
@@ -167,11 +167,6 @@ in
         mode = "0440";
       };
       nix-github-token = {
-        owner = hydraUser;
-        group = hydraGroup;
-        mode = "0440";
-      };
-      github-app-id = {
         owner = hydraUser;
         group = hydraGroup;
         mode = "0440";
