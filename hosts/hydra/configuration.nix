@@ -15,6 +15,7 @@ in
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
     ./hardware-configuration.nix
     inputs.sops-nix.nixosModules.sops
+    inputs.hydra-tools.nixosModules.default
   ];
 
   networking.hostName = "hydra";
@@ -139,6 +140,16 @@ in
     hydra-www.extraGroups = [ hydraGroup ];
   };
 
+  # Hydra GitHub Bridge - reports build status to GitHub
+  services.hydra-github-bridge.default = {
+    enable = true;
+    ghAppId = config.sops.secrets.github-app-id.path;
+    ghAppKeyFile = config.sops.secrets.github-app-key.path;
+    ghUserAgent = "hydra-github-bridge/1.0 (hydra.dh274.com)";
+    hydraHost = "https://hydra.dh274.com";
+    hydraDb = ""; # Use Unix socket connection
+  };
+
   # SOPS configuration
   sops = {
     defaultSopsFile = ./secrets/secrets.yaml;
@@ -156,6 +167,16 @@ in
         mode = "0440";
       };
       nix-github-token = {
+        owner = hydraUser;
+        group = hydraGroup;
+        mode = "0440";
+      };
+      github-app-id = {
+        owner = hydraUser;
+        group = hydraGroup;
+        mode = "0440";
+      };
+      github-app-key = {
         owner = hydraUser;
         group = hydraGroup;
         mode = "0440";
