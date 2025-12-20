@@ -543,7 +543,9 @@
         "github-webhooks": "github-webhooks",
         "haskellNix": "haskellNix",
         "nixpkgs": [
-          "nixpkgs"
+          "hydra-tools",
+          "haskellNix",
+          "nixpkgs-unstable"
         ],
         "servant-github-webhook": "servant-github-webhook",
         "treefmt-nix": "treefmt-nix"

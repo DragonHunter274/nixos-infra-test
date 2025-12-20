@@ -37,7 +37,8 @@
     };
     hydra-tools = {
       url = "github:zw3rk/hydra-tools";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Don't follow nixpkgs - let hydra-tools use its own compatible version
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
