@@ -551,15 +551,15 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1765420459,
-        "narHash": "sha256-cxsHvJYp2SiqvZAnMbImLjVQAG2TKxSqlneaN5YrypA=",
-        "owner": "zw3rk",
+        "lastModified": 1766325209,
+        "narHash": "sha256-5mdH+cAMNPU7ujbnOXpPTi/LKS+cFwbgj6uaQh8KZ4c=",
+        "owner": "DragonHunter274",
         "repo": "hydra-tools",
-        "rev": "c1c21b95330921c8d8817ec17e3a194237998e51",
+        "rev": "9984f93b52538f43190b2c631d73f46fe424d1ef",
         "type": "github"
       },
       "original": {
-        "owner": "zw3rk",
+        "owner": "DragonHunter274",
         "repo": "hydra-tools",
         "type": "github"
       }
