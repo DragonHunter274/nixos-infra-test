@@ -36,7 +36,7 @@
       inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
     hydra-tools = {
-      url = "github:zw3rk/hydra-tools";
+      url = "github:DragonHunter274/hydra-tools";
       # Don't follow nixpkgs - let hydra-tools use its own compatible version
       # inputs.nixpkgs.follows = "nixpkgs";
     };
