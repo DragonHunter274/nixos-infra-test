@@ -23,6 +23,7 @@
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
     ../../modules/goldwarden-legacy.nix
+    ./packages.nix
   ];
 
   virtualisation.waydroid.enable = true;
@@ -317,48 +318,6 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    cachix
-    (python3.withPackages (
-      ps: with ps; [
-        pyserial
-        kconfiglib
-      ]
-    ))
-    nixfmt-rfc-style
-    tlp
-    bitwarden-desktop
-    kdePackages.qtsvg
-    inputs.pyprland.packages."x86_64-linux".pyprland
-    elegant-sddm
-    xdg-utils
-    android-tools
-    go
-    tinygo
-    gcc
-    stlink
-    openocd
-    #adafruit-nrfutil
-    distrobox
-    # (limesuite.override { withGui = true; })
-    nfs-utils
-    nodejs_24
-    pico-sdk
-    # nur-packages.openbeken-flasher
-    # nur-packages.mtkclient
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
-    icu
-    icu.dev
-    sops
-    jetbrains.clion
-    claude-code
-    zed-editor-fhs
-    nixd
-    nil
-  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
