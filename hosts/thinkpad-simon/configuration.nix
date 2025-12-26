@@ -127,6 +127,9 @@
   services.printing.drivers = [
     pkgs.hplip
     pkgs.samsung-unified-linux-driver
+    (pkgs.writeTextDir "share/cups/model/brother_ql570_printer_en.ppd" (
+      builtins.readFile ./brother_ql570_printer_en.ppd
+    ))
   ];
 
   services.flatpak.enable = true;
@@ -318,6 +321,13 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  services.printing = {
+    listenAddresses = [ "*:631" ];
+    allowFrom = [ "all" ];
+    browsing = true;
+    defaultShared = true;
+    openFirewall = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -336,7 +346,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  networking.firewall.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
