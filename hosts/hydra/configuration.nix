@@ -88,6 +88,45 @@ in
     '';
   };
 
+  programs.ssh.extraConfig = ''
+    Host eu.nixbuild.net
+    PubkeyAcceptedKeyTypes ssh-ed25519
+    ServerAliveInterval 60
+    IPQoS throughput
+    IdentityFile /path/to/your/private/key
+  '';
+
+  programs.ssh.knownHosts = {
+    nixbuild = {
+      hostNames = [ "eu.nixbuild.net" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIQCZc54poJ8vqawd8TraNryQeJnvH1eLpIDgbiqymM";
+    };
+  };
+
+  nix.distributedBuilds = true;
+  nix.buildMachines = [
+    {
+      hostName = "localhost";
+      system = "x86_64-linux";
+      supportedFeatures = [
+        "nixos-test"
+        "benchmark"
+        "big-parallel"
+        "kvm"
+      ];
+      maxJobs = 4; # Adjust based on your CPU cores
+    }
+    {
+      hostName = "eu.nixbuild.net";
+      system = "aarch64-linux";
+      maxJobs = 100;
+      supportedFeatures = [
+        "benchmark"
+        "big-parallel"
+      ];
+    }
+  ];
+
   # Hydra CI/CD service
   services.hydra = {
     enable = true;
