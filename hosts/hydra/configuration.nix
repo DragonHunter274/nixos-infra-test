@@ -184,7 +184,7 @@ in
 
   # Hydra GitHub Bridge - reports build status to GitHub
   services.hydra-github-bridge.default = {
-    enable = true;
+    enable = false;
     ghAppId = 2507762; # TODO: Replace with your actual GitHub App ID number
     ghAppKeyFile = config.sops.secrets.github-app-key.path;
     ghUserAgent = "hydra-github-bridge/1.0 (hydra.dh274.com)";
