@@ -9,6 +9,7 @@
 let
   hydraUser = config.users.users.hydra.name;
   hydraGroup = config.users.users.hydra.group;
+  snix = import inputs.snix { localSystem = pkgs.stdenv.hostPlatform.system; };
 in
 {
   imports = [
@@ -171,6 +172,8 @@ in
     curl
     tmux
     openssh
+    snix.snix.cli.full-cli
+    snix.snix.nar-bridge
   ];
 
   # Configure Hydra service users to have access to secrets
