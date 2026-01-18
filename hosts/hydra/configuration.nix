@@ -94,7 +94,7 @@ in
     PubkeyAcceptedKeyTypes ssh-ed25519
     ServerAliveInterval 60
     IPQoS throughput
-    IdentityFile /path/to/your/private/key
+    IdentityFile /root/.ssh/id_ed25519
   '';
 
   programs.ssh.knownHosts = {
@@ -120,6 +120,7 @@ in
     {
       hostName = "eu.nixbuild.net";
       system = "aarch64-linux";
+      sshUser = "root";
       maxJobs = 100;
       supportedFeatures = [
         "benchmark"
@@ -133,7 +134,7 @@ in
     enable = true;
     hydraURL = "https://hydra.dh274.com";
     notificationSender = "hydra@localhost";
-    buildMachinesFiles = [ ];
+    buildMachinesFiles = [ "/etc/nix/machines" ];
     useSubstitutes = true;
     listenHost = "0.0.0.0";
     package = pkgs.hydra.overrideAttrs (oldAttrs: {
