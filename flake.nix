@@ -40,6 +40,10 @@
       # Don't follow nixpkgs - let hydra-tools use its own compatible version
       # inputs.nixpkgs.follows = "nixpkgs";
     };
+    snix = {
+      url = "git+https://git.snix.dev/snix/snix?ref=canon";
+      flake = false;
+    };
   };
 
   outputs =
