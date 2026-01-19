@@ -147,6 +147,7 @@ in
     extraConfig = ''
       Include ${config.sops.secrets.hydra-gh-auth.path}
       max_unsupported_time = 30
+      max_output_size = 10737418240
       <githubstatus>
         jobs = .*
         useShortContext = true
