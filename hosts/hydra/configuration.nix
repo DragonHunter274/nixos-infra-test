@@ -176,6 +176,7 @@ in
     openssh
     snix.snix.cli.full-cli
     snix.snix.nar-bridge
+    fuse3
   ];
 
   # Configure Hydra service users to have access to secrets
