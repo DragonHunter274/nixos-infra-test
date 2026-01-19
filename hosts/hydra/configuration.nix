@@ -120,6 +120,7 @@ in
     {
       hostName = "eu.nixbuild.net";
       system = "aarch64-linux";
+      sshKey = "/var/lib/hydra/queue-runner/.ssh/id_ed25519";
       maxJobs = 100;
       supportedFeatures = [
         "benchmark"
