@@ -120,7 +120,6 @@ in
     {
       hostName = "eu.nixbuild.net";
       system = "aarch64-linux";
-      sshUser = "root";
       maxJobs = 100;
       supportedFeatures = [
         "benchmark"
