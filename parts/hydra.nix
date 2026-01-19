@@ -28,9 +28,13 @@
     );
 
     # Build custom packages
+    # wireshark is excluded from aarch64-linux to avoid unnecessary ARM builds
+    # (it will still be built when used as a dependency in a system configuration)
     packages = {
       x86_64-linux = inputs.nur.packages.x86_64-linux or { };
-      aarch64-linux = inputs.nur.packages.aarch64-linux or { };
+      aarch64-linux = lib.filterAttrs (name: _: name != "wireshark") (
+        inputs.nur.packages.aarch64-linux or { }
+      );
     };
   };
 
