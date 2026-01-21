@@ -28,6 +28,14 @@ in
       "flakes"
     ];
     auto-optimise-store = true;
+
+    # Allow mounting the store via mounted-ssh://
+    # Users listed here can perform operations on the store via the nix-daemon
+    trusted-users = [
+      "root"
+      "@wheel"
+      "nix-builder"
+    ];
     # Override substituters for Hydra - exclude local caches
     substituters = lib.mkForce [
       "https://cache.nixos.org/"
@@ -183,6 +191,15 @@ in
   users.users = {
     hydra-queue-runner.extraGroups = [ hydraGroup ];
     hydra-www.extraGroups = [ hydraGroup ];
+
+    # User for remote nix store access via mounted-ssh://
+    nix-builder = {
+      isNormalUser = true;
+      description = "Nix remote builder user for mounted-ssh:// store access";
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB6/IpJGD6k1MlBn84Qfgq23tjtrVaKSlxZLdqgG49Ch nix-builder-store-access"
+      ];
+    };
   };
 
   # Hydra GitHub Bridge - reports build status to GitHub
