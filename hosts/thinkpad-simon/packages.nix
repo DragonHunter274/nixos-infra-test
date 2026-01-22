@@ -36,7 +36,7 @@
     icu
     icu.dev
     sops
-    jetbrains.clion
+    # jetbrains.clion # TODO: broken build - jetbrains-jdk-jcef fails to build from source
     claude-code
     zed-editor-fhs
     nixd
