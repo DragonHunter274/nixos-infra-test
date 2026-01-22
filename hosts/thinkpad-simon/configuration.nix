@@ -37,6 +37,7 @@
       speedFactor = 1;
       supportedFeatures = [ "big-parallel" ];
       sshKey = "/home/simon/.ssh/id_ed25519";
+      protocol= "ssh-ng";
     }
   ];
   nix.distributedBuilds = true;
