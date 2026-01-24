@@ -31,8 +31,8 @@
   nix.buildMachines = [
     {
       hostName = "nix-arm-builder";
-      systems = [ "aarch64-linux" ];
-      sshUser = "root";
+      systems = [ "x86_64-linux" ];
+      sshUser = "nix-builder";
       maxJobs = 8;
       speedFactor = 1;
       supportedFeatures = [ "big-parallel" ];
@@ -117,7 +117,6 @@
     };
   };
 
-  programs.adb.enable = true;
 
   #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 

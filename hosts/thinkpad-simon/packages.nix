@@ -41,5 +41,6 @@
     zed-editor-fhs
     nixd
     nil
+    kubectl
   ];
 }
