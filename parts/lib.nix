@@ -25,9 +25,6 @@ let
           (final: prev: {
             unstable = inputs.nixpkgs.legacyPackages.${system};
           })
-          (final: prev: {
-            pkgs-makemkv = inputs.makemkv.legacyPackages.${system} or prev.pkgs-makemkv or { };
-          })
         ];
       }
     )

@@ -5,8 +5,10 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-25-05.url = "nixpkgs/nixos-25.05";
     nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
-    makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
-    copyparty.url = "github:9001/copyparty";
+    copyparty = {
+      url = "github:9001/copyparty";
+      nixpkgs.follows = "nixpkgs";
+    };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -26,9 +28,20 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.url = "github:hyprwm/Hyprland/71a1216abcc7031776630a6d88f105605c4dc1c9";
-    pyprland.url = "github:DragonHunter274/pyprland/fix-nix-flake";
-    hyprlock.url = "github:hyprwm/hyprlock";
+    hyprland = {
+      url = "github:hyprwm/Hyprland/71a1216abcc7031776630a6d88f105605c4dc1c9";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    pyprland = {
+      url = "github:DragonHunter274/pyprland/fix-nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
     nixos-06cb-009a-fingerprint-sensor = {
       url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
