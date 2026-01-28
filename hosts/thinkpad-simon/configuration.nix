@@ -34,10 +34,10 @@
       systems = [ "x86_64-linux" ];
       sshUser = "nix-builder";
       maxJobs = 8;
-      speedFactor = 1;
+      speedFactor = 3;
       supportedFeatures = [ "big-parallel" ];
       sshKey = "/home/simon/.ssh/id_ed25519";
-      protocol= "ssh-ng";
+      protocol = "ssh-ng";
     }
   ];
   nix.distributedBuilds = true;
@@ -116,7 +116,6 @@
       };
     };
   };
-
 
   #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 

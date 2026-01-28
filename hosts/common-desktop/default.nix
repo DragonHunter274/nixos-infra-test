@@ -91,7 +91,7 @@
   };
 
   programs.wireshark.enable = true;
-  programs.wireshark.package = pkgs.nur-packages.wireshark;
+  # programs.wireshark.package = pkgs.nur-packages.wireshark;  # TODO: Use nixpkgs wireshark
 
   environment.systemPackages = with pkgs; [
     pkgs.nur-packages.docker-credential-ghcr-login

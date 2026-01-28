@@ -43,7 +43,7 @@
     segger-jlink-headless
     #cutecom
     nur-packages.rofi-nixsearch
-    nur-packages.mtkclient
+    # nur-packages.mtkclient  # broken
     handbrake
     ffmpeg
     nur-packages.rbw-run

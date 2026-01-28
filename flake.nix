@@ -3,9 +3,8 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    nixpkgs-24-05.url = "nixpkgs/nixos-24.05";
     nixpkgs-25-05.url = "nixpkgs/nixos-25.05";
-    nixpkgs-23-11.url = "nixpkgs/nixos-23.11";
+    nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
     makemkv.url = "nixpkgs/cf9c59527b042f4502a7b4ea5b484bfbc4e5c6ca";
     copyparty.url = "github:9001/copyparty";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -49,6 +48,7 @@
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
+
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -56,6 +56,7 @@
 
       imports = [
         ./parts/hosts.nix
+        ./parts/isos.nix
         ./parts/hydra.nix
         ./parts/dev-shells.nix
       ];

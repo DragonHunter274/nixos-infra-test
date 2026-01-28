@@ -20,7 +20,7 @@
             sops
           ]
           ++ lib.optionals (system == "x86_64-linux") [
-            inputs.nix-netboot-serve.packages.${system}.default
+            inputs.nix-netboot-serve.defaultPackage.${system}
           ];
 
         shellHook = ''

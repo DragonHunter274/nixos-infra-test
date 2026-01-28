@@ -1,95 +1,110 @@
 inputs:
+
 let
-  # Common modules for all hosts
+  lib = inputs.nixpkgs.lib;
+
+  # -------------------------
+  # Common modules
+  # -------------------------
   commonModules = system: [
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.comin.nixosModules.comin
+
     ../modules/usb-wakeup-disable
     ../modules/binary-caches
 
-    # Overlays module
+    # overlays
     (
-      { pkgs, ... }:
+      { ... }:
       {
         nixpkgs.overlays = [
-          (final: prev: { nur-packages = inputs.nur.packages.${system} or { }; })
-          (final: prev: { unstable = inputs.nixpkgs.legacyPackages.${system}; })
-          (final: prev: { pkgs-makemkv = inputs.makemkv.legacyPackages.${system} or prev.pkgs-makemkv; })
+          (final: prev: {
+            nur-packages = inputs.nur.packages.${system} or { };
+          })
+          (final: prev: {
+            unstable = inputs.nixpkgs.legacyPackages.${system};
+          })
+          (final: prev: {
+            pkgs-makemkv = inputs.makemkv.legacyPackages.${system} or prev.pkgs-makemkv or { };
+          })
         ];
       }
     )
 
-    # Home-manager setup
     inputs.home-manager.nixosModules.home-manager
   ];
 
-  # Comin gitops configuration module
-  cominModule =
-    { ... }:
-    {
-      services.comin = {
-        enable = true;
-        allowForcePushMain = true;
-        remotes = [
-          {
-            name = "origin";
-            url = "https://github.com/dragonhunter274/nixos-infra-test.git";
-            branches.main.name = "main";
-          }
-        ];
-      };
+  # -------------------------
+  # Comin
+  # -------------------------
+  cominModule = hostname: {
+    services.comin = {
+      enable = true;
+      hostname = hostname;
+      remotes = [
+        {
+          name = "origin";
+          url = "https://github.com/dragonhunter274/nixos-infra-test.git";
+          branches.main.name = "main";
+        }
+      ];
+    };
+  };
+
+  # -------------------------
+  # Home-manager helper
+  # -------------------------
+  homeManagerCfg = system: extraUsers: {
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
+
+    home-manager.extraSpecialArgs = {
+      pkgs-unstable = inputs.nixpkgs.legacyPackages.${system};
+      pkgs-24-05 = inputs.nixpkgs-24-05.legacyPackages.${system};
+      inherit inputs;
     };
 
-  # Home-manager configuration helper
-  homeManagerCfg =
-    system: extraImports:
-    { ... }:
-    {
-      home-manager.extraSpecialArgs = {
-        pkgs-unstable = inputs.nixpkgs.legacyPackages.${system};
-        pkgs-24-05 = inputs.nixpkgs-24-05.legacyPackages.${system};
-        inherit inputs;
-      };
-      home-manager.users = extraImports;
-    };
+    home-manager.users = extraUsers;
+  };
 
-  # Raspberry Pi specific modules
+  # -------------------------
+  # Raspberry Pi modules
+  # -------------------------
   rpiModules = [
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
     "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+
     (
-      { pkgs, lib, ... }:
+      { ... }:
       {
         boot.loader = {
           grub.enable = false;
           generic-extlinux-compatible.enable = true;
         };
+
         fileSystems."/" = {
           device = "/dev/disk/by-label/NIXOS_SD";
           fsType = "ext4";
         };
+
         sdImage.compressImage = true;
       }
     )
   ];
 
-  # ISO image modules
+  # -------------------------
+  # ISO modules
+  # -------------------------
   isoModules = [
     "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    (
-      { pkgs, lib, ... }:
-      {
-        # Enable SSH in the installer
-        services.openssh.enable = true;
 
-        # Allow password login for installation
+    (
+      { pkgs, ... }:
+      {
+        services.openssh.enable = true;
         services.openssh.settings.PermitRootLogin = "yes";
 
-        # Set a default password (you should change this!)
-        # users.users.root.initialPassword = "nixos";
-
-        # Optional: Include additional tools in the ISO
         environment.systemPackages = with pkgs; [
           git
           vim
@@ -97,74 +112,90 @@ let
           curl
         ];
 
-        # Compress the ISO
         isoImage.squashfsCompression = "zstd";
       }
     )
   ];
+
 in
 {
-  # Helper to create a NixOS system
+  # =========================================================
+  # mkNixos
+  # =========================================================
   mkNixos =
-    hostname: system: extraHmUsers: extraModules:
     {
+      hostname,
+      system,
+      extraHmUsers ? { },
+      extraModules ? [ ],
       enableComin ? true,
     }:
+
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
+
       specialArgs = { inherit inputs; };
-      modules = inputs.nixpkgs.lib.flatten [
+
+      modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system extraHmUsers)
         (commonModules system)
-        (if enableComin then [ cominModule ] else [ ])
+        (if enableComin then [ (cominModule hostname) ] else [ ])
         extraModules
       ];
     };
 
-  # Helper to create a Raspberry Pi system
+  # =========================================================
+  # mkRaspberryPi
+  # =========================================================
   mkRaspberryPi =
-    hostname: extraHmUsers: extraModules:
     {
+      hostname,
+      extraHmUsers ? { },
+      extraModules ? [ ],
       enableComin ? true,
     }:
+
     inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
+
       specialArgs = { inherit inputs; };
-      modules = inputs.nixpkgs.lib.flatten [
+
+      modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg "aarch64-linux" extraHmUsers)
         (commonModules "aarch64-linux")
-        (if enableComin then [ cominModule ] else [ ])
+        (if enableComin then [ (cominModule hostname) ] else [ ])
         rpiModules
         extraModules
-        [
-          (
-            { pkgs, ... }:
-            {
-              nixpkgs.config.allowUnsupportedSystem = true;
-              nixpkgs.hostPlatform = {
-                system = "aarch64-linux";
-              };
-            }
-          )
-        ]
+
+        {
+          nixpkgs.config.allowUnsupportedSystem = true;
+          nixpkgs.hostPlatform.system = "aarch64-linux";
+        }
       ];
     };
 
-  # Helper to create an ISO installer system
+  # =========================================================
+  # mkISO
+  # =========================================================
   mkISO =
-    hostname: system: extraModules:
     {
+      hostname,
+      system,
+      extraModules ? [ ],
       enableComin ? false,
     }:
+
     inputs.nixpkgs.lib.nixosSystem {
       inherit system;
+
       specialArgs = { inherit inputs; };
-      modules = inputs.nixpkgs.lib.flatten [
+
+      modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (commonModules system)
-        (if enableComin then [ cominModule ] else [ ])
+        (if enableComin then [ (cominModule hostname) ] else [ ])
         isoModules
         extraModules
       ];
