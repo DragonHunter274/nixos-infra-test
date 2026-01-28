@@ -91,10 +91,13 @@ in
 
   # Cache DNS lookups to improve performance
   services.resolved = {
-    extraConfig = ''
-      Cache=true
-      CacheFromLocalhost=true
-    '';
+    enable = true;
+    settings = {
+      Resolve = {
+        Cache = "yes";
+        CacheFromLocalhost = "yes";
+      };
+    };
   };
 
   programs.ssh.extraConfig = ''

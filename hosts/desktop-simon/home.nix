@@ -98,7 +98,7 @@
     sops
     texliveFull
     nur-packages.rofi-nixsearch
-    nur-packages.mtkclient
+    # nur-packages.mtkclient  # broken
     texlivePackages.latexmk
   ];
 

@@ -2,7 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -54,23 +59,21 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-
-  systemd.services.ip-sender = {
-    enable = true;
-    description = "bar";
-    unitConfig = {
-      Type = "simple";
-      # ...
-    };
-    serviceConfig = {
-      ExecStart = "${inputs.nur.packages.x86_64-linux.ip-sender}/bin/ip-sender";
-      # ...
-    };
-    wantedBy = [ "multi-user.target" ];
-    # ...
-  };
-
-
+  # ip-sender service (incomplete - needs configuration)
+  # systemd.services.ip-sender = {
+  #   enable = true;
+  #   description = "bar";
+  #   unitConfig = {
+  #     Type = "simple";
+  #     # ...
+  #   };
+  #   serviceConfig = {
+  #     ExecStart = "${inputs.nur.packages.x86_64-linux.ip-sender}/bin/ip-sender";
+  #     # ...
+  #   };
+  #   wantedBy = [ "multi-user.target" ];
+  #   # ...
+  # };
 
   # Configure keymap in X11
   services.xserver.xkb = {
