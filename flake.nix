@@ -7,7 +7,7 @@
     nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
     copyparty = {
       url = "github:9001/copyparty";
-      nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
