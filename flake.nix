@@ -12,22 +12,35 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-netboot-serve.url = "github:DeterminateSystems/nix-netboot-serve";
+    nix-netboot-serve = {
+      url = "github:DeterminateSystems/nix-netboot-serve";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:dragonhunter274/nur-packages";
+
+    nur = {
+      url = "github:dragonhunter274/nur-packages";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     comin = {
       url = "github:dragonhunter274/comin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     hyprland = {
       url = "github:hyprwm/Hyprland/71a1216abcc7031776630a6d88f105605c4dc1c9";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,7 +55,11 @@
       url = "github:hyprwm/hyprlock";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    termfilepickers.url = "github:guekka/xdg-desktop-portal-termfilepickers";
+
+    termfilepickers = {
+      url = "github:guekka/xdg-desktop-portal-termfilepickers";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-06cb-009a-fingerprint-sensor = {
       url = "github:ahbnr/nixos-06cb-009a-fingerprint-sensor";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
