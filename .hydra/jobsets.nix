@@ -34,7 +34,7 @@ let
       schedulingshares = 100;
       enableemail = false;
       emailoverride = "";
-      keepnr = 10;
+      keepnr = 3;
       type = 1;
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
