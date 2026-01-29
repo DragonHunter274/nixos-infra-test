@@ -16,7 +16,7 @@ in
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
     ./hardware-configuration.nix
     inputs.sops-nix.nixosModules.sops
-    inputs.hydra-tools.nixosModules.hydra-github-bridge  # disabled - pulls in haskellNix/cabal
+    inputs.hydra-tools.nixosModules.hydra-github-bridge # disabled - pulls in haskellNix/cabal
   ];
 
   networking.hostName = "hydra";
@@ -151,7 +151,7 @@ in
     package = pkgs.hydra.overrideAttrs (oldAttrs: {
       patches = (oldAttrs.patches or [ ]) ++ [
         ./flake-output-selection.patch
-        ./disable-maintainer-notifications.patch
+        # ./disable-maintainer-notifications.patch
         ./ntfy-notification-plugin.patch
       ];
     });
@@ -206,7 +206,6 @@ in
   };
 
   # Hydra GitHub Bridge - reports build status to GitHub
-  Disabled - module pulls in haskellNix/cabal dependencies
   services.hydra-github-bridge.default = {
     enable = false;
     ghAppId = 2507762;
