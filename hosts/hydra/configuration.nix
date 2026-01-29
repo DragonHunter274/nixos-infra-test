@@ -16,7 +16,7 @@ in
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
     ./hardware-configuration.nix
     inputs.sops-nix.nixosModules.sops
-    # inputs.hydra-tools.nixosModules.hydra-github-bridge  # disabled - pulls in haskellNix/cabal
+    inputs.hydra-tools.nixosModules.hydra-github-bridge  # disabled - pulls in haskellNix/cabal
   ];
 
   networking.hostName = "hydra";
@@ -206,15 +206,15 @@ in
   };
 
   # Hydra GitHub Bridge - reports build status to GitHub
-  # Disabled - module pulls in haskellNix/cabal dependencies
-  # services.hydra-github-bridge.default = {
-  #   enable = false;
-  #   ghAppId = 2507762;
-  #   ghAppKeyFile = config.sops.secrets.github-app-key.path;
-  #   ghUserAgent = "hydra-github-bridge/1.0 (hydra.dh274.com)";
-  #   hydraHost = "https://hydra.dh274.com";
-  #   hydraDb = "";
-  # };
+  Disabled - module pulls in haskellNix/cabal dependencies
+  services.hydra-github-bridge.default = {
+    enable = false;
+    ghAppId = 2507762;
+    ghAppKeyFile = config.sops.secrets.github-app-key.path;
+    ghUserAgent = "hydra-github-bridge/1.0 (hydra.dh274.com)";
+    hydraHost = "https://hydra.dh274.com";
+    hydraDb = "";
+  };
 
   # SOPS configuration
   sops = {
