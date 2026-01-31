@@ -89,6 +89,7 @@
         ./parts/isos.nix
         ./parts/hydra.nix
         ./parts/dev-shells.nix
+        ./parts/ipxe.nix
       ];
 
       perSystem =
