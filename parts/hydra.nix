@@ -23,8 +23,8 @@
     # using the flakeref#isoImages syntax (requires patched Hydra)
 
     # Build netboot artifacts for netboot-enabled systems
-    netboot = lib.mapAttrs (_: cfg: cfg.config.system.build.netboot) (
-      lib.filterAttrs (name: cfg: cfg.config.system.build ? netboot) self.nixosConfigurations
+    netboot = lib.mapAttrs (_: cfg: cfg.config.system.build.netbootRamdisk) (
+      lib.filterAttrs (name: cfg: cfg.config.system.build ? netbootRamdisk) self.nixosConfigurations
     );
 
     # Build custom packages

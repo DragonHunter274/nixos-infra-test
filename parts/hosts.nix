@@ -54,6 +54,16 @@ in
       extraModules = [ ../modules/k3s.nix ];
     };
 
+    netboot-minimal-netboot = builders.mkNetboot {
+      system = "x86_64-linux";
+      hostname = "nixos-minimal";
+    };
+
+    netboot-minimal-iso = builders.mkISO {
+      system = "x86_64-linux";
+      hostname = "nixos-minimal";
+    };
+
     hydra = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "hydra";

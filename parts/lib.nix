@@ -91,6 +91,31 @@ let
   ];
 
   # -------------------------
+  # Netboot modules
+  # -------------------------
+  netbootModules = [
+    "${inputs.nixpkgs}/nixos/modules/installer/netboot/netboot-minimal.nix"
+
+    (
+      { lib, ... }:
+      {
+        services.openssh.enable = true;
+        services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
+
+        # Override disk-related config from host configurations
+        # disko and hardware-configuration set these at default priority,
+        # but netboot-minimal's mkImageMediaOverride (priority 60) may not
+        # win against disko. Force-disable everything disk-related.
+        boot.loader.systemd-boot.enable = lib.mkForce false;
+        boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
+        boot.resumeDevice = lib.mkForce "";
+        disko.devices = lib.mkForce { };
+        swapDevices = lib.mkForce [ ];
+      }
+    )
+  ];
+
+  # -------------------------
   # ISO modules
   # -------------------------
   isoModules = [
@@ -194,6 +219,31 @@ in
         (commonModules system)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         isoModules
+        extraModules
+      ];
+    };
+
+  # =========================================================
+  # mkNetboot
+  # =========================================================
+  mkNetboot =
+    {
+      hostname,
+      system,
+      extraModules ? [ ],
+      enableComin ? false,
+    }:
+
+    inputs.nixpkgs.lib.nixosSystem {
+      inherit system;
+
+      specialArgs = { inherit inputs; };
+
+      modules = lib.flatten [
+        ../hosts/${hostname}/configuration.nix
+        (commonModules system)
+        (if enableComin then [ (cominModule hostname) ] else [ ])
+        netbootModules
         extraModules
       ];
     };
