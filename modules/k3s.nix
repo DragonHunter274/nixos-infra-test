@@ -38,7 +38,25 @@ in
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable Single Node K3S Cluster.";
+      description = "Enable K3S Cluster Node.";
+    };
+
+    serverAddr = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = ''
+        Address of an existing server to join (e.g., https://10.0.0.1:6443).
+        When empty, this node initializes a new cluster with --cluster-init.
+      '';
+    };
+
+    tokenFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = ''
+        Path to file containing the K3s cluster token.
+        Required for nodes joining an existing cluster.
+      '';
     };
 
     delay = lib.mkOption {
@@ -77,6 +95,15 @@ in
           Set required preconditions to install cilium to k3s cluster
         '';
       };
+    };
+
+    secretsEncryption = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Enable secrets encryption for the k3s cluster.
+        Disable when joining a cluster that was set up without secrets-encryption.
+      '';
     };
 
     services = {
@@ -269,7 +296,6 @@ in
         "--kube-controller-manager-arg bind-address=0.0.0.0"
         "--kube-scheduler-arg bind-address=0.0.0.0"
         "--etcd-expose-metrics"
-        "--secrets-encryption"
         "--write-kubeconfig-mode 0644"
         "--kube-apiserver-arg='enable-admission-plugins=${lib.concatStringsSep "," k3sAdmissionPlugins}'"
       ]
@@ -283,6 +309,9 @@ in
       ]
       ++ lib.optionals cfg.prepare.cilium [
         "--kubelet-arg=register-with-taints=node.cilium.io/agent-not-ready:NoExecute"
+      ]
+      ++ lib.optionals cfg.secretsEncryption [
+        "--secrets-encryption"
       ];
       k3sDisableFlags = builtins.map (service: "--disable ${service}") k3sDisabledServices;
       k3sCombinedFlags = lib.concatLists [
@@ -414,9 +443,9 @@ in
           ])
         ];
         allowedUDPPorts = lib.mkMerge [
-          (lib.mkIf cfg.prepare.cilium [
-            8472 # VXLAN overlay
-          ])
+          [
+            8472 # VXLAN overlay (flannel/cilium inter-node)
+          ]
         ];
         allowedTCPPortRanges = [
           {
@@ -449,6 +478,9 @@ in
         k3s = {
           enable = true;
           role = "server";
+          clusterInit = (cfg.serverAddr == "");
+          serverAddr = cfg.serverAddr;
+          tokenFile = lib.mkIf (cfg.tokenFile != null) cfg.tokenFile;
           environmentFile = "/etc/rancher/k3s/k3s.service.env";
           extraFlags = lib.concatStringsSep " " k3sCombinedFlags;
         };
@@ -515,7 +547,7 @@ in
             Unit = "k3s-delay.service";
           };
         };
-        timers."k3s-helm-bootstrap" = lib.mkIf cfg.bootstrap.helm.enable {
+        timers."k3s-helm-bootstrap" = lib.mkIf (cfg.bootstrap.helm.enable && cfg.serverAddr == "") {
           wantedBy = [ "timers.target" ];
           timerConfig = {
             OnBootSec = "3m";
@@ -523,7 +555,7 @@ in
             Unit = "k3s-helm-bootstrap.service";
           };
         };
-        timers."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux.enable {
+        timers."k3s-flux2-bootstrap" = lib.mkIf (cfg.services.flux.enable && cfg.serverAddr == "") {
           wantedBy = [ "timers.target" ];
           timerConfig = {
             OnBootSec = "3m";
@@ -533,7 +565,7 @@ in
         };
       };
 
-      systemd.services."k3s-helm-bootstrap" = lib.mkIf cfg.bootstrap.helm.enable {
+      systemd.services."k3s-helm-bootstrap" = lib.mkIf (cfg.bootstrap.helm.enable && cfg.serverAddr == "") {
         script = ''
           export PATH="$PATH:${pkgs.git}/bin:${pkgs.kubernetes-helm}/bin"
           if ${pkgs.kubectl}/bin/kubectl ${cfg.bootstrap.helm.completedIf} ; then
@@ -553,7 +585,7 @@ in
         };
       };
 
-      systemd.services."k3s-flux2-bootstrap" = lib.mkIf cfg.services.flux.enable {
+      systemd.services."k3s-flux2-bootstrap" = lib.mkIf (cfg.services.flux.enable && cfg.serverAddr == "") {
         script =
           let
             ageKeyPath =
