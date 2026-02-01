@@ -459,10 +459,6 @@ in
         prometheus.exporters.node = {
           enable = true;
         };
-        openiscsi = {
-          enable = true;
-          name = "iscsid";
-        };
         nfs.server = lib.mkIf cfg.addons.nfs.enable {
           enable = true;
           exports = ''
