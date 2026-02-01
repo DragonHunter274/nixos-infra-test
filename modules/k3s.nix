@@ -484,6 +484,10 @@ in
           environmentFile = "/etc/rancher/k3s/k3s.service.env";
           extraFlags = lib.concatStringsSep " " k3sCombinedFlags;
         };
+        openiscsi = {
+          enable = true;
+          name = "${config.networking.hostName}-initiatorhost";
+        };
       };
 
       systemd = {
@@ -512,6 +516,10 @@ in
             serviceConfig = {
               TimeoutStartSec = lib.mkForce (120 + cfg.delay);
             };
+          };
+          iscsid.serviceConfig = {
+            PrivateMounts = "yes";
+            BindPaths = "/run/current-system/sw/bin:/bin";
           };
           minio-init = lib.mkIf cfg.addons.minio.enable {
             enable = true;
@@ -563,6 +571,9 @@ in
             Unit = "k3s-flux2-bootstrap.service";
           };
         };
+        tmpfiles.rules = [
+          "L /usr/bin/mount - - - - /run/current-system/sw/bin/mount"
+        ];
       };
 
       systemd.services."k3s-helm-bootstrap" = lib.mkIf (cfg.bootstrap.helm.enable && cfg.serverAddr == "") {
