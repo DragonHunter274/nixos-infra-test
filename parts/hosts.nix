@@ -54,6 +54,13 @@ in
       extraModules = [ ../modules/k3s.nix ];
     };
 
+    k3s-node2 = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "k3s-node2";
+      extraHmUsers = { };
+      extraModules = [ ../modules/k3s.nix ];
+    };
+
     netboot-minimal-netboot = builders.mkNetboot {
       system = "x86_64-linux";
       hostname = "nixos-minimal";
