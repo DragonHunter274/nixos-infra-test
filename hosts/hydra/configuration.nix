@@ -167,7 +167,6 @@ in
         jobs = .*
         topic = hydra-dh274
         server = https://ntfy.sh
-        per_job = 1
       </ntfy>
     '';
     extraEnv = {
