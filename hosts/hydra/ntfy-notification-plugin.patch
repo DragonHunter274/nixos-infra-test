@@ -1,9 +1,9 @@
 diff --git a/src/lib/Hydra/Plugin/NtfyNotification.pm b/src/lib/Hydra/Plugin/NtfyNotification.pm
 new file mode 100644
-index 00000000..27f1f06b
+index 00000000..8f77a94b
 --- /dev/null
 +++ b/src/lib/Hydra/Plugin/NtfyNotification.pm
-@@ -0,0 +1,225 @@
+@@ -0,0 +1,263 @@
 +package Hydra::Plugin::NtfyNotification;
 +
 +use strict;
@@ -70,16 +70,36 @@ index 00000000..27f1f06b
 +only when build status changes from success to failure, and vice-versa. Any
 +other value results in reporting on every build.
 +
++=item per_job
++
++(Optional) If set to 1, each build is sent to a separate topic derived from
++the job name. The configured C<topic> is used as a prefix, and the job name
++is appended with dots and colons replaced by hyphens. For example, with
++C<topic = hydra> and a job named C<myproject:jobset:handbrake.x86_64-linux>,
++the notification is sent to topic C<hydra-myproject-jobset-handbrake-x86_64-linux>.
++This allows ntfy subscribers to use wildcard patterns (e.g. C<hydra-*>) to
++filter notifications. Topic names are truncated to 64 characters (ntfy limit)
++and only contain C<A-Za-z0-9>, C<->, and C<_>. Defaults to 0.
++
 +=back
 +
 +=head1 EXAMPLE CONFIGURATION
 +
++  # Single topic for all matching builds
 +  <ntfy>
 +    jobs = myproject:.*
 +    topic = hydra-builds
 +    server = https://ntfy.sh
 +    priority = 3
 +    force = 0
++  </ntfy>
++
++  # Per-job topics (e.g. hydra-myproject-jobset-handbrake-x86_64-linux)
++  <ntfy>
++    jobs = myproject:.*
++    topic = hydra
++    server = https://ntfy.sh
++    per_job = 1
 +  </ntfy>
 +
 +=cut
@@ -113,6 +133,16 @@ index 00000000..27f1f06b
 +
 +    my $baseurl = $self->{config}->{'base_uri'} || "http://localhost:3000";
 +
++    # Sanitize a string for use in ntfy topic names (A-Za-z0-9, -, _ only).
++    my $sanitize_topic = sub {
++        my ($s) = @_;
++        $s =~ s/[.:]+/-/g;     # Replace dots and colons with hyphens
++        $s =~ s/[^A-Za-z0-9_-]//g;  # Strip anything else
++        $s =~ s/-+/-/g;        # Collapse consecutive hyphens
++        $s =~ s/^-|-$//g;      # Trim leading/trailing hyphens
++        return substr($s, 0, 64);
++    };
++
 +    # Figure out to which topics to send notification. For each topic
 +    # we send one aggregate message.
 +    my %topics;
@@ -136,8 +166,16 @@ index 00000000..27f1f06b
 +            # with same buildstatus, do not send ntfy notification.
 +            next if ! $force && $sameAsPrevious;
 +
-+            my $topic_key = $ntfy_config->{topic} . ":" . ($ntfy_config->{server} // "https://ntfy.sh");
-+            $topics{$topic_key} //= { config => $ntfy_config, builds => [] };
++            my $server = $ntfy_config->{server} // "https://ntfy.sh";
++            my $topic;
++            if ($ntfy_config->{per_job}) {
++                $topic = $sanitize_topic->($ntfy_config->{topic} . "-" . $jobName);
++            } else {
++                $topic = $ntfy_config->{topic};
++            }
++
++            my $topic_key = $topic . ":" . $server;
++            $topics{$topic_key} //= { config => $ntfy_config, topic => $topic, builds => [] };
 +            push @{$topics{$topic_key}->{builds}}, $build;
 +        }
 +    }
@@ -153,7 +191,7 @@ index 00000000..27f1f06b
 +        my @deps = grep { $_->id != $topbuild->id } @{$topic_data->{builds}};
 +
 +        my $server = $ntfy_config->{server} // "https://ntfy.sh";
-+        my $topic = $ntfy_config->{topic};
++        my $topic = $topic_data->{topic};
 +        my $url = "$server/$topic";
 +
 +        # Determine priority and tags based on build status
