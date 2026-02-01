@@ -1,120 +1,72 @@
-# k3s-dev-local Installation Guide
+# k3s-node2 Installation Guide
 
-This host is configured for bare metal Intel hardware installation using nixos-anywhere.
+K3s server node joining an existing cluster at `10.100.1.55:6443`, installed via nixos-anywhere.
 
 ## Prerequisites
 
-1. Install nixos-anywhere on your local machine:
-   ```bash
-   nix-shell -p nixos-anywhere
-   ```
-
-2. Ensure you have SSH access to the target machine
+1. The existing k3s server (node1 at `10.100.1.55`) must be running with `--cluster-init` (embedded etcd)
+2. The k3s cluster join token from node1 (found at `/var/lib/rancher/k3s/server/node-token`)
+3. Boot the target machine with a NixOS live ISO (USB)
 
 ## Configuration
 
-The host is configured with:
-- **Disko**: Automatic disk partitioning ([disko-config.nix](disko-config.nix))
-- **Hardware**: Intel x86_64 bare metal ([hardware-configuration.nix](hardware-configuration.nix))
-- **K3s**: Kubernetes cluster with Flux GitOps
-- **Default disk**: `/dev/sda` (adjust in [configuration.nix](configuration.nix) if needed)
+- **Disko**: ZFS mirror across two SSDs ([disko-config.nix](disko-config.nix))
+- **Network**: Static IP `10.100.1.56/16`, gateway `10.100.0.1`
+- **K3s**: Joins existing cluster as server node, secrets-encryption disabled
+- **Bootloader**: GRUB with EFI support
 
-### Disk Configuration
+### Disk Layout (ZFS Mirror)
 
-By default, disko will partition the disk as follows:
-- **Boot partition**: 1MB BIOS boot (EF02)
+Two 120GB SATA SSDs in a ZFS mirror (`rpool`):
+- `ata-TS120GSSD220S_030811E9E26762210138`
+- `ata-TS120GSSD220S_020811E9E267629E0200`
+
+Each disk is partitioned as:
+- **Boot**: 1MB BIOS boot (EF02)
 - **ESP**: 1GB EFI System Partition (vfat)
-- **Swap**: 8GB swap partition
-- **Root**: Remaining space (ext4)
+- **ZFS**: Remaining space
 
-To use a different disk device (e.g., NVMe), edit [configuration.nix](configuration.nix):
-```nix
-disko.devices.disk.main.device = "/dev/nvme0n1";
-```
+ZFS datasets: `root` (`/`), `nix` (`/nix`), `var` (`/var`), `home` (`/home`)
 
 ## Installation
 
-### Option 1: Install from Live ISO
+### Quick Install
 
-1. Boot the target machine with a NixOS live ISO
-2. Ensure network connectivity
-3. From your local machine, run:
-   ```bash
-   nixos-anywhere --flake .#k3s-dev-local root@<target-ip>
-   ```
-
-### Option 2: Install from Existing Linux
-
-If the target machine is running any Linux distribution:
 ```bash
-nixos-anywhere --flake .#k3s-dev-local root@<target-ip>
+./INSTALL.sh <installer-dhcp-ip>
 ```
 
-### Option 3: Install with Custom SSH Key
+The script will:
+1. Prompt for the k3s join token
+2. Run nixos-anywhere (as `nixos` user with sudo)
+3. Prompt to remove USB media before reboot
+4. Wait for the machine to come up at `10.100.1.56`
+5. Push the join token and restart k3s
+
+### Manual Install
 
 ```bash
-nixos-anywhere --flake .#k3s-dev-local root@<target-ip> \
-  --ssh-key ~/.ssh/id_ed25519
+nixos-anywhere --flake .#k3s-node2 nixos@<installer-ip> \
+  --ssh-option "ForwardAgent=yes" \
+  --build-on remote \
+  --no-reboot
+```
+
+After install, remove USB media, then reboot. Push the token manually:
+```bash
+ssh root@10.100.1.56 'mkdir -p /var/lib/k3s && echo "YOUR_TOKEN" > /var/lib/k3s/token && chmod 600 /var/lib/k3s/token'
+ssh root@10.100.1.56 'systemctl restart k3s'
 ```
 
 ## Post-Installation
 
 After installation:
+1. SSH: `ssh root@10.100.1.56`
+2. Check k3s: `systemctl status k3s`
+3. Verify cluster join: `k3s kubectl get nodes`
 
-1. The system will reboot automatically
-2. SSH access will be available with the authorized key configured in [configuration.nix](configuration.nix)
-3. K3s will start automatically and set up the cluster
-4. Flux will sync from the configured Git repository
+## Rebuilding
 
-## Building Locally
-
-Test the configuration builds correctly:
 ```bash
-nix build .#nixosConfigurations.k3s-dev-local.config.system.build.toplevel
-```
-
-## Customization
-
-### Change Disk Device
-
-Edit [configuration.nix](configuration.nix):
-```nix
-disko.devices.disk.main.device = "/dev/nvme0n1";  # Change this
-```
-
-### Modify Partition Layout
-
-Edit [disko-config.nix](disko-config.nix) to adjust partition sizes or add additional partitions.
-
-### Update SSH Keys
-
-Edit [configuration.nix](configuration.nix):
-```nix
-users.users.root.openssh.authorizedKeys.keys = [
-  "your-ssh-public-key-here"
-];
-```
-
-## Troubleshooting
-
-### Disk Not Found
-
-If nixos-anywhere can't find the disk:
-1. Boot into a live environment
-2. Run `lsblk` to identify disk devices
-3. Update `disko.devices.disk.main.device` in [configuration.nix](configuration.nix)
-
-### SSH Connection Failed
-
-Ensure:
-- Target machine is reachable via SSH
-- Root login is permitted (temporarily enable if needed)
-- SSH keys are properly configured
-
-### Build Errors
-
-Check the flake builds locally first:
-```bash
-nix flake check
-nix build .#nixosConfigurations.k3s-dev-local.config.system.build.toplevel
+nixos-rebuild switch --flake .#k3s-node2 --target-host root@10.100.1.56
 ```
