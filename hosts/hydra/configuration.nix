@@ -163,6 +163,12 @@ in
         jobs = .*
         useShortContext = true
       </githubstatus>
+      <ntfy>
+        jobs = .*
+        topic = hydra-dh274
+        server = https://ntfy.sh
+        per_job = 1
+      </ntfy>
     '';
     extraEnv = {
       HYDRA_DISALLOW_UNFREE = "0";
