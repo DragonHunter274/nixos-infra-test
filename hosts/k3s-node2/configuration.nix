@@ -15,6 +15,7 @@
     enable = true;
     efiSupport = true;
     efiInstallAsRemovable = true;
+    enableCryptodisk = false;
     mirroredBoots = [
       {
         devices = [ "nodev" ];
