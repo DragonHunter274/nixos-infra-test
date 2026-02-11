@@ -569,6 +569,7 @@ in
         };
         tmpfiles.rules = [
           "L /usr/bin/mount - - - - /run/current-system/sw/bin/mount"
+          "L /usr/sbin/iscsiadm - - - - /run/current-system/sw/bin/iscsiadm"
         ];
       };
 
