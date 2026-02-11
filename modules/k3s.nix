@@ -405,6 +405,9 @@ in
           "L+ /var/lib/rancher/k3s/data/current/bin/iptables - - - - ${cniWithIptables}/bin/iptables"
           "L+ /var/lib/rancher/k3s/data/current/bin/iptables-save - - - - ${cniWithIptables}/bin/iptables-save"
           "L+ /var/lib/rancher/k3s/data/current/bin/iptables-restore - - - - ${cniWithIptables}/bin/iptables-restore"
+          # Longhorn requires mount and iscsiadm at standard FHS paths when using nsenter into host namespace
+          "L /usr/bin/mount - - - - /run/current-system/sw/bin/mount"
+          "L /usr/sbin/iscsiadm - - - - /run/current-system/sw/bin/iscsiadm"
         ]
         (lib.mkIf cfg.addons.nfs.enable [
           "d ${cfg.addons.nfs.path} 0775 root root -"
@@ -567,10 +570,6 @@ in
             Unit = "k3s-flux2-bootstrap.service";
           };
         };
-        tmpfiles.rules = [
-          "L /usr/bin/mount - - - - /run/current-system/sw/bin/mount"
-          "L /usr/sbin/iscsiadm - - - - /run/current-system/sw/bin/iscsiadm"
-        ];
       };
 
       systemd.services."k3s-helm-bootstrap" = lib.mkIf (cfg.bootstrap.helm.enable && cfg.serverAddr == "") {
