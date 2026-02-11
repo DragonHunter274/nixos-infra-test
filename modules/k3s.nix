@@ -460,7 +460,7 @@ in
 
       services = {
         prometheus.exporters.node = {
-          enable = true;
+          enable = false;
         };
         nfs.server = lib.mkIf cfg.addons.nfs.enable {
           enable = true;
