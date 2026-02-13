@@ -1,8 +1,8 @@
 diff --git a/src/script/hydra-eval-jobset b/src/script/hydra-eval-jobset
-index eeea742f..3ded8f3c 100755
+index 00d1396f..065e61bc 100755
 --- a/src/script/hydra-eval-jobset
 +++ b/src/script/hydra-eval-jobset
-@@ -351,20 +351,40 @@ sub inputsToArgs {
+@@ -351,20 +351,52 @@ sub inputsToArgs {
  
  
  sub evalJobs {
@@ -23,21 +23,33 @@ index eeea742f..3ded8f3c 100755
 -            "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
 +        my $nix_expr;
 +        if (defined $flakeOutput) {
-+            # Use the specified flake output attribute
-+            # This supports both direct attributes and package references
++            # This logic splits the dot-separated string into a list and traverses the flake.
++            # It checks: 1. Direct path, 2. packages.${system}.path, 3. legacyPackages.${system}.path
 +            $nix_expr =
 +                "let " .
-+                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
-+                "outputAttr = \"$flakeOutput\"; " .
-+                "result = " .
-+                "if flake ? \$\{outputAttr\} then flake.\$\{outputAttr\} " .
-+                "else if flake ? packages.\$\{builtins.currentSystem\}.\$\{outputAttr\} then " .
-+                "{ \$\{outputAttr\} = flake.packages.\$\{builtins.currentSystem\}.\$\{outputAttr\}; } " .
-+                "else if flake ? legacyPackages.\$\{builtins.currentSystem\}.\$\{outputAttr\} then " .
-+                "{ \$\{outputAttr\} = flake.legacyPackages.\$\{builtins.currentSystem\}.\$\{outputAttr\}; } " .
-+                "else throw \"flake does not provide output '$flakeOutput'\"; " .
++                "  flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "  outputAttr = \"$flakeOutput\"; " .
++                "  system = builtins.currentSystem; " .
++                "  " .
++                "  # Helper: Splits 'a.b.c' into ['a' 'b' 'c']\n" .
++                "  splitPath = s: builtins.filter (x: builtins.isString x && x != \"\") (builtins.split \"\\\\.\" s); " .
++                "  " .
++                "  # Helper: Safely checks if an attribute path exists\n" .
++                "  hasPath = set: path: " .
++                "    let go = s: p: if p == [] then true else if builtins.isAttrs s && s ? \${builtins.head p} then go s.\${builtins.head p} (builtins.tail p) else false; " .
++                "    in go set path; " .
++                "  " .
++                "  # Helper: Traverses an attribute path\n" .
++                "  getPath = set: path: builtins.foldl' (a: b: a.\${b}) set path; " .
++                "  " .
++                "  targetPath = splitPath outputAttr; " .
++                "  pkgPath = [\"packages\" system] ++ targetPath; " .
++                "  legacyPath = [\"legacyPackages\" system] ++ targetPath; " .
 +                "in " .
-+                "result";
++                "if hasPath flake targetPath then getPath flake targetPath " .
++                "else if hasPath flake pkgPath then { \"\${outputAttr}\" = getPath flake pkgPath; } " .
++                "else if hasPath flake legacyPath then { \"\${outputAttr}\" = getPath flake legacyPath; } " .
++                "else throw \"flake does not provide output '\${outputAttr}' (checked direct, packages.\${system}, and legacyPackages.\${system})\";";
 +        } else {
 +            # Use default fallback chain
 +            $nix_expr =
@@ -51,7 +63,7 @@ index eeea742f..3ded8f3c 100755
  
          @cmd = ("nix-eval-jobs",
                  # Disable the eval cache to prevent SQLite database contention.
-@@ -712,7 +732,14 @@ sub checkJobsetWrapped {
+@@ -712,7 +744,14 @@ sub checkJobsetWrapped {
      my $fetchError = $@;
  
      my $flakeRef = $jobset->flake;
@@ -66,7 +78,7 @@ index eeea742f..3ded8f3c 100755
          (my $res, my $json, my $stderr) = captureStdoutStderr(
              600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
          die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
-@@ -758,7 +785,7 @@ sub checkJobsetWrapped {
+@@ -758,7 +797,7 @@ sub checkJobsetWrapped {
      # Evaluate the job expression.
      my $evalStart = clock_gettime(CLOCK_MONOTONIC);
      my $evalStop;
