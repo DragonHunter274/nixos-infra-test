@@ -18,7 +18,6 @@
     usbutils
     pavucontrol
     gparted
-    lunarvim
     kdePackages.krdc
     dnsutils
     ripgrep
@@ -38,6 +37,8 @@
         pyserial
         pip
         kconfiglib
+        requests
+        mcp
       ]
     ))
     segger-jlink-headless
@@ -48,5 +49,6 @@
     ffmpeg
     nur-packages.rbw-run
     rbw
+    kubelogin-oidc
   ];
 }

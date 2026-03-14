@@ -82,7 +82,6 @@
     usbutils
     pavucontrol
     gparted
-    lunarvim
     kdePackages.krdc
     dnsutils
     ripgrep
