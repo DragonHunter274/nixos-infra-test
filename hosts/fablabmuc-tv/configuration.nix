@@ -54,6 +54,10 @@
     # VC4 GPU driver for Raspberry Pi
     "vc4"
   ];
+
+  boot.kernelParams = ["cma=128M" ];
+
+
   # System configuration
 
   zramSwap = {
