@@ -3,10 +3,12 @@
   lib,
   config,
   inputs,
+  osConfig,
   ...
 }:
 
 let
+  monitorConfig = osConfig.desktop.hyprland.monitors;
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.waybar}/bin/waybar &
     pypr &
@@ -28,10 +30,11 @@ in
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     systemd.enable = false;
     settings = {
+      monitor = monitorConfig;
       debug.disable_logs = false;
       exec-once = "${startupScript}/bin/start";
       general = {
-        layout = "master";
+        layout = osConfig.desktop.hyprland.layout;
         gaps_in = 2;
         gaps_out = 5;
         "col.active_border" = "rgb(2aa198)";
