@@ -413,11 +413,11 @@ in
       }:
       {
         imports = [
-          ./modules/home-manager/hyprland.nix
-          ./modules/home-manager/waybar.nix
-          ./modules/home-manager/rofi.nix
-          ./modules/home-manager/scripts.nix
-          ./modules/home-manager/nushell.nix
+          ./home-manager/hyprland.nix
+          ./home-manager/waybar.nix
+          ./home-manager/rofi.nix
+          ./home-manager/scripts.nix
+          ./home-manager/nushell.nix
         ];
 
         home.stateVersion = cfg.homeStateVersion;
@@ -490,7 +490,6 @@ in
           cfg.homePackages
           ++ (with pkgs; [
             nur-packages.rofi-nixsearch
-            nur-packages.mtkclient
           ]);
       };
   };
