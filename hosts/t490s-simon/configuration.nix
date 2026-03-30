@@ -33,7 +33,7 @@
     hyprland = {
       enable = true;
       monitors = [
-        ", , , 1"
+        "eDP-1, 1920x1080, 0x0, 1"
       ];
       layout = "master";
     };
@@ -110,7 +110,7 @@
       "fablabmuc-38c3-minipc" = {
         id = "7RQNXJ6-TBATF3N-NZNQBEB-6XF4GAC-OG6VXJV-HVXBJ73-CGOXJFW-EPHDIAU";
       };
-      "thinkpad-simon" =  {
+      "thinkpad-simon" = {
         id = "VUCFNSU-BXPGRJH-QMXIPGU-7WRAMAS-SRYNVA7-BQXTFAH-XYNIM3W-EP5DCQZ";
       };
     };
@@ -183,8 +183,6 @@
       kdePackages.kate
     ];
   };
-
-
 
   # QEMU guest support
   services.qemuGuest.enable = true;
