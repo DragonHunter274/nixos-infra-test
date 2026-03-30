@@ -40,6 +40,17 @@ in
       ];
     };
 
+    t490s-simon = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "t490s-simon";
+      extraHmUsers = { };
+      extraModules = [
+        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
+        inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
+        ../modules/syncthing.nix
+      ];
+    };
+
     k3s-dev = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "k3s-dev";

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   # Desktop system packages
@@ -27,6 +27,13 @@
     pkg-config
     go
     jq
+    # OpenEMS electromagnetic field solver with Octave GUI
+    openems
+    octaveFull
+    appcsxcad
+    hyp2mat
+    paraview
+
     # Add your additional packages here
   ];
 }
