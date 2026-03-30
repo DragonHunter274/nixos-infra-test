@@ -29,14 +29,8 @@ in
     systemd.enable = false;
     settings = {
       debug.disable_logs = false;
-      exec-once = ''${startupScript}/bin/start'';
+      exec-once = "${startupScript}/bin/start";
       general = {
-        monitor = [
-          "DP-2, 2560x1440, 1080x1083, 1"
-          "DP-4, 1920x1080, 0x603, 1, transform, 1"
-          "DP-3, 1920x1080, 3640x1083, 1, transform, 2"
-          "HDMI-A-2, 1440x900, 1080x183, 1, transform, 2"
-        ];
         layout = "master";
         gaps_in = 2;
         gaps_out = 5;
@@ -45,7 +39,7 @@ in
       };
 
       input = {
-        kb_layout = "us";
+        kb_layout = "de";
         numlock_by_default = true;
         follow_mouse = 1;
         float_switch_override_focus = 1;
@@ -55,11 +49,10 @@ in
           natural_scroll = true;
         };
       };
+      gesture = [
+        "3, horizontal, workspace"
 
-      gestures = {
-        workspace_swipe = true;
-
-      };
+      ];
 
       "$mod" = "SUPER";
       bind = [
