@@ -23,6 +23,26 @@
     ./disko-config.nix
   ];
   disko.devices.disk.main.device = "/dev/nvme0n1";
+
+  # UWSM session for SDDM (needed for hypridle/hyprlock to start as systemd user services)
+  services.displayManager.sessionPackages = [
+    (
+      (pkgs.makeDesktopItem {
+        name = "uwsm-hyprland";
+        desktopName = "Hyprland (uwsm)";
+        exec = "uwsm start -N -5 -F /run/current-system/sw/bin/Hyprland";
+        comment = "Hyprland compositor managed by UWSM";
+        type = "Application";
+      }).overrideAttrs
+      (old: {
+        buildCommand = old.buildCommand + ''
+          mkdir -p $out/share/wayland-sessions
+          mv $out/share/applications/*.desktop $out/share/wayland-sessions/
+        '';
+        passthru.providedSessions = [ "uwsm-hyprland" ];
+      })
+    )
+  ];
   # Enable and configure the desktop environment
   desktop = {
     enable = true;
@@ -34,6 +54,7 @@
       enable = true;
       monitors = [
         "eDP-1, 1920x1080, 0x0, 1"
+        ", preferred, auto, 1, mirror"
       ];
       layout = "master";
     };
