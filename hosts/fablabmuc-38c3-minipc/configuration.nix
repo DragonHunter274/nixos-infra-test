@@ -26,6 +26,23 @@
 
   systemd.services.syncthing.environment.STNODEFAULTFOLDER = "true"; # Don't create default ~/Sync folder
 
+  # SFTP-only chroot share
+  users.groups.sftponly = { };
+  services.openssh = {
+    openFirewall = true;
+    extraConfig = ''
+      Match Group sftponly
+        ForceCommand internal-sftp
+        ChrootDirectory /srv/sftp-share
+        AllowTcpForwarding no
+        X11Forwarding no
+    '';
+  };
+  systemd.tmpfiles.rules = [
+    "d /srv/sftp-share 0755 root root -"
+    "d /srv/sftp-share/data 0775 root sftponly -"
+  ];
+
   services.syncthing = {
     enable = true;
     key = "/run/secrets/syncthing/key.pem";
