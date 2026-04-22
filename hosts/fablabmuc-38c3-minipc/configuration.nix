@@ -38,6 +38,16 @@
         X11Forwarding no
     '';
   };
+  users.users.sftpuser = {
+    isNormalUser = true;
+    group = "sftponly";
+    shell = pkgs.shadow + "/bin/nologin";
+    hashedPassword = "$y$j9T$Jk84ysDG9pLO5UNnn1IiB1$QnOlcCSsw5s7/QZWD/QiXzp5L.gOGgt6HHbRMyXo7.6";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx sftpuser@placeholder"
+    ];
+  };
+
   systemd.tmpfiles.rules = [
     "d /srv/sftp-share 0755 root root -"
     "d /srv/sftp-share/data 0775 root sftponly -"
