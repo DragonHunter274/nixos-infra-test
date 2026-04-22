@@ -6,6 +6,7 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 
@@ -130,7 +131,7 @@
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
-    openFirewall = false;
+    openFirewall = lib.MkDefault true;
   };
 
   # This value determines the NixOS release from which the default
