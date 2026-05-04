@@ -49,7 +49,7 @@ index 00d1396f..065e61bc 100755
 +                "if hasPath flake targetPath then getPath flake targetPath " .
 +                "else if hasPath flake pkgPath then { \"\${outputAttr}\" = getPath flake pkgPath; } " .
 +                "else if hasPath flake legacyPath then { \"\${outputAttr}\" = getPath flake legacyPath; } " .
-+                "else throw \"flake does not provide output '\${outputAttr}' (checked direct, packages.\${system}, and legacyPackages.\${system})\";";
++                "else throw \"flake does not provide output '\${outputAttr}' (checked direct, packages.\${system}, and legacyPackages.\${system})\"";
 +        } else {
 +            # Use default fallback chain
 +            $nix_expr =
