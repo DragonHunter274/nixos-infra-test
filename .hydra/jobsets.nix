@@ -19,7 +19,7 @@ let
     schedulingshares = 20;
     enableemail = false;
     emailoverride = "";
-    keepnr = 3;
+    keepnr = 2;
     type = 1;
     flake = "github:dragonhunter274/nixos-infra-test/pull/${num}/head";
   }) prs;
