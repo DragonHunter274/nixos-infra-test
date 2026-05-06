@@ -150,11 +150,40 @@
 
   services.printing.drivers = [
     pkgs.hplip
+    pkgs.nur-packages.tsc-printer
     pkgs.samsung-unified-linux-driver
     (pkgs.writeTextDir "share/cups/model/brother_ql570_printer_en.ppd" (
       builtins.readFile ./brother_ql570_printer_en.ppd
     ))
   ];
+
+
+systemd.services.cups-tsc-printer-setup = {
+  description = "Add TSC ME240 printer queue";
+  wantedBy = [ "multi-user.target" ];
+  after = [ "cups.service" ];
+  requires = [ "cups.service" ];
+  serviceConfig.Type = "oneshot";
+  serviceConfig.RemainAfterExit = true;
+  script = ''
+    # Wait for CUPS socket to be ready
+    for i in $(seq 1 10); do
+      ${pkgs.cups}/bin/lpstat -H && break
+      echo "Waiting for CUPS... ($i)"
+      sleep 1
+    done
+
+    if ! ${pkgs.cups}/bin/lpstat -p TSC-ME240 2>/dev/null | grep -q TSC-ME240; then
+      ${pkgs.cups}/bin/lpadmin \
+        -p TSC-ME240 \
+        -v socket://10.100.163.75:9100 \
+        -P ${pkgs.nur-packages.tsc-printer}/share/cups/model/tsc-ppds/ME240.ppd \
+        -E
+      ${pkgs.cups}/bin/lpadmin -d TSC-ME240
+    fi
+  '';
+};
+
 
   services.flatpak.enable = true;
 
