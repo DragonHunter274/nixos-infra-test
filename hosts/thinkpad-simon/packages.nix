@@ -9,6 +9,8 @@
       ps: with ps; [
         pyserial
         kconfiglib
+        requests
+        mcp
       ]
     ))
     nixfmt-rfc-style
