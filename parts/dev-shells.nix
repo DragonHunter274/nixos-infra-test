@@ -18,6 +18,8 @@
             git
             nixfmt-rfc-style
             sops
+            age
+            ssh-to-age
           ]
           ++ lib.optionals (system == "x86_64-linux") [
             inputs.nix-netboot-serve.defaultPackage.${system}
