@@ -62,6 +62,24 @@
     memoryPercent = 50;
   };
 
+  # Prevent system freezes under high CPU/memory pressure
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5;
+    freeSwapThreshold = 10;
+    enableNotifications = true;
+  };
+
+  boot.kernel.sysctl = {
+    # Better interactivity under memory pressure
+    "vm.swappiness" = 60;
+    "vm.dirty_ratio" = 10;
+    "vm.dirty_background_ratio" = 5;
+
+    # Prefer keeping dentries/inodes in cache over page cache
+    "vm.vfs_cache_pressure" = 10000;
+  };
+
   networking.hosts = {
     "127.0.0.1" = [ "nix-arm-builder" ];
   };
