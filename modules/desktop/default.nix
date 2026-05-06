@@ -242,7 +242,7 @@ in
         usbutils
         pavucontrol
         gparted
-        lunarvim
+        #lunarvim
         kdePackages.krdc
         dnsutils
         ripgrep
