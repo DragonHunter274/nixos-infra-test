@@ -894,11 +894,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763394019,
-        "narHash": "sha256-OWevXrv7NS9VQRk5ukd7Eq/Rs8aH4T5AP1j3ICHRGRU=",
+        "lastModified": 1775946783,
+        "narHash": "sha256-zunqqqPxozw/HyMhLuDOLysqcVlkLgoPAMiotb6Vo3k=",
         "owner": "dragonhunter274",
         "repo": "nur-packages",
-        "rev": "4ef4ca877aab2d1d29de3c07a5f3f8aaf53fd228",
+        "rev": "b55195bb16fa67d2b64d1e17fdcc64eed18585fe",
         "type": "github"
       },
       "original": {
