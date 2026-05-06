@@ -337,6 +337,9 @@ in
     # Polkit
     security.polkit.enable = true;
 
+    # PAM for hyprlock
+    security.pam.services.hyprlock = { };
+
     # GNOME Keyring
     services.gnome.gnome-keyring.enable = true;
 
