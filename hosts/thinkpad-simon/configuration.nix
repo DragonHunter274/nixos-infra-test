@@ -113,6 +113,9 @@
 
   services.syncthingDeclarative = {
     enable = true;
+    user = "simon";
+    group = "users";
+    dataDir = "/home/simon";
     secrets = {
       sopsFile = ./secrets/secrets.yaml;
     };
@@ -123,12 +126,16 @@
       fablabmuc-38c3-minipc = {
         id = "7RQNXJ6-TBATF3N-NZNQBEB-6XF4GAC-OG6VXJV-HVXBJ73-CGOXJFW-EPHDIAU";
       };
+      t490s-simon = {
+        id = "YQQK5ZH-665BPUD-W72QTQF-OOOGQKA-R3PRCAY-7Z7AXM2-3HBF6QK-B4SEJAK";
+      };
     };
     folders = {
       Projects = {
         path = "/home/simon/Projects";
         devices = [
           "desktop-simon"
+          "t490s-simon"
         ];
         createFolder = false;
       };
