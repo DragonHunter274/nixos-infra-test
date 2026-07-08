@@ -95,10 +95,9 @@
     };
   };
 
-  # Insecure packages permission
-  # nixpkgs.config.permittedInsecurePackages = [
-  #   "qtwebengine-5.15.19"
-  # ];
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
 
   # SOPS secrets configuration
   # sops.secrets."syncthing/key.pem" = {

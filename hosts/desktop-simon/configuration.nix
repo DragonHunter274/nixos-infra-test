@@ -26,6 +26,7 @@
 
   nixpkgs.config.permittedInsecurePackages = [
     "qtwebengine-5.15.19"
+    "electron-39.8.10"
   ];
 
   sops.secrets."syncthing/key.pem" = {

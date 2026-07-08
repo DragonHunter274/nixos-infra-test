@@ -26,6 +26,20 @@
     ./packages.nix
   ];
 
+hardware.bluetooth.settings = {
+  General = {
+    Experimental = true;
+    ControllerMode = "le";
+  };
+};
+
+
+nix.buildMachines = [{
+  hostName = "nix-arm-builder";
+  protocol = "ssh-ng"; 
+}];
+
+
   virtualisation.waydroid.enable = true;
   services.irqbalance.enable = true;
   nix.buildMachines = [
@@ -81,7 +95,7 @@
   };
 
   networking.hosts = {
-    "127.0.0.1" = [ "nix-arm-builder" ];
+    "46.4.77.88" = [ "nix-arm-builder" ];
   };
 
   programs.nix-ld.enable = true;
@@ -148,6 +162,8 @@
     "sg"
   ];
 
+  environment.systemPackages = [ config.boot.kernelPackages.usbip ];
+
   services.printing.drivers = [
     pkgs.hplip
     pkgs.nur-packages.tsc-printer
@@ -157,33 +173,31 @@
     ))
   ];
 
+  systemd.services.cups-tsc-printer-setup = {
+    description = "Add TSC ME240 printer queue";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "cups.service" ];
+    requires = [ "cups.service" ];
+    serviceConfig.Type = "oneshot";
+    serviceConfig.RemainAfterExit = true;
+    script = ''
+      # Wait for CUPS socket to be ready
+      for i in $(seq 1 10); do
+        ${pkgs.cups}/bin/lpstat -H && break
+        echo "Waiting for CUPS... ($i)"
+        sleep 1
+      done
 
-systemd.services.cups-tsc-printer-setup = {
-  description = "Add TSC ME240 printer queue";
-  wantedBy = [ "multi-user.target" ];
-  after = [ "cups.service" ];
-  requires = [ "cups.service" ];
-  serviceConfig.Type = "oneshot";
-  serviceConfig.RemainAfterExit = true;
-  script = ''
-    # Wait for CUPS socket to be ready
-    for i in $(seq 1 10); do
-      ${pkgs.cups}/bin/lpstat -H && break
-      echo "Waiting for CUPS... ($i)"
-      sleep 1
-    done
-
-    if ! ${pkgs.cups}/bin/lpstat -p TSC-ME240 2>/dev/null | grep -q TSC-ME240; then
-      ${pkgs.cups}/bin/lpadmin \
-        -p TSC-ME240 \
-        -v socket://10.100.163.75:9100 \
-        -P ${pkgs.nur-packages.tsc-printer}/share/cups/model/tsc-ppds/ME240.ppd \
-        -E
-      ${pkgs.cups}/bin/lpadmin -d TSC-ME240
-    fi
-  '';
-};
-
+      if ! ${pkgs.cups}/bin/lpstat -p TSC-ME240 2>/dev/null | grep -q TSC-ME240; then
+        ${pkgs.cups}/bin/lpadmin \
+          -p TSC-ME240 \
+          -v socket://10.100.163.75:9100 \
+          -P ${pkgs.nur-packages.tsc-printer}/share/cups/model/tsc-ppds/ME240.ppd \
+          -E
+        ${pkgs.cups}/bin/lpadmin -d TSC-ME240
+      fi
+    '';
+  };
 
   services.flatpak.enable = true;
 
@@ -195,6 +209,7 @@ systemd.services.cups-tsc-printer-setup = {
   nixpkgs.config.permittedInsecurePackages = [
     "segger-jlink-qt4-796s"
     "qtwebengine-5.15.19"
+    "electron-39.8.10"
   ];
 
   nixpkgs.config.segger-jlink.acceptLicense = true;
@@ -204,6 +219,15 @@ systemd.services.cups-tsc-printer-setup = {
     "ipv6.addr-gen-mode" = "eui64";
     "ipv6.ip6-privacy" = "0";
   };
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-vaapi-driver
+      libva-vdpau-driver
+      libvdpau-va-gl
+    ];
+  };
+
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true;
   services.devmon.enable = true;
@@ -399,7 +423,7 @@ systemd.services.cups-tsc-printer-setup = {
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = true;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
