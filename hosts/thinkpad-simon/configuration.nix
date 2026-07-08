@@ -26,20 +26,6 @@
     ./packages.nix
   ];
 
-hardware.bluetooth.settings = {
-  General = {
-    Experimental = true;
-    ControllerMode = "le";
-  };
-};
-
-
-nix.buildMachines = [{
-  hostName = "nix-arm-builder";
-  protocol = "ssh-ng"; 
-}];
-
-
   virtualisation.waydroid.enable = true;
   services.irqbalance.enable = true;
   nix.buildMachines = [
@@ -230,6 +216,12 @@ nix.buildMachines = [{
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth.settings = {
+    General = {
+      Experimental = true;
+      ControllerMode = "le";
+    };
+  };
   services.devmon.enable = true;
   services.gvfs.enable = true;
   services.udisks2.enable = true;
