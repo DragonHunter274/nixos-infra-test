@@ -117,6 +117,13 @@ in
         "$mod, mouse_up, workspace, e-1"
       ];
 
+      windowrulev2 = [
+        "float, title:^(Open Folder)$"
+        "pin, title:^(Open Folder)$"
+        "float, title:^(Open File)$"
+        "pin, title:^(Open File)$"
+      ];
+
       bindm = [
         "$mod, mouse:272, movewindow"
         "$mod, mouse:273, resizewindow"
