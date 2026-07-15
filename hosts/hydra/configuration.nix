@@ -205,7 +205,7 @@ in
       isNormalUser = true;
       description = "Nix remote builder user for mounted-ssh store access";
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB6/IpJGD6k1MlBn84Qfgq23tjtrVaKSlxZLdqgG49Ch nix-builder-store-access"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB/izZ+wZNYGyj2QiPhlvQPlFw1SKiSGeuGMssmjy2a9 nix-store-access"
       ];
     };
   };
