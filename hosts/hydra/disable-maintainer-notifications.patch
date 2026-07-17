@@ -1,25 +1,25 @@
-diff --git a/src/lib/Hydra/Plugin/EmailNotification.pm b/src/lib/Hydra/Plugin/EmailNotification.pm
-index a622f938..8073eef6 100644
---- a/src/lib/Hydra/Plugin/EmailNotification.pm
-+++ b/src/lib/Hydra/Plugin/EmailNotification.pm
+diff --git a/subprojects/hydra/lib/Hydra/Plugin/EmailNotification.pm b/subprojects/hydra/lib/Hydra/Plugin/EmailNotification.pm
+index 6c4948fa..8073eef6 100644
+--- a/subprojects/hydra/lib/Hydra/Plugin/EmailNotification.pm
++++ b/subprojects/hydra/lib/Hydra/Plugin/EmailNotification.pm
 @@ -69,9 +69,11 @@ sub buildFinished {
              next if defined $prevBuild && ($build->buildstatus == $prevBuild->buildstatus);
          }
- 
+
 -        my $to = $build->jobset->emailoverride ne "" ? $build->jobset->emailoverride : $build->maintainers;
 +        # Only use emailoverride, never send to package maintainers
 +        my $to = $build->jobset->emailoverride;
 +        next if $to eq "";
- 
--        foreach my $address (split ",", ($to // "")) {
+
+-        foreach my $address (split /,/, ($to // "")) {
 +        foreach my $address (split ",", $to) {
              $address = trim $address;
- 
+
              $addresses{$address} //= { builds => [] };
 @@ -79,6 +81,7 @@ sub buildFinished {
          }
      }
- 
+
 +    # Still get author info for the email body, but don't add them as recipients
      my ($authors, $nrCommits, $emailable_authors) = getResponsibleAuthors($topbuild, $self->{plugins});
      my $authorList;
@@ -31,5 +31,5 @@ index a622f938..8073eef6 100644
 -        $addresses{$_} = { builds => [ $topbuild ] } foreach (@{$emailable_authors});
 +        # Do NOT add authors as email recipients
      }
- 
+
      # Send an email to each interested address.

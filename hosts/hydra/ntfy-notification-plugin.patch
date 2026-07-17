@@ -1,8 +1,8 @@
-diff --git a/src/lib/Hydra/Plugin/NtfyNotification.pm b/src/lib/Hydra/Plugin/NtfyNotification.pm
+diff --git a/subprojects/hydra/lib/Hydra/Plugin/NtfyNotification.pm b/subprojects/hydra/lib/Hydra/Plugin/NtfyNotification.pm
 new file mode 100644
 index 00000000..8f77a94b
 --- /dev/null
-+++ b/src/lib/Hydra/Plugin/NtfyNotification.pm
++++ b/subprojects/hydra/lib/Hydra/Plugin/NtfyNotification.pm
 @@ -0,0 +1,263 @@
 +package Hydra::Plugin::NtfyNotification;
 +

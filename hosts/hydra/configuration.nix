@@ -153,6 +153,7 @@ in
         ./flake-output-selection.patch
         # ./disable-maintainer-notifications.patch
         ./ntfy-notification-plugin.patch
+        ./show-referrers.patch
       ];
     });
     extraConfig = ''

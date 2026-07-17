@@ -1,0 +1,88 @@
+diff --git a/subprojects/hydra/lib/Hydra/Controller/Build.pm b/subprojects/hydra/lib/Hydra/Controller/Build.pm
+index ca9a22cf..ba04583b 100644
+--- a/subprojects/hydra/lib/Hydra/Controller/Build.pm
++++ b/subprojects/hydra/lib/Hydra/Controller/Build.pm
+@@ -501,6 +501,32 @@ sub runtime_deps : Chained('buildChain') PathPart('runtime-deps') {
+ }
+ 
+ 
++sub referrers : Chained('buildChain') PathPart('referrers') {
++    my ($self, $c, $stepnr, $outputName) = @_;
++
++    notFound($c, "No build step or output specified.") unless defined $stepnr && defined $outputName;
++
++    requireLocalStore($c);
++
++    my $step = $c->stash->{build}->buildsteps->find({stepnr => $stepnr});
++    notFound($c, "Build doesn't have a build step $stepnr.") if !defined $step;
++
++    my $output = $step->buildstepoutputs->find({name => $outputName});
++    notFound($c, "Build step $stepnr has no output named ‘$outputName’.") if !defined $output;
++
++    my $path = $output->path;
++    gone($c, "Output is no longer available.") unless $path && $MACHINE_LOCAL_STORE->isValidPath($path);
++
++    my ($stdout, $stderr);
++    run3(['nix-store', '--query', '--referrers', $path], \undef, \$stdout, \$stderr);
++    error($c, "‘nix-store --query --referrers’ failed: $stderr") if $? != 0;
++
++    $c->stash->{path} = $path;
++    $c->stash->{referrers} = [sort grep { $_ ne '' } split /\n/, $stdout];
++    $c->stash->{template} = 'referrers.tt';
++}
++
++
+ sub nix : Chained('buildChain') PathPart('nix') CaptureArgs(0) {
+     my ($self, $c) = @_;
+ 
+diff --git a/subprojects/hydra/root/build.tt b/subprojects/hydra/root/build.tt
+index 23fc5493..ab939416 100644
+--- a/subprojects/hydra/root/build.tt
++++ b/subprojects/hydra/root/build.tt
+@@ -22,6 +22,9 @@ END;
+ [% BLOCK renderOutputs %]
+   [% start=1; FOREACH output IN outputs %]
+     [% IF !start %],<br/>[% END; start=0; output.path %]
++    [% IF isLocalStore && output.path && step %]
++      (<a [% HTML.attributes(href => c.uri_for('/build' build.id 'referrers' step.stepnr output.name)) %]>referrers</a>)
++    [% END %]
+   [% END %]
+ [% END %]
+ 
+@@ -51,9 +54,9 @@ END;
+             <td>[% HTML.escape(step.stepnr) %]</td>
+             <td>
+               [% IF step.type == 0 %]
+-                Build of <tt>[% INCLUDE renderOutputs outputs=step.buildstepoutputs %]</tt>
++                Build of <tt>[% INCLUDE renderOutputs outputs=step.buildstepoutputs step=step %]</tt>
+               [% ELSE %]
+-                Substitution of <tt>[% INCLUDE renderOutputs outputs=step.buildstepoutputs %]</tt>
++                Substitution of <tt>[% INCLUDE renderOutputs outputs=step.buildstepoutputs step=step %]</tt>
+               [% END %]
+             </td>
+             <td>
+diff --git a/subprojects/hydra/root/referrers.tt b/subprojects/hydra/root/referrers.tt
+new file mode 100644
+index 00000000..21e4935b
+--- /dev/null
++++ b/subprojects/hydra/root/referrers.tt
+@@ -0,0 +1,19 @@
++[% WRAPPER layout.tt title="Referrers of $path" %]
++[% PROCESS common.tt %]
++[% USE HTML %]
++
++<p>The following store paths refer to <tt>[% HTML.escape(path) %]</tt>:</p>
++
++[% IF referrers.size == 0 %]
++  <p><em>No other store paths reference this path.</em></p>
++[% ELSE %]
++  <table class="table table-striped table-condensed">
++    <tbody>
++      [% FOREACH r IN referrers %]
++        <tr><td><tt>[% HTML.escape(r) %]</tt></td></tr>
++      [% END %]
++    </tbody>
++  </table>
++[% END %]
++
++[% END %]
