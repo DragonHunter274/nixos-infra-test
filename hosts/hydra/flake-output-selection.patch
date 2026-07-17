@@ -1,89 +1,57 @@
-diff --git a/src/script/hydra-eval-jobset b/src/script/hydra-eval-jobset
-index 00d1396f..065e61bc 100755
---- a/src/script/hydra-eval-jobset
-+++ b/src/script/hydra-eval-jobset
-@@ -351,20 +351,52 @@ sub inputsToArgs {
- 
- 
+diff --git a/subprojects/hydra/script/hydra-eval-jobset b/subprojects/hydra/script/hydra-eval-jobset
+index 811b0a7a..e8fae700 100755
+--- a/subprojects/hydra/script/hydra-eval-jobset
++++ b/subprojects/hydra/script/hydra-eval-jobset
+@@ -351,13 +351,20 @@ sub inputsToArgs {
+
+
  sub evalJobs {
 -    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef) = @_;
 +    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef, $flakeOutput) = @_;
- 
+
      print STDERR "($jobsetName) Evaluating...\n";
- 
+
      my @cmd;
- 
+
      if (defined $flakeRef) {
--        my $nix_expr =
--            "let " .
--            "flake = builtins.getFlake (toString \"$flakeRef\"); " .
--            "in " .
--            "flake.hydraJobs " .
--            "or flake.checks " .
--            "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
-+        my $nix_expr;
++        my $select_expr;
 +        if (defined $flakeOutput) {
-+            # This logic splits the dot-separated string into a list and traverses the flake.
-+            # It checks: 1. Direct path, 2. packages.${system}.path, 3. legacyPackages.${system}.path
-+            $nix_expr =
-+                "let " .
-+                "  flake = builtins.getFlake (toString \"$flakeRef\"); " .
-+                "  outputAttr = \"$flakeOutput\"; " .
-+                "  system = builtins.currentSystem; " .
-+                "  " .
-+                "  # Helper: Splits 'a.b.c' into ['a' 'b' 'c']\n" .
-+                "  splitPath = s: builtins.filter (x: builtins.isString x && x != \"\") (builtins.split \"\\\\.\" s); " .
-+                "  " .
-+                "  # Helper: Safely checks if an attribute path exists\n" .
-+                "  hasPath = set: path: " .
-+                "    let go = s: p: if p == [] then true else if builtins.isAttrs s && s ? \${builtins.head p} then go s.\${builtins.head p} (builtins.tail p) else false; " .
-+                "    in go set path; " .
-+                "  " .
-+                "  # Helper: Traverses an attribute path\n" .
-+                "  getPath = set: path: builtins.foldl' (a: b: a.\${b}) set path; " .
-+                "  " .
-+                "  targetPath = splitPath outputAttr; " .
-+                "  pkgPath = [\"packages\" system] ++ targetPath; " .
-+                "  legacyPath = [\"legacyPackages\" system] ++ targetPath; " .
-+                "in " .
-+                "if hasPath flake targetPath then getPath flake targetPath " .
-+                "else if hasPath flake pkgPath then { \"\${outputAttr}\" = getPath flake pkgPath; } " .
-+                "else if hasPath flake legacyPath then { \"\${outputAttr}\" = getPath flake legacyPath; } " .
-+                "else throw \"flake does not provide output '\${outputAttr}' (checked direct, packages.\${system}, and legacyPackages.\${system})\"";
++            die "Invalid flake output attribute: $flakeOutput\n" if $flakeOutput !~ /^[a-zA-Z0-9._-]+$/;
++            $select_expr = "flake: flake.outputs.$flakeOutput";
 +        } else {
-+            # Use default fallback chain
-+            $nix_expr =
-+                "let " .
-+                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
-+                "in " .
-+                "flake.hydraJobs " .
-+                "or flake.checks " .
-+                "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
++            $select_expr = "flake: flake.outputs.hydraJobs or flake.outputs.checks or (throw \"flake does not provide any Hydra jobs or checks\")";
 +        }
- 
          @cmd = ("nix-eval-jobs",
                  # Disable the eval cache to prevent SQLite database contention.
-@@ -712,7 +744,14 @@ sub checkJobsetWrapped {
+                 # Since Hydra typically evaluates each revision only once,
+@@ -365,7 +372,7 @@ sub evalJobs {
+                 # providing any benefit from caching.
+                 "--option", "eval-cache", "false",
+                 "--flake", $flakeRef,
+-                "--select", "flake: flake.outputs.hydraJobs or flake.outputs.checks or (throw \"flake does not provide any Hydra jobs or checks\")");
++                "--select", $select_expr);
+     } else {
+         my $nixExprInput = $inputInfo->{$nixExprInputName}->[0]
+             or die "cannot find the input containing the job expression\n";
+@@ -710,7 +717,12 @@ sub checkJobsetWrapped {
      my $fetchError = $@;
- 
+
      my $flakeRef = $jobset->flake;
 +    my $flakeOutput;
      if (defined $flakeRef) {
-+        # Extract output attribute if specified using flakeref#output syntax
 +        if ($flakeRef =~ /^(.+)#([^#]+)$/) {
 +            $flakeRef = $1;
 +            $flakeOutput = $2;
 +        }
-+
          (my $res, my $json, my $stderr) = captureStdoutStderr(
              600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
          die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
-@@ -758,7 +797,7 @@ sub checkJobsetWrapped {
+@@ -756,7 +768,7 @@ sub checkJobsetWrapped {
      # Evaluate the job expression.
      my $evalStart = clock_gettime(CLOCK_MONOTONIC);
      my $evalStop;
 -    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef);
 +    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef, $flakeOutput);
- 
+
      if ($dryRun) {
          while (defined(my $job = $jobsIter->())) {
