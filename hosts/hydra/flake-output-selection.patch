@@ -1,8 +1,8 @@
 diff --git a/subprojects/hydra/script/hydra-eval-jobset b/subprojects/hydra/script/hydra-eval-jobset
-index 811b0a7a..e8fae700 100755
+index 00d1396f..4b4da6b5 100755
 --- a/subprojects/hydra/script/hydra-eval-jobset
 +++ b/subprojects/hydra/script/hydra-eval-jobset
-@@ -351,13 +351,20 @@ sub inputsToArgs {
+@@ -351,28 +351,28 @@ sub inputsToArgs {
 
 
  sub evalJobs {
@@ -14,6 +14,14 @@ index 811b0a7a..e8fae700 100755
      my @cmd;
 
      if (defined $flakeRef) {
+-        my $nix_expr =
+-            "let " .
+-            "flake = builtins.getFlake (toString \"$flakeRef\"); " .
+-            "in " .
+-            "flake.hydraJobs " .
+-            "or flake.checks " .
+-            "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
+-
 +        my $select_expr;
 +        if (defined $flakeOutput) {
 +            die "Invalid flake output attribute: $flakeOutput\n" if $flakeOutput !~ /^[a-zA-Z0-9._-]+$/;
@@ -24,16 +32,16 @@ index 811b0a7a..e8fae700 100755
          @cmd = ("nix-eval-jobs",
                  # Disable the eval cache to prevent SQLite database contention.
                  # Since Hydra typically evaluates each revision only once,
-@@ -365,7 +372,7 @@ sub evalJobs {
+                 # parallel workers would compete for database locks without
                  # providing any benefit from caching.
                  "--option", "eval-cache", "false",
-                 "--flake", $flakeRef,
--                "--select", "flake: flake.outputs.hydraJobs or flake.outputs.checks or (throw \"flake does not provide any Hydra jobs or checks\")");
+-                "--expr", $nix_expr);
++                "--flake", $flakeRef,
 +                "--select", $select_expr);
      } else {
          my $nixExprInput = $inputInfo->{$nixExprInputName}->[0]
              or die "cannot find the input containing the job expression\n";
-@@ -710,7 +717,12 @@ sub checkJobsetWrapped {
+@@ -712,7 +712,12 @@ sub checkJobsetWrapped {
      my $fetchError = $@;
 
      my $flakeRef = $jobset->flake;
@@ -46,7 +54,7 @@ index 811b0a7a..e8fae700 100755
          (my $res, my $json, my $stderr) = captureStdoutStderr(
              600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
          die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
-@@ -756,7 +768,7 @@ sub checkJobsetWrapped {
+@@ -758,7 +763,7 @@ sub checkJobsetWrapped {
      # Evaluate the job expression.
      my $evalStart = clock_gettime(CLOCK_MONOTONIC);
      my $evalStop;
