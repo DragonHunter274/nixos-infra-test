@@ -1,18 +1,18 @@
 diff --git a/subprojects/hydra/script/hydra-eval-jobset b/subprojects/hydra/script/hydra-eval-jobset
-index 00d1396f..4b4da6b5 100755
+index 00d1396f..6ec3601d 100755
 --- a/subprojects/hydra/script/hydra-eval-jobset
 +++ b/subprojects/hydra/script/hydra-eval-jobset
-@@ -351,28 +351,28 @@ sub inputsToArgs {
-
-
+@@ -351,21 +351,30 @@ sub inputsToArgs {
+ 
+ 
  sub evalJobs {
 -    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef) = @_;
 +    my ($jobsetName, $inputInfo, $nixExprInputName, $nixExprPath, $flakeRef, $flakeOutput) = @_;
-
+ 
      print STDERR "($jobsetName) Evaluating...\n";
-
+ 
      my @cmd;
-
+ 
      if (defined $flakeRef) {
 -        my $nix_expr =
 -            "let " .
@@ -22,28 +22,29 @@ index 00d1396f..4b4da6b5 100755
 -            "or flake.checks " .
 -            "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
 -
-+        my $select_expr;
++        my $nix_expr;
 +        if (defined $flakeOutput) {
 +            die "Invalid flake output attribute: $flakeOutput\n" if $flakeOutput !~ /^[a-zA-Z0-9._-]+$/;
-+            $select_expr = "flake: flake.outputs.$flakeOutput";
++            $nix_expr =
++                "let " .
++                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "in " .
++                "flake.$flakeOutput";
 +        } else {
-+            $select_expr = "flake: flake.outputs.hydraJobs or flake.outputs.checks or (throw \"flake does not provide any Hydra jobs or checks\")";
++            $nix_expr =
++                "let " .
++                "flake = builtins.getFlake (toString \"$flakeRef\"); " .
++                "in " .
++                "flake.hydraJobs " .
++                "or flake.checks " .
++                "or (throw \"flake '$flakeRef' does not provide any Hydra jobs or checks\")";
 +        }
          @cmd = ("nix-eval-jobs",
                  # Disable the eval cache to prevent SQLite database contention.
                  # Since Hydra typically evaluates each revision only once,
-                 # parallel workers would compete for database locks without
-                 # providing any benefit from caching.
-                 "--option", "eval-cache", "false",
--                "--expr", $nix_expr);
-+                "--flake", $flakeRef,
-+                "--select", $select_expr);
-     } else {
-         my $nixExprInput = $inputInfo->{$nixExprInputName}->[0]
-             or die "cannot find the input containing the job expression\n";
-@@ -712,7 +712,12 @@ sub checkJobsetWrapped {
+@@ -712,7 +721,12 @@ sub checkJobsetWrapped {
      my $fetchError = $@;
-
+ 
      my $flakeRef = $jobset->flake;
 +    my $flakeOutput;
      if (defined $flakeRef) {
@@ -54,12 +55,12 @@ index 00d1396f..4b4da6b5 100755
          (my $res, my $json, my $stderr) = captureStdoutStderr(
              600, "nix", "flake", "metadata", "--refresh", "--json", "--", $flakeRef);
          die "'nix flake metadata' returned " . ($res & 127 ? "signal $res" : "exit code " . ($res >> 8))
-@@ -758,7 +763,7 @@ sub checkJobsetWrapped {
+@@ -758,7 +772,7 @@ sub checkJobsetWrapped {
      # Evaluate the job expression.
      my $evalStart = clock_gettime(CLOCK_MONOTONIC);
      my $evalStop;
 -    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef);
 +    my $jobsIter = evalJobs($project->name . ":" . $jobset->name, $inputInfo, $jobset->nixexprinput, $jobset->nixexprpath, $flakeRef, $flakeOutput);
-
+ 
      if ($dryRun) {
          while (defined(my $job = $jobsIter->())) {
