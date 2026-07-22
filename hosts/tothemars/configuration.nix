@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -24,14 +24,14 @@
   };
   boot.initrd.luks.devices = {
     cryptroot = {
-      device = "/dev/disk/by-partlabel/root";
-      preLVM = true;
-      allowDiscards = true;
+      device = lib.mkForce "/dev/disk/by-partlabel/disk-main-root";
+      preLVM = lib.mkForce true;
+      allowDiscards = lib.mkForce true;
     };
     cryptswap = {
-      device = "/dev/disk/by-partlabel/swap";
-      preLVM = true;
-      allowDiscards = true;
+      device = lib.mkForce "/dev/disk/by-partlabel/disk-main-swap";
+      preLVM = lib.mkForce true;
+      allowDiscards = lib.mkForce true;
     };
   };
 
