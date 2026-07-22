@@ -27,24 +27,31 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
     ];
   };
-  boot.initrd.postDeviceCommands = lib.mkBefore ''
-    mkdir -m 0755 -p /key
-    sleep 2
-    mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key
-    if [ -f /key/age-key.txt ]; then
-      mkdir -p /mnt-root/root/.config/sops/age
-      cp /key/age-key.txt /mnt-root/root/.config/sops/age/keys.txt
-      chmod 600 /mnt-root/root/.config/sops/age/keys.txt
-    elif [ -f /key/keys.txt ]; then
-      mkdir -p /mnt-root/root/.config/sops/age
-      cp /key/keys.txt /mnt-root/root/.config/sops/age/keys.txt
-      chmod 600 /mnt-root/root/.config/sops/age/keys.txt
-    fi
-  '';
+  boot.initrd.systemd.services.usb-key-mount = {
+    description = "Mount USB key for initrd LUKS and age-key bootstrap";
+    wantedBy = [ "cryptsetup.target" ];
+    before = [ "cryptsetup.target" ];
+    serviceConfig.Type = "oneshot";
+    serviceConfig.RemainAfterExit = true;
+    script = ''
+      mkdir -m 0755 -p /key
+      sleep 2
+      mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key || true
+
+      if [ -f /key/age-key.txt ]; then
+        mkdir -p /mnt-root/root/.config/sops/age
+        cp /key/age-key.txt /mnt-root/root/.config/sops/age/keys.txt
+        chmod 600 /mnt-root/root/.config/sops/age/keys.txt
+      elif [ -f /key/keys.txt ]; then
+        mkdir -p /mnt-root/root/.config/sops/age
+        cp /key/keys.txt /mnt-root/root/.config/sops/age/keys.txt
+        chmod 600 /mnt-root/root/.config/sops/age/keys.txt
+      fi
+    '';
+  };
 
   boot.initrd.luks.devices.cryptroot = {
     device = lib.mkForce "/dev/disk/by-partlabel/disk-main-root";
-    preLVM = false;
     allowDiscards = lib.mkForce true;
     keyFile = "/key/keyfile";
   };
