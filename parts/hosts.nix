@@ -65,6 +65,13 @@ in
       extraModules = [ ../modules/k3s.nix ];
     };
 
+    tothemars = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "tothemars";
+      extraHmUsers = { };
+      extraModules = [ ../modules/k3s.nix ];
+    };
+
     k3s-node2 = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "k3s-node2";
