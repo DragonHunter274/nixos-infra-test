@@ -1,4 +1,8 @@
 { config, pkgs, lib, ... }:
+let
+  primaryUsbId = "b501f1b9-7714-472c-988f-3c997f146a17";
+  backupUsbId = "b501f1b9-7714-472c-988f-3c997f146a18";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -13,6 +17,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
+  boot.initrd.kernelModules = [ "uas" "usbcore" "usb_storage" "vfat" "nls_cp437" "nls_iso8859_1" ];
   boot.initrd.network.enable = true;
   boot.initrd.network.ssh = {
     enable = true;
@@ -22,17 +27,17 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
     ];
   };
-  boot.initrd.luks.devices = {
-    cryptroot = {
-      device = lib.mkForce "/dev/disk/by-partlabel/disk-main-root";
-      preLVM = lib.mkForce true;
-      allowDiscards = lib.mkForce true;
-    };
-    cryptswap = {
-      device = lib.mkForce "/dev/disk/by-partlabel/disk-main-swap";
-      preLVM = lib.mkForce true;
-      allowDiscards = lib.mkForce true;
-    };
+  boot.initrd.postDeviceCommands = lib.mkBefore ''
+    mkdir -m 0755 -p /key
+    sleep 2
+    mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key
+  '';
+
+  boot.initrd.luks.devices.cryptroot = {
+    device = lib.mkForce "/dev/disk/by-partlabel/disk-main-root";
+    preLVM = false;
+    allowDiscards = lib.mkForce true;
+    keyFile = "/key/keyfile";
   };
 
   environment.systemPackages = with pkgs; [
