@@ -1,6 +1,6 @@
 # Tothemars Installation Guide
 
-This host is configured for bare metal Intel hardware installation using nixos-anywhere.
+This host is configured for bare metal Intel hardware installation using nixos-anywhere and is set up for encrypted bootstrapping with USB-key-based unlock support.
 
 ## Prerequisites
 
@@ -20,15 +20,16 @@ The host is configured with:
 - **Default disk**: `/dev/sda` (adjust in [configuration.nix](configuration.nix) if needed)
 - **Disk encryption**: root and swap are provisioned as LUKS devices during installation
 - **Remote unlock**: initrd SSH access is enabled on port 222 for boot-time disk unlock
+- **USB key unlock**: initrd will try to mount a VFAT USB key by UUID and read `/key/keyfile` for LUKS unlock
+- **SOPS age-key bootstrap**: the same USB key can carry `age-key.txt` or `keys.txt` and it will be copied to `/root/.config/sops/age/keys.txt` automatically
 
 ### Disk Configuration
 
 By default, disko will partition the disk as follows:
 - **Boot partition**: 1MB BIOS boot (EF02)
 - **ESP**: 1GB EFI System Partition (vfat)
-- **Swap**: 8GB swap partition
-- **Root**: Remaining space, encrypted via LUKS as `cryptroot`
 - **Swap**: 8GB, encrypted via LUKS as `cryptswap`
+- **Root**: Remaining space, encrypted via LUKS as `cryptroot`
 
 To use a different disk device (e.g., NVMe), edit [configuration.nix](configuration.nix):
 ```nix
@@ -50,7 +51,7 @@ disko.devices.disk.main.device = "/dev/nvme0n1";
 
 If the target machine is running any Linux distribution:
 ```bash
-nixos-anywhere --flake .#k3s-dev-local root@<target-ip>
+nixos-anywhere --flake .#tothemars root@<target-ip>
 ```
 
 ### Option 3: Install with Custom SSH Key
@@ -73,7 +74,7 @@ After installation:
 
 Test the configuration builds correctly:
 ```bash
-nix build .#nixosConfigurations.k3s-dev-local.config.system.build.toplevel
+nix build .#nixosConfigurations.tothemars.config.system.build.toplevel
 ```
 
 ## Customization
@@ -119,5 +120,13 @@ Ensure:
 Check the flake builds locally first:
 ```bash
 nix flake check
-nix build .#nixosConfigurations.k3s-dev-local.config.system.build.toplevel
+nix build .#nixosConfigurations.tothemars.config.system.build.toplevel
 ```
+
+## USB Key Bootstrap Notes
+
+Prepare two USB sticks with the same VFAT filesystem and the same key files:
+- `keyfile` for LUKS unlock
+- `age-key.txt` or `keys.txt` for SOPS age-key bootstrap
+
+The host will try to mount the first available USB stick by UUID and read those files automatically during initrd and first boot.
