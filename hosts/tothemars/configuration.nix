@@ -31,6 +31,15 @@ in
     mkdir -m 0755 -p /key
     sleep 2
     mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key
+    if [ -f /key/age-key.txt ]; then
+      mkdir -p /mnt-root/root/.config/sops/age
+      cp /key/age-key.txt /mnt-root/root/.config/sops/age/keys.txt
+      chmod 600 /mnt-root/root/.config/sops/age/keys.txt
+    elif [ -f /key/keys.txt ]; then
+      mkdir -p /mnt-root/root/.config/sops/age
+      cp /key/keys.txt /mnt-root/root/.config/sops/age/keys.txt
+      chmod 600 /mnt-root/root/.config/sops/age/keys.txt
+    fi
   '';
 
   boot.initrd.luks.devices.cryptroot = {
@@ -38,6 +47,28 @@ in
     preLVM = false;
     allowDiscards = lib.mkForce true;
     keyFile = "/key/keyfile";
+  };
+
+  systemd.services.bootstrap-sops-age-key = {
+    description = "Bootstrap SOPS age key from USB key";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "multi-user.target" ];
+    after = [ "local-fs.target" ];
+    serviceConfig.Type = "oneshot";
+    serviceConfig.RemainAfterExit = true;
+    script = ''
+      mkdir -m 0755 -p /key
+      if ! mountpoint -q /key; then
+        mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key || true
+      fi
+
+      mkdir -p /root/.config/sops/age
+      if [ -f /key/age-key.txt ]; then
+        install -m 600 /key/age-key.txt /root/.config/sops/age/keys.txt
+      elif [ -f /key/keys.txt ]; then
+        install -m 600 /key/keys.txt /root/.config/sops/age/keys.txt
+      fi
+    '';
   };
 
   environment.systemPackages = with pkgs; [
