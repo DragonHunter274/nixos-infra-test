@@ -44,5 +44,6 @@
     nixd
     nil
     kubectl
+    cifs-utils
   ];
 }
