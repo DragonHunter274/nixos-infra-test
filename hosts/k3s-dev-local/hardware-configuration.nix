@@ -7,7 +7,7 @@
 }:
 
 {
-  imports = [ ];
+  imports = ["${modulesPath}/profiles/qemu-guest.nix" ];
 
   # Bare metal Intel hardware kernel modules
   boot.initrd.availableKernelModules = [
@@ -22,7 +22,6 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-
   # Filesystems are managed by disko - see disko-config.nix
   # disko will create the partitions and set up filesystems
 
