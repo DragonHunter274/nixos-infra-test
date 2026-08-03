@@ -78,6 +78,13 @@ in
       extraHmUsers = { };
       extraModules = [ ../modules/k3s.nix ];
     };
+    
+   nixos-minimal = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "nixos-minimal";
+      extraHmUsers = { };
+      extraModules = [ ];  
+    };    
 
     netboot-minimal-netboot = builders.mkNetboot {
       system = "x86_64-linux";
