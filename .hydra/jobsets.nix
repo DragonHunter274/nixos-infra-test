@@ -38,6 +38,18 @@ let
       type = 1;
       flake = "github:dragonhunter274/nixos-infra-test/main";
     };
+    "moritz" = {
+      enabled = 1;
+      hidden = false;
+      description = "Moritz main branch";
+      checkinterval = 300;
+      schedulingshares = 100;
+      enableemail = false;
+      emailoverride = false;
+      keepnr = 2;
+      type = 1;
+      flake = "git+https://git.huber.cloud/moritz/nix-config";
+    };
     # ISO images jobset with minimal retention
     # Uses patched Hydra with flakeref#output support
     "main-isos" = {
