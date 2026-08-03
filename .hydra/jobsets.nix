@@ -48,7 +48,7 @@ let
       emailoverride = false;
       keepnr = 2;
       type = 1;
-      flake = "git+https://git.huber.cloud/moritz/nix-config";
+      flake = "git+https://git.huber.cloud/moritz/nix-config?ref=master";
     };
     # ISO images jobset with minimal retention
     # Uses patched Hydra with flakeref#output support
