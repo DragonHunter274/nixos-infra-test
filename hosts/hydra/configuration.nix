@@ -40,10 +40,12 @@ in
     substituters = lib.mkForce [
       "https://cache.nixos.org/"
       "https://nix-community.cachix.org"
+      "https://vanilla-mobile-nixos.cachix.org"
     ];
     trusted-public-keys = lib.mkForce [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "vanilla-mobile-nixos.cachix.org-1:nicMQxxTD4n6PM9dCvylqsCOCA6M2C6gybbCKrei8AQ="
     ];
   };
 
