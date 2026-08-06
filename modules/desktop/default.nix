@@ -77,6 +77,18 @@ in
       };
     };
 
+    cinnamon = {
+      enable = mkEnableOption "Cinnamon desktop environment" // {
+        default = false;
+      };
+
+      package = mkOption {
+        type = types.package;
+        default = pkgs.cinnamon;
+        description = "Cinnamon package to use";
+      };
+    };
+
     displayManager = {
       enable = mkEnableOption "display manager (SDDM)" // {
         default = true;
@@ -377,6 +389,9 @@ in
       portalPackage = cfg.hyprland.portalPackage;
     };
 
+    # Cinnamon
+    services.xserver.desktopManager.cinnamon.enable = mkIf cfg.cinnamon.enable true;
+
     # XDG Desktop Portal
     xdg.portal = mkIf cfg.xdgPortal.enable {
       enable = true;
@@ -399,6 +414,7 @@ in
     environment.systemPackages =
       cfg.packages
       ++ optional cfg.hyprland.enable pkgs.kitty
+      ++ optional cfg.cinnamon.enable cfg.cinnamon.package
       ++ optional (cfg.docker.credentialHelpers ? "ghcr.io") (
         if pkgs ? nur-packages then
           pkgs.nur-packages.docker-credential-ghcr-login
