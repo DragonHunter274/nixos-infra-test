@@ -235,6 +235,27 @@ in
       description = "Additional desktop packages to install";
     };
 
+    packageSets = mkOption {
+      type = types.attrsOf (types.listOf types.package);
+      default = {
+        core = import ./package-sets/core.nix { inherit pkgs; };
+        dev = import ./package-sets/dev.nix { inherit pkgs; };
+        tools = import ./package-sets/tools.nix { inherit pkgs; };
+      };
+      example = {
+        dev = [ pkgs.clang pkgs.cmake ];
+        media = [ pkgs.mpv pkgs.vlc ];
+      };
+      description = "Named package sets that can be enabled for the desktop environment";
+    };
+
+    enabledPackageSets = mkOption {
+      type = types.listOf types.str;
+      default = [ "core" ];
+      example = [ "core" "dev" ];
+      description = "Names of package sets from desktop.packageSets to include";
+    };
+
     homePackages = mkOption {
       type = types.listOf types.package;
       default = with pkgs; [
@@ -272,6 +293,25 @@ in
         texlivePackages.latexmk
       ];
       description = "Home-manager packages to install";
+    };
+
+    homePackageSets = mkOption {
+      type = types.attrsOf (types.listOf types.package);
+      default = {
+        core = import ./package-sets/home-core.nix { inherit pkgs; };
+        desktop = import ./package-sets/home-desktop.nix { inherit pkgs; };
+      };
+      example = {
+        tools = [ pkgs.vscode-fhs pkgs.kubectl ];
+      };
+      description = "Named Home Manager package sets that can be enabled for the desktop environment";
+    };
+
+    enabledHomePackageSets = mkOption {
+      type = types.listOf types.str;
+      default = [ "core" "desktop" ];
+      example = [ "core" "tools" ];
+      description = "Names of package sets from desktop.homePackageSets to include";
     };
 
     git = {
@@ -413,6 +453,13 @@ in
     # System packages
     environment.systemPackages =
       cfg.packages
+      ++ concatMap (
+        name:
+        if builtins.hasAttr name cfg.packageSets then
+          cfg.packageSets.${name}
+        else
+          [ ]
+      ) cfg.enabledPackageSets
       ++ optional cfg.hyprland.enable pkgs.kitty
       ++ optional cfg.cinnamon.enable cfg.cinnamon.package
       ++ optional (cfg.docker.credentialHelpers ? "ghcr.io") (
@@ -507,6 +554,13 @@ in
         # Packages
         home.packages =
           cfg.homePackages
+          ++ concatMap (
+            name:
+            if builtins.hasAttr name cfg.homePackageSets then
+              cfg.homePackageSets.${name}
+            else
+              [ ]
+          ) cfg.enabledHomePackageSets
           ++ (with pkgs; [
             nur-packages.rofi-nixsearch
           ]);

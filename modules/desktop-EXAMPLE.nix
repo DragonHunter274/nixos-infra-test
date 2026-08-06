@@ -72,6 +72,9 @@
       limesuite
     ];
 
+    enabledPackageSets = [ "core" "dev" ];
+    enabledHomePackageSets = [ "core" "desktop" ];
+
     # Enable wireshark with NUR package
     wireshark = {
       enable = true;
