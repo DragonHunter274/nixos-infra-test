@@ -13,7 +13,7 @@ let
 in
 {
   imports = [
-    ./packages.nix
+    #./packages.nix
   ];
   options.desktop = {
     enable = mkEnableOption "desktop environment configuration";
