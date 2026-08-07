@@ -61,6 +61,12 @@
     algorithm = "zstd";
     memoryPercent = 50;
   };
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 32 * 1024; # 32G
+    }
+  ];
   services.nfs.server = {
     enable = true;
     exports = ''
