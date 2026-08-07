@@ -116,13 +116,7 @@ A comprehensive NixOS module that provides a complete desktop environment with H
       # ... add more packages
     ];
 
-    # Home-manager packages
-    homePackages = with pkgs; [
-      google-chrome
-      signal-desktop
-      vscode-fhs
-      # ... add more packages
-    ];
+    # Home-manager packages are provided through homePackageSets
 
     # Git configuration
     git = {

@@ -241,6 +241,11 @@ in
         core = import ./package-sets/core.nix { inherit pkgs; };
         dev = import ./package-sets/dev.nix { inherit pkgs; };
         tools = import ./package-sets/tools.nix { inherit pkgs; };
+        desktop-apps = import ./package-sets/desktop-apps.nix { inherit pkgs; };
+        desktop-utils = import ./package-sets/desktop-utils.nix { inherit pkgs; };
+        multimedia = import ./package-sets/multimedia.nix { inherit pkgs; };
+        graphics = import ./package-sets/graphics.nix { inherit pkgs; };
+        maker = import ./package-sets/maker.nix { inherit pkgs; };
       };
       example = {
         dev = [ pkgs.clang pkgs.cmake ];
@@ -254,45 +259,6 @@ in
       default = [ "core" ];
       example = [ "core" "dev" ];
       description = "Names of package sets from desktop.packageSets to include";
-    };
-
-    homePackages = mkOption {
-      type = types.listOf types.package;
-      default = with pkgs; [
-        git
-        vim
-        google-chrome
-        swaynotificationcenter
-        networkmanagerapplet
-        signal-desktop
-        thunderbird
-        github-desktop
-        prismlauncher
-        moonlight-qt
-        vesktop
-        prusa-slicer
-        orca-slicer
-        usbutils
-        pavucontrol
-        gparted
-        #lunarvim
-        kdePackages.krdc
-        dnsutils
-        ripgrep
-        jq
-        neovim
-        kicad
-        roboto
-        vscode-fhs
-        inkscape
-        mpv
-        kubectl
-        kubelogin-oidc
-        sops
-        texliveFull
-        texlivePackages.latexmk
-      ];
-      description = "Home-manager packages to install";
     };
 
     homePackageSets = mkOption {
@@ -553,8 +519,7 @@ in
 
         # Packages
         home.packages =
-          cfg.homePackages
-          ++ concatMap (
+          concatMap (
             name:
             if builtins.hasAttr name cfg.homePackageSets then
               cfg.homePackageSets.${name}
