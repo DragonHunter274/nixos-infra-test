@@ -58,6 +58,12 @@ in
       extraModules = [ ];
     };
 
+    tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
+      system = "x86_64-linux";
+      hostname = "tothemoon";
+      nfsServer = "10.100.193.97";
+    };
+
     k3s-dev = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "k3s-dev";
