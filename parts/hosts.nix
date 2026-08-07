@@ -51,6 +51,13 @@ in
       ];
     };
 
+    tothemoon = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "tothemoon";
+      extraHmUsers = { };
+      extraModules = [ ];
+    };
+
     k3s-dev = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "k3s-dev";
