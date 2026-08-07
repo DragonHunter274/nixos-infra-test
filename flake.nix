@@ -73,6 +73,10 @@
       url = "git+https://git.snix.dev/snix/snix?ref=canon";
       flake = false;
     };
+    nix-cache-beacon = {
+      url = "github:adisbladis/nix-cache-beacon";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -90,6 +94,7 @@
         ./parts/hydra.nix
         ./parts/dev-shells.nix
         ./parts/ipxe.nix
+        ./parts/nfsroot-netboot.nix
       ];
 
       perSystem =
