@@ -61,6 +61,12 @@
     algorithm = "zstd";
     memoryPercent = 50;
   };
+  services.nfs.server = {
+    enable = true;
+    exports = ''
+      /nix/store 10.100.0.0/16(ro,no_subtree_check,insecure,all_squash,fsid=0)
+    '';
+  };
 
   # Prevent system freezes under high CPU/memory pressure
   services.earlyoom = {
