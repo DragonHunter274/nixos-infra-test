@@ -127,9 +127,6 @@
   # Firefox
   programs.firefox.enable = true;
 
-  # Goldwarden
-  services.goldwarden-legacy.enable = true;
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
