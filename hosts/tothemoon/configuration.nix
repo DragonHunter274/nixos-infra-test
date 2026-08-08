@@ -96,7 +96,7 @@
   services.power-profiles-daemon.enable = false;
 
   # Hostname
-  networking.hostName = "t490s-simon";
+  networking.hostName = "tothemoon";
 
   # Networking
   networking.networkmanager.enable = true;
