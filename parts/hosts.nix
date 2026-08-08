@@ -36,6 +36,7 @@ in
       extraModules = [
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
+        inputs.nix-cache-beacon.nixosModules.default
         ../modules/syncthing.nix
       ];
     };
@@ -58,6 +59,13 @@ in
       extraModules = [ ];
     };
 
+    # NFS-store netboot variant of tothemoon ("windesktop" in
+    # nix-netboot-manager): mounts /nix/store from thinkpad-simon's NFS
+    # export instead of packing the whole desktop closure into the
+    # client's RAM. nfsServer is baked in at build time -- see
+    # netbootNfsrootModules in lib.nix for why a dynamic (DHCP-cmdline-
+    # resolved) server address isn't achievable under systemd-stage-1;
+    # re-run this build if thinkpad-simon's IP changes.
     tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
       system = "x86_64-linux";
       hostname = "tothemoon";
@@ -107,6 +115,11 @@ in
     netboot-minimal-iso = builders.mkISO {
       system = "x86_64-linux";
       hostname = "nixos-minimal";
+    };
+
+    tothemoon-iso = builder.mkISO {
+      system = "x86_64-linux";
+      hostname = "tothemoon";
     };
 
     hydra = builders.mkNixos {
