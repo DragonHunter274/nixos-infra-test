@@ -117,7 +117,7 @@ in
       hostname = "nixos-minimal";
     };
 
-    tothemoon-iso = builder.mkISO {
+    tothemoon-iso = builders.mkISO {
       system = "x86_64-linux";
       hostname = "tothemoon";
     };
