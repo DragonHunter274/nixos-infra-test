@@ -66,11 +66,11 @@ in
     # netbootNfsrootModules in lib.nix for why a dynamic (DHCP-cmdline-
     # resolved) server address isn't achievable under systemd-stage-1;
     # re-run this build if thinkpad-simon's IP changes.
-    tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
-      system = "x86_64-linux";
-      hostname = "tothemoon";
-      nfsServer = "10.100.193.97";
-    };
+   # tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
+   #   system = "x86_64-linux";
+   #   hostname = "tothemoon";
+   #   nfsServer = "10.100.193.97";
+   # };
 
     k3s-dev = builders.mkNixos {
       system = "x86_64-linux";
