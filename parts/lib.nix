@@ -347,6 +347,7 @@ in
 
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
+        (homeManagerCfg system { })
         (commonModules system)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         isoModules
