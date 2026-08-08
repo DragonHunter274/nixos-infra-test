@@ -688,6 +688,26 @@
         "type": "github"
       }
     },
+    "nix-cache-beacon": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781270453,
+        "narHash": "sha256-MwHYpvJkFXw1m5w0PxZUC0wUK60avdUf8cuBYMuviz4=",
+        "owner": "adisbladis",
+        "repo": "nix-cache-beacon",
+        "rev": "7608879b33a6f5d9e17c0698154069c8d69f862e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adisbladis",
+        "repo": "nix-cache-beacon",
+        "type": "github"
+      }
+    },
     "nix-netboot-serve": {
       "inputs": {
         "cpiotools": "cpiotools",
@@ -1001,6 +1021,7 @@
         "hydra-tools": "hydra-tools",
         "hyprland": "hyprland",
         "hyprlock": "hyprlock",
+        "nix-cache-beacon": "nix-cache-beacon",
         "nix-netboot-serve": "nix-netboot-serve",
         "nixos-06cb-009a-fingerprint-sensor": "nixos-06cb-009a-fingerprint-sensor",
         "nixos-hardware": "nixos-hardware",
