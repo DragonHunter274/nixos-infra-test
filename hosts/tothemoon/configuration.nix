@@ -104,7 +104,7 @@
   networking.networkmanager.wifi.backend = "iwd";
 
   # User configuration
-  users.users.simon = {
+  users.users.fablab = {
     isNormalUser = true;
     description = "simon";
     extraGroups = [
