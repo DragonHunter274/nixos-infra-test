@@ -26,7 +26,7 @@
   # Enable and configure the desktop environment
   desktop = {
     enable = true;
-    user = "simon";
+    user = "fablab";
     homeStateVersion = "24.05";
     enabledPackageSets = [ "core" ];
     cinnamon = {
@@ -61,7 +61,7 @@
 
 
 
-
+  boot.kernelParams = [ "systemd.machine_id=438a1fca24b8455fb68e3d4b242ef51d" ];
   # ZFS support
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
