@@ -1,0 +1,24 @@
+name: "Nix eval warnings tracker"
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 1 * * 0' # weekly on Sunday at 01:00, after the flake.lock update run
+  workflow_dispatch: # allows manual triggering
+
+jobs:
+  track-eval-warnings:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/determinate-nix-action@v3
+
+      - name: Track Nix evaluation warnings
+        run: python3 .github/scripts/nix_eval_warnings.py
