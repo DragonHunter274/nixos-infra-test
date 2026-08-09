@@ -7,8 +7,11 @@ Nix/nixpkgs report evaluation problems on stderr in two shapes:
                        <indented continuation lines>
 
 Each unique warning (by its full text) becomes one GitHub issue, labeled
-"nix-eval-warning" and tagged with a stable hash marker in the body. Issues
-are opened for new warnings and auto-closed once a warning stops appearing.
+"nix-eval-warning" plus one "host/<hostname>" label per affected host, and
+tagged with a stable hash marker in the body. Issues are opened for new
+warnings; as the set of affected hosts changes, host labels and the body are
+updated and a comment records the change; the issue closes only once no host
+shows the warning anymore.
 """
 
 import hashlib
@@ -25,6 +28,22 @@ HASH_MARKER = re.compile(r"nix-eval-warning-hash: ([a-f0-9]+)")
 
 def run(cmd, check=True):
     return subprocess.run(cmd, text=True, capture_output=True, check=check)
+
+
+def host_label(host):
+    return f"host/{host}"
+
+
+def ensure_label(repo, name, description):
+    run(
+        [
+            "gh", "label", "create", name,
+            "--repo", repo,
+            "--color", "FBCA04",
+            "--description", description,
+        ],
+        check=False,
+    )  # ignore failure if the label already exists
 
 
 def get_hosts():
@@ -66,19 +85,24 @@ def warning_hash(text):
     return hashlib.sha256(text.encode()).hexdigest()[:12]
 
 
+def build_body(h, text, hosts, run_url):
+    hosts_list = ", ".join(sorted(hosts))
+    return (
+        f"Nix evaluation warning detected on host(s): {hosts_list}\n\n"
+        f"```\n{text}\n```\n\n"
+        f"Detected in workflow run: {run_url}\n\n"
+        "This issue is filed and closed automatically by the nix-eval-warnings "
+        "workflow. It will be closed once the warning no longer appears during "
+        "evaluation.\n\n"
+        f"<!-- nix-eval-warning-hash: {h} -->\n"
+    )
+
+
 def main():
     repo = os.environ["GITHUB_REPOSITORY"]
     run_url = f"{os.environ['GITHUB_SERVER_URL']}/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
 
-    run(
-        [
-            "gh", "label", "create", LABEL,
-            "--repo", repo,
-            "--color", "FBCA04",
-            "--description", "Automatically filed from a Nix evaluation warning",
-        ],
-        check=False,
-    )  # ignore failure if the label already exists
+    ensure_label(repo, LABEL, "Automatically filed from a Nix evaluation warning")
 
     hosts = get_hosts()
     warning_hosts = {}  # hash -> set(hostnames)
@@ -102,46 +126,96 @@ def main():
                 "--repo", repo,
                 "--label", LABEL,
                 "--state", "open",
-                "--json", "number,body",
+                "--json", "number,body,labels",
                 "--limit", "200",
             ]
         ).stdout
     )
-    open_map = {}
+    open_map = {}  # hash -> {"number": int, "hosts": set(hostnames)}
     for issue in open_issues:
         m = HASH_MARKER.search(issue.get("body") or "")
-        if m:
-            open_map[m.group(1)] = issue["number"]
-
-    for h, text in warning_text.items():
-        if h in open_map:
+        if not m:
             continue
-        hosts_list = ", ".join(sorted(warning_hosts[h]))
+        current_hosts = {
+            name[len("host/"):]
+            for label in issue.get("labels", [])
+            for name in [label["name"]]
+            if name.startswith("host/")
+        }
+        open_map[m.group(1)] = {"number": issue["number"], "hosts": current_hosts}
+
+    new_hashes = [h for h in warning_text if h not in open_map]
+    hosts_needing_labels = {host for h in new_hashes for host in warning_hosts[h]}
+    hosts_needing_labels |= {
+        host
+        for h in open_map
+        if h in warning_text
+        for host in warning_hosts[h] - open_map[h]["hosts"]
+    }
+    for host in sorted(hosts_needing_labels):
+        ensure_label(repo, host_label(host), f"Nix eval warning affects host {host}")
+
+    for h in new_hashes:
+        text = warning_text[h]
+        affected_hosts = sorted(warning_hosts[h])
         title = f"Nix eval warning: {text.splitlines()[0][:80]}"
-        body = (
-            f"Nix evaluation warning detected on host(s): {hosts_list}\n\n"
-            f"```\n{text}\n```\n\n"
-            f"Detected in workflow run: {run_url}\n\n"
-            "This issue is filed and closed automatically by the nix-eval-warnings "
-            "workflow. It will be closed once the warning no longer appears during "
-            "evaluation.\n\n"
-            f"<!-- nix-eval-warning-hash: {h} -->\n"
-        )
+        body = build_body(h, text, warning_hosts[h], run_url)
         print(f"Filing new issue for warning {h}: {title}")
-        run(["gh", "issue", "create", "--repo", repo, "--title", title, "--body", body, "--label", LABEL])
+        cmd = ["gh", "issue", "create", "--repo", repo, "--title", title, "--body", body]
+        for host in affected_hosts:
+            cmd += ["--label", host_label(host)]
+        cmd += ["--label", LABEL]
+        run(cmd)
 
-    for h, number in open_map.items():
-        if h in warning_text:
+    for h, info in open_map.items():
+        number = info["number"]
+        old_hosts = info["hosts"]
+
+        if h not in warning_text:
+            print(f"Closing resolved issue #{number} for warning {h}")
+            run(
+                [
+                    "gh", "issue", "comment", str(number),
+                    "--repo", repo,
+                    "--body", f"This warning no longer appears as of workflow run {run_url}. Closing automatically.",
+                ]
+            )
+            run(["gh", "issue", "close", str(number), "--repo", repo])
             continue
-        print(f"Closing resolved issue #{number} for warning {h}")
+
+        new_hosts = warning_hosts[h]
+        if new_hosts == old_hosts:
+            continue
+
+        added = sorted(new_hosts - old_hosts)
+        removed = sorted(old_hosts - new_hosts)
+        print(f"Updating issue #{number} for warning {h}: +{added} -{removed}")
+
+        cmd = [
+            "gh", "issue", "edit", str(number),
+            "--repo", repo,
+            "--body", build_body(h, warning_text[h], new_hosts, run_url),
+        ]
+        if added:
+            cmd += ["--add-label", ",".join(host_label(host) for host in added)]
+        if removed:
+            cmd += ["--remove-label", ",".join(host_label(host) for host in removed)]
+        run(cmd)
+
+        comment_lines = []
+        if removed:
+            comment_lines.append(f"No longer affects: {', '.join(removed)}.")
+        if added:
+            comment_lines.append(f"Now also affects: {', '.join(added)}.")
+        comment_lines.append(f"Still open for: {', '.join(sorted(new_hosts))}.")
+        comment_lines.append(f"Updated in workflow run: {run_url}")
         run(
             [
                 "gh", "issue", "comment", str(number),
                 "--repo", repo,
-                "--body", f"This warning no longer appears as of workflow run {run_url}. Closing automatically.",
+                "--body", "\n".join(comment_lines),
             ]
         )
-        run(["gh", "issue", "close", str(number), "--repo", repo])
 
 
 if __name__ == "__main__":
