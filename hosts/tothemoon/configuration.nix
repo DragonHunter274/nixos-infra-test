@@ -35,7 +35,7 @@
 
     # Additional system packages beyond defaults
     packages = with pkgs; [
-
+      spotify
     ];
 
     # Enable wireshark with NUR package
