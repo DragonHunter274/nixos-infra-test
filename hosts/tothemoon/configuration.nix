@@ -106,7 +106,7 @@
   # User configuration
   users.users.fablab = {
     isNormalUser = true;
-    description = "simon";
+    description = "fablab";
     extraGroups = [
       "networkmanager"
       "wheel"
