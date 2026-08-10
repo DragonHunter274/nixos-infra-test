@@ -439,21 +439,13 @@ let
         ];
 
         isoImage.squashfsCompression = "zstd";
-
-        # Same gotcha as netbootModules above: disko and hardware-configuration
-        # set fileSystems/swapDevices at default priority, which wins over
-        # installation-cd-minimal.nix's own mkImageMediaOverride root fs. Left
-        # unforced, a host that uses disko (e.g. tothemoon) boots its ISO
-        # trying to mount the *real* target disk's fileSystems instead of the
-        # live media's own root -- that disk isn't present on whatever machine
-        # actually boots the ISO, so /sysroot never mounts and
-        # find-nixos-closure.service fails as a dependency failure. Force
-        # everything disk-related off, same as netbootModules.
         boot.loader.systemd-boot.enable = lib.mkForce false;
         boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
         boot.resumeDevice = lib.mkForce "";
         disko.devices = lib.mkForce { };
         swapDevices = lib.mkForce [ ];
+        hardware.cpu.intel.updateMicrocode = lib.mkForce false;
+        hardware.cpu.amd.updateMicrocode = lib.mkForce false;
       }
     )
   ];
