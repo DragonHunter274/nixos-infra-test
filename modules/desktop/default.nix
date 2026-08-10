@@ -517,6 +517,19 @@ in
           userEmail = cfg.git.userEmail;
         };
 
+        # Cinnamon terminal font (gnome-terminal)
+        dconf.settings = mkIf cfg.cinnamon.enable {
+          "org/gnome/terminal/legacy/profiles:" = {
+            default = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9";
+            list = [ "b1dcc9dd-5262-4d8d-a863-c897e6d979b9" ];
+          };
+          "org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9" = {
+            visible-name = "Default";
+            use-system-font = false;
+            font = "JetBrains Mono 11";
+          };
+        };
+
         # Packages
         home.packages =
           concatMap (

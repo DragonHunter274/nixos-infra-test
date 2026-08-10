@@ -36,6 +36,9 @@
     # Additional system packages beyond defaults
     packages = with pkgs; [
       spotify
+      orca-slicer
+      prusa-slicer
+      freecad
     ];
 
     # Enable wireshark with NUR package
