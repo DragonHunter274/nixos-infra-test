@@ -298,9 +298,10 @@ in
       extraHmUsers ? { },
       extraModules ? [ ],
       enableComin ? true,
+      nixpkgsInput ? inputs.nixpkgs,
     }:
 
-    inputs.nixpkgs.lib.nixosSystem {
+    nixpkgsInput.lib.nixosSystem {
       inherit system;
 
       specialArgs = { inherit inputs; };

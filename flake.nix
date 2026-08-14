@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-25-05.url = "nixpkgs/nixos-25.05";
+    nixpkgs-26-05.url = "nixpkgs/nixos-26.05";
     nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
     copyparty = {
       url = "github:9001/copyparty";
