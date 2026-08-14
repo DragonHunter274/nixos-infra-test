@@ -295,6 +295,9 @@
     packages = with pkgs; [
       kdePackages.kate
     ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
+    ];
   };
 
   # QEMU guest support
@@ -309,6 +312,7 @@
 
   # SSH
   services.openssh.enable = true;
+  services.openssh.settings.MaxAuthTries = 15;
 
   # Firewall
   networking.firewall.enable = false;
