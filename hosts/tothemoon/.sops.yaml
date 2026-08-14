@@ -1,0 +1,13 @@
+keys:
+  - &dh274 age10wjzxqwstyddl6zy02drchuy76a3fph3jznnp8agu5t9gkqjdegsj4a0ls
+  - &tothemoon-tpm age1tpm1qt388deutrgcxe56u9fegcak5dwk6r7r9vtht9k69fl7qc7gm4f06ghevsl
+
+creation_rules:
+  # Sops-Nix specific rules for secrets (YAML, JSON, env, ini)
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *dh274
+      - *tothemoon-tpm
+
+
