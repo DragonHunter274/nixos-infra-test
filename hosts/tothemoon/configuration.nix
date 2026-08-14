@@ -1,4 +1,3 @@
-
 {
   config,
   pkgs,
@@ -20,7 +19,6 @@
     ./disko-config.nix
   ];
   disko.devices.disk.main.device = "/dev/nvme0n1";
-
 
   home-manager.users.fablab =
     { lib, ... }:
@@ -51,115 +49,111 @@
         </monitors>
       '';
 
-
       home.file.".config/gtk-3.0/bookmarks".text = ''
         smb://nas.fablab.lan/FabNAS FabNAS
       '';
 
       home.activation.seedKdePlaces = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        PLACES="$HOME/.local/share/user-places.xbel"
-        if [ ! -e "$PLACES" ]; then
-          $DRY_RUN_CMD mkdir -p "$(dirname "$PLACES")"
-          $DRY_RUN_CMD cat > "$PLACES" <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xbel>
-<xbel xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks" xmlns:kdepriv="http://www.kde.org/kdepriv" xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info">
- <info>
-  <metadata owner="http://www.kde.org">
-   <kde_places_version>4</kde_places_version>
-  </metadata>
- </info>
- <bookmark href="file:///home/fablab">
-  <title>Home</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="user-home"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/0</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Desktop">
-  <title>Desktop</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="user-desktop"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/1</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Documents">
-  <title>Documents</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-documents"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/2</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Downloads">
-  <title>Downloads</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-downloads"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/3</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Music">
-  <title>Music</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-music"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/6</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Pictures">
-  <title>Pictures</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-pictures"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/7</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="file:///home/fablab/Videos">
-  <title>Videos</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-videos"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/8</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="remote:/">
-  <title>Network</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-network"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/4</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="trash:/">
-  <title>Trash</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="user-trash"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/5</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="recentlyused:/files">
-  <title>Recent Files</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="document-open-recent"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/9</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="recentlyused:/locations">
-  <title>Recent Locations</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-open-recent"/></metadata>
-   <metadata owner="http://www.kde.org"><ID>1659123555/10</ID><isSystemItem>true</isSystemItem></metadata>
-  </info>
- </bookmark>
- <bookmark href="smb://nas.fablab.lan/FabNAS">
-  <title>FabNAS</title>
-  <info>
-   <metadata owner="http://freedesktop.org"><bookmark:icon name="network-workgroup"/></metadata>
-  </info>
- </bookmark>
-</xbel>
-EOF
-        fi
+                PLACES="$HOME/.local/share/user-places.xbel"
+                if [ ! -e "$PLACES" ]; then
+                  $DRY_RUN_CMD mkdir -p "$(dirname "$PLACES")"
+                  $DRY_RUN_CMD cat > "$PLACES" <<'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE xbel>
+        <xbel xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks" xmlns:kdepriv="http://www.kde.org/kdepriv" xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info">
+         <info>
+          <metadata owner="http://www.kde.org">
+           <kde_places_version>4</kde_places_version>
+          </metadata>
+         </info>
+         <bookmark href="file:///home/fablab">
+          <title>Home</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="user-home"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/0</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Desktop">
+          <title>Desktop</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="user-desktop"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/1</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Documents">
+          <title>Documents</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-documents"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/2</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Downloads">
+          <title>Downloads</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-downloads"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/3</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Music">
+          <title>Music</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-music"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/6</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Pictures">
+          <title>Pictures</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-pictures"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/7</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="file:///home/fablab/Videos">
+          <title>Videos</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-videos"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/8</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="remote:/">
+          <title>Network</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-network"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/4</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="trash:/">
+          <title>Trash</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="user-trash"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/5</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="recentlyused:/files">
+          <title>Recent Files</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="document-open-recent"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/9</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="recentlyused:/locations">
+          <title>Recent Locations</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="folder-open-recent"/></metadata>
+           <metadata owner="http://www.kde.org"><ID>1659123555/10</ID><isSystemItem>true</isSystemItem></metadata>
+          </info>
+         </bookmark>
+         <bookmark href="smb://nas.fablab.lan/FabNAS">
+          <title>FabNAS</title>
+          <info>
+           <metadata owner="http://freedesktop.org"><bookmark:icon name="network-workgroup"/></metadata>
+          </info>
+         </bookmark>
+        </xbel>
+        EOF
+                fi
       '';
     };
-
-
-
 
   hardware.graphics.enable = true;
 
@@ -198,9 +192,11 @@ EOF
     owner = "fablab";
   };
 
-
   system.activationScripts.restoreKeyring = {
-    deps = [ "setupSecrets" "users" ];
+    deps = [
+      "setupSecrets"
+      "users"
+    ];
     text = ''
       # `install -d -o -g` only sets ownership on the directory it's
       # given, NOT on any intermediate parents it has to create along the
@@ -280,6 +276,7 @@ EOF
   users.users.fablab = {
     isNormalUser = true;
     description = "fablab";
+    hashedPassword = "$y$j9T$DDR8KjEkMKP6pG/KI2tcz1$WFh9vFd14aQijTiVtobJlpdoxOHblQvdGQ0e9tLpjd6";
     extraGroups = [
       "networkmanager"
       "wireshark"
