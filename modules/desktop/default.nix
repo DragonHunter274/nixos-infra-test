@@ -410,6 +410,9 @@ in
       QT_QPA_PLATFORMTHEME = "xdgdesktopportal";
     };
 
+ 
+    fonts.packages = [ pkgs.noto-fonts-color-emoji ];
+
     # Wayland session variables
     environment.sessionVariables = mkIf cfg.hyprland.enable {
       NIXOS_OZONE_WL = "1";
@@ -519,11 +522,32 @@ in
 
         # Cinnamon: fractional scaling support + terminal (gnome-terminal) font
         dconf.settings = mkIf cfg.cinnamon.enable {
+
+          "org/cinnamon" = {
+            favorite-apps = [
+              "org.gnome.Calculator.desktop"
+              "org.gnome.Calendar.desktop"
+              "org.x.editor.desktop"
+              "mintinstall.desktop"
+              "cinnamon-settings.desktop"
+              "spotify.desktop"
+            ];
+          };
           "org/cinnamon/muffin" = {
             experimental-features = [
               "scale-monitor-framebuffer"
               "x11-randr-fractional-scaling"
             ];
+          };
+
+          "org/cinnamon/desktop/interface" = {
+            gtk-theme = "Mint-Y-Dark";
+          };
+          "org/cinnamon/theme" = {
+            name = "Mint-Y-Dark";
+          };
+          "org/gnome/desktop/interface" = {
+            color-scheme = "prefer-dark";
           };
           "org/gnome/terminal/legacy/profiles:" = {
             default = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9";
@@ -533,6 +557,9 @@ in
             visible-name = "Default";
             use-system-font = false;
             font = "JetBrainsMono Nerd Font 11";
+            use-theme-colors = false;
+            foreground-color = "#D0CFCC";
+            background-color = "#171421";
           };
         };
 

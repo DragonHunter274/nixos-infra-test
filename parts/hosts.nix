@@ -57,6 +57,7 @@ in
       hostname = "tothemoon";
       extraHmUsers = { };
       extraModules = [ ];
+      nixpkgsInput = inputs.nixpkgs-26-05;
     };
 
     # NFS-store netboot variant of tothemoon ("windesktop" in

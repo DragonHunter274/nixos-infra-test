@@ -815,6 +815,20 @@
         "type": "indirect"
       }
     },
+    "nixpkgs-26-05": {
+      "locked": {
+        "lastModified": 1786535285,
+        "narHash": "sha256-wu478baUvGLzcIMCGz8eKqSJa2uzjoUGpYSh/LTXtxo=",
+        "rev": "9f78f44a87948854445dae0b6bf82b2e87e4efb5",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/26.05/nixos-26.05.7526.9f78f44a8794/nixexprs.tar.xz"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-26.05",
+        "type": "indirect"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1782614948,
@@ -1028,6 +1042,7 @@
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-23-11": "nixpkgs-23-11",
         "nixpkgs-25-05": "nixpkgs-25-05",
+        "nixpkgs-26-05": "nixpkgs-26-05",
         "nur": "nur",
         "pyprland": "pyprland",
         "snix": "snix",
