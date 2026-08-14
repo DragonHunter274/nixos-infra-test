@@ -170,8 +170,8 @@
     # Additional system packages beyond defaults
     packages = with pkgs; [
       spotify-x11
-      orca-slicer
-      prusa-slicer
+      inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.orca-slicer
+      inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.prusa-slicer
       freecad
       age-plugin-tpm-legacy
     ];
@@ -220,13 +220,21 @@
     group = "users";
   };
 
-  systemd.user.services.restore-spotify-session = {
-    description = "Restore Spotify prefs from SOPS secret";
-    wantedBy = [ "graphical-session.target" ];
-    script = ''
-      mkdir -p $HOME/.config/spotify
-      cp -f ${config.sops.secrets.spotify_prefs.path} $HOME/.config/spotify/prefs
-      chmod 600 $HOME/.config/spotify/prefs
+  system.activationScripts.restoreSpotifyPrefs = {
+    deps = [
+      "setupSecrets"
+      "users"
+    ];
+    text = ''
+      # Cinnamon (especially the Wayland session) doesn't reliably start
+      # graphical-session.target, so a systemd --user service gated on it
+      # never fired. Restore this at boot/switch time instead, same as
+      # restoreKeyring above.
+      mkdir -p /home/fablab/.config/spotify
+      chown fablab:users /home/fablab/.config /home/fablab/.config/spotify
+      cp -f ${config.sops.secrets.spotify_prefs.path} /home/fablab/.config/spotify/prefs
+      chown fablab:users /home/fablab/.config/spotify/prefs
+      chmod 600 /home/fablab/.config/spotify/prefs
     '';
   };
 

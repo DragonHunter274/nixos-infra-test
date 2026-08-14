@@ -275,7 +275,7 @@ in
 
     enabledHomePackageSets = mkOption {
       type = types.listOf types.str;
-      default = [ "core" "desktop" ];
+      default = [ "core" ];
       example = [ "core" "tools" ];
       description = "Names of package sets from desktop.homePackageSets to include";
     };
