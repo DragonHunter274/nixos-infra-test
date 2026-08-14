@@ -20,6 +20,24 @@
             sops
             age
             ssh-to-age
+            # tothemoon's TPM-sealed sops key: sops can't decrypt the
+            # "p256tag" stanzas age-plugin-tpm >=1.0.0-rc1 always emits
+            # (see hosts/tothemoon/configuration.nix for the full story
+            # and https://github.com/getsops/sops/issues/2129), so
+            # `sops updatekeys`/`sops -e` for tothemoon's secrets must
+            # run against this pre-p256tag build, not the stock package.
+            (age-plugin-tpm.overrideAttrs (old: {
+              version = "0.3.0";
+              src = pkgs.fetchFromGitHub {
+                owner = "Foxboron";
+                repo = "age-plugin-tpm";
+                rev = "v0.3.0";
+                hash = "sha256-yr1PSSmcUoOrQ8VMQEoaCLNvDO+3+6N7XXdNUyYVz9M=";
+              };
+              vendorHash = "sha256-VEx6qP02QcwETOQUkMsrqVb+cOElceXcTDaUr480ngs=";
+              doInstallCheck = false;
+              doCheck = false;
+            }))
           ]
           ++ lib.optionals (system == "x86_64-linux") [
             inputs.nix-netboot-serve.defaultPackage.${system}
