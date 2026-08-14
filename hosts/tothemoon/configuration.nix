@@ -279,6 +279,7 @@
     hashedPassword = "$y$j9T$DDR8KjEkMKP6pG/KI2tcz1$WFh9vFd14aQijTiVtobJlpdoxOHblQvdGQ0e9tLpjd6";
     extraGroups = [
       "networkmanager"
+      "wheel"
       "wireshark"
       "plugdev"
       "dialout"
