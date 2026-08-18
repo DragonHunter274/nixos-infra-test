@@ -6,6 +6,11 @@
   ...
 }:
 
+let
+  unstablePkgs = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.extend (
+    import ./overlay.nix
+  );
+in
 {
   imports = [
     # Include the results of the hardware scan
@@ -170,7 +175,7 @@
     # Additional system packages beyond defaults
     packages = with pkgs; [
       spotify-x11
-      inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.orca-slicer
+      unstablePkgs.orca-slicer
       inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.prusa-slicer
       freecad
       age-plugin-tpm-legacy
