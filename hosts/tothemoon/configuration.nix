@@ -179,6 +179,9 @@ in
       inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.prusa-slicer
       freecad
       age-plugin-tpm-legacy
+      inkscape
+      gimp
+      darktable
     ];
 
     # Enable wireshark with NUR package
