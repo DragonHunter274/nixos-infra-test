@@ -197,6 +197,14 @@
           -E
         ${pkgs.cups}/bin/lpadmin -d TSC-ME240
       fi
+
+      if ! ${pkgs.cups}/bin/lpstat -p TSC-ME240-raw 2>/dev/null | grep -q TSC-ME240-raw; then
+        ${pkgs.cups}/bin/lpadmin \
+          -p TSC-ME240-raw \
+          -v socket://10.100.163.75:9100 \
+          -m raw \
+          -E
+      fi
     '';
   };
 
