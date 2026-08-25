@@ -470,8 +470,8 @@ in
         gtk = {
           enable = true;
           theme = {
-            package = pkgs.flat-remix-gtk;
-            name = "Flat-Remix-GTK-Grey-Darkest";
+            package = pkgs.orchis-theme.override { tweaks = [ "black" ]; };
+            name = "Orchis-Grey-Dark";
           };
           iconTheme = {
             package = pkgs.kdePackages.breeze-icons;
