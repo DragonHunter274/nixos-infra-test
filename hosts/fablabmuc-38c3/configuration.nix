@@ -9,6 +9,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/configuration.nix
+    ./zfs.nix
     # ./sops_fetch.nix
   ];
   disko.devices.disk.main.device = "/dev/sda";

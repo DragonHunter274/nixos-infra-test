@@ -15,7 +15,6 @@
     # Include the results of the hardware scan.
     ./users.nix
     ./38c3-network.nix
-    ./zfs.nix
     ./disko-config.nix
     ./traefik.nix
     ./docker-compose.nix
