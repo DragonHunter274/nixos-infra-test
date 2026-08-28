@@ -29,7 +29,14 @@
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "prohibit-password";
 
-  services.printing.enable = true;
+  services.printing = {
+    enable = true;
+    listenAddresses = [ "*:631" ];
+    allowFrom = [ "all" ];
+    browsing = true;
+    defaultShared = true;
+    openFirewall = true;
+  };
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
