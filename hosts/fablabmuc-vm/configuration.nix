@@ -8,7 +8,7 @@
   # Specify the disk device for disko partitioning
   # KVM guest with virtio-blk bus -> /dev/vda. Adjust if the VM instead uses
   # virtio-scsi (/dev/sda) or emulated NVMe (/dev/nvme0n1).
-  disko.devices.disk.main.device = "/dev/vda";
+  disko.devices.disk.main.device = "/dev/sda";
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -28,6 +28,8 @@
 
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "prohibit-password";
+
+  services.printing.enable = true;
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
