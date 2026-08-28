@@ -134,7 +134,7 @@ in
       system = "x86_64-linux";
       hostname = "fablabmuc-vm";
       extraHmUsers = { };
-      extraModules = [ ];
+      extraModules = [ ../modules/tsc-me240.nix ];
     };
 
     fablabmuc-tv = builders.mkRaspberryPi {
