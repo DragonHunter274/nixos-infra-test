@@ -130,6 +130,13 @@ in
       extraModules = [ ];
     };
 
+    fablabmuc-vm = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "fablabmuc-vm";
+      extraHmUsers = { };
+      extraModules = [ ];
+    };
+
     fablabmuc-tv = builders.mkRaspberryPi {
       hostname = "fablabmuc-tv";
       extraHmUsers = {
