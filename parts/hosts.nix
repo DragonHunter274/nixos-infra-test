@@ -19,7 +19,7 @@ in
       system = "x86_64-linux";
       hostname = "fablabmuc-38c3-minipc";
       extraHmUsers = { };
-      extraModules = [ ];
+      extraModules = [ ../modules/k3s.nix ];
     };
 
     desktop-simon = builders.mkNixos {

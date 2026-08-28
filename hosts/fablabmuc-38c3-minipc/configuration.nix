@@ -53,6 +53,23 @@
     "d /srv/sftp-share/data 0775 root sftponly -"
   ];
 
+  templates.services.k3s = {
+    enable = true;
+
+    services.flux = {
+      enable = true;
+      url = "https://github.com/dragonhunter274/home-ops";
+      branch = "dev";
+      path = "./environments/dev";
+
+      sopsAgeKeyFile = /root/.config/sops/age/keys.txt; # Optional, defaults to ~/.config/sops/age/keys.txt
+    };
+    services.servicelb = false;
+    services.traefik = true;
+    services.local-storage = true;
+  };
+
+
   services.syncthing = {
     enable = true;
     key = "/run/secrets/syncthing/key.pem";
