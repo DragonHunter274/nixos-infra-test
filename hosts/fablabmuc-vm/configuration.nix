@@ -38,6 +38,18 @@
     openFirewall = true;
   };
 
+  # Advertise shared printers via mDNS/DNS-SD. cupsd registers its own
+  # service records over avahi's D-Bus API, which needs userServices
+  # publishing enabled (not just publish.enable).
+  services.avahi = {
+    enable = true;
+    openFirewall = true;
+    publish = {
+      enable = true;
+      userServices = true;
+    };
+  };
+
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII5ysOCCkd6Me7t/Gx3CxLQ0tCfte3/gI1yXIWASG3Cc abc@webtop-689b4b4bb4-j9wnn"
