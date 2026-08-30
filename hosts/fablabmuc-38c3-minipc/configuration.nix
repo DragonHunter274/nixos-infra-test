@@ -48,6 +48,13 @@
     ];
   };
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 30;
+  };
+
+
   systemd.tmpfiles.rules = [
     "d /srv/sftp-share 0755 root root -"
     "d /srv/sftp-share/data 0775 root sftponly -"
