@@ -137,6 +137,13 @@ in
       extraModules = [ ../modules/tsc-me240.nix ];
     };
 
+    server-hetzner = builders.mkNixos {
+      system = "x86_64-linux";
+      hostname = "server-hetzner";
+      extraHmUsers = { };
+      extraModules = [ ../modules/k3s.nix ];
+    };
+
     fablabmuc-tv = builders.mkRaspberryPi {
       hostname = "fablabmuc-tv";
       extraHmUsers = {
