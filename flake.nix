@@ -28,6 +28,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko-mobile = {
+      url = "github:JuneStepp/disko/mobile";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    vanilla-mobile-nixos = {
+      url = "github:vanilla-mobile-nixos/vanilla-mobile-nixos";
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/0968519e14f7aa7d3e9b389682bd74d2b51c8ce8";
+    };
+
     nur = {
       url = "github:dragonhunter274/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -84,6 +94,13 @@
     };
   };
 
+  nixConfig = {
+    extra-substituters = [ "https://vanilla-mobile-nixos.cachix.org" ];
+    extra-trusted-public-keys = [
+      "vanilla-mobile-nixos.cachix.org-1:nicMQxxTD4n6PM9dCvylqsCOCA6M2C6gybbCKrei8AQ="
+    ];
+  };
+
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -100,6 +117,7 @@
         ./parts/dev-shells.nix
         ./parts/ipxe.nix
         ./parts/nfsroot-netboot.nix
+        ./parts/mobile.nix
       ];
 
       perSystem =

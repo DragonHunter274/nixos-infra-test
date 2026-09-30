@@ -20,6 +20,8 @@
             sops
             age
             ssh-to-age
+            libressl
+            nbd
             # tothemoon's TPM-sealed sops key: sops can't decrypt the
             # "p256tag" stanzas age-plugin-tpm >=1.0.0-rc1 always emits
             # (see hosts/tothemoon/configuration.nix for the full story

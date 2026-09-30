@@ -82,4 +82,5 @@
   };
 
   vanilla-mobile.disko.enable = true;
+  disko.imageBuilder.useVirtualDevices = false;
 }

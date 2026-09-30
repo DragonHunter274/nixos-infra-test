@@ -1,9 +1,12 @@
 { inputs, ... }: {
   imports = [
     ./disko.nix
-    inputs.self.nixosModules.netboot
-    inputs.self.nixosModules.oneplus-enchilada
+    inputs.vanilla-mobile-nixos.nixosModules.vanilla-mobile
+    ../../modules/mobile-netboot
+    ../../modules/oneplus-fajita
   ];
+
+  nixpkgs.buildPlatform = "x86_64-linux";
 
   # Remove this after the initial flash.
   vanilla-mobile.installer = {
@@ -16,7 +19,7 @@
   # vanilla-mobile.device.xiaomi-beryllium = {
   #   enable = true;
   # };
-  vmnw.oneplus-enchilada.enable = true;
+  vmnw.oneplus-fajita.enable = true;
   vmnw.netboot.enable = true;
 
   # Use the cache, so you don't have to spend hours building kernels.

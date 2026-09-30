@@ -6,8 +6,8 @@ let
   # -------------------------
   # Common modules
   # -------------------------
-  commonModules = system: [
-    inputs.disko.nixosModules.disko
+  commonModules = system: diskoInput: [
+    diskoInput.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.comin.nixosModules.comin
 
@@ -299,6 +299,7 @@ in
       extraModules ? [ ],
       enableComin ? true,
       nixpkgsInput ? inputs.nixpkgs,
+      diskoInput ? inputs.disko,
     }:
 
     nixpkgsInput.lib.nixosSystem {
@@ -309,7 +310,7 @@ in
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system extraHmUsers)
-        (commonModules system)
+        (commonModules system diskoInput)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         extraModules
       ];
@@ -334,7 +335,7 @@ in
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg "aarch64-linux" extraHmUsers)
-        (commonModules "aarch64-linux")
+        (commonModules "aarch64-linux" inputs.disko)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         rpiModules
         extraModules
@@ -365,7 +366,7 @@ in
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system { })
-        (commonModules system)
+        (commonModules system inputs.disko)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         isoModules
         extraModules
@@ -391,7 +392,7 @@ in
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system { })
-        (commonModules system)
+        (commonModules system inputs.disko)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         netbootModules
         extraModules
@@ -420,7 +421,7 @@ in
       modules = lib.flatten [
         ../hosts/${hostname}/configuration.nix
         (homeManagerCfg system extraHmUsers)
-        (commonModules system)
+        (commonModules system inputs.disko)
         (if enableComin then [ (cominModule hostname) ] else [ ])
         (netbootNfsrootModules { inherit nfsServer nfsExport; })
         extraModules
