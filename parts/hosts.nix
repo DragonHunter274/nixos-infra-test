@@ -106,7 +106,14 @@ in
       hostname = "nixos-minimal";
       extraHmUsers = { };
       extraModules = [ ];  
-    };    
+    };
+
+    oneplus-fajita = builders.mkNixos {
+      system = "aarch64-linux";
+      hostname = "oneplus-fajita";
+      extraHmUsers = { };
+      extraModules = [../modules/mobile-netboot ../modules/oneplus-enchilada]; 
+    }    
 
     netboot-minimal-netboot = builders.mkNetboot {
       system = "x86_64-linux";

@@ -20,7 +20,10 @@ in
   ];
 
   networking.hostName = "hydra";
+#########TESTING FOR HETZNER SERVER##########
 
+
+#########END TESTING FOR HETZNER SERVER##########
   nix.settings = {
     sandbox = false;
     experimental-features = [
