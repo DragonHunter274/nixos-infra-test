@@ -726,6 +726,26 @@
         "type": "github"
       }
     },
+    "nix-builder-beacon": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790873294,
+        "narHash": "sha256-t33ITEa6lA2DK736bw9Ry9R0wl7JbrubkPeQXq+xYC8=",
+        "owner": "DragonHunter274",
+        "repo": "nix-builder-beacon",
+        "rev": "94a7a3859d0cc26cd6f60a747fa797f490858577",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DragonHunter274",
+        "repo": "nix-builder-beacon",
+        "type": "github"
+      }
+    },
     "nix-cache-beacon": {
       "inputs": {
         "nixpkgs": [
@@ -1090,6 +1110,7 @@
         "hyprland": "hyprland",
         "hyprlock": "hyprlock",
         "ncro": "ncro",
+        "nix-builder-beacon": "nix-builder-beacon",
         "nix-cache-beacon": "nix-cache-beacon",
         "nix-netboot-serve": "nix-netboot-serve",
         "nixos-06cb-009a-fingerprint-sensor": "nixos-06cb-009a-fingerprint-sensor",

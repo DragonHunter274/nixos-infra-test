@@ -35,6 +35,7 @@ in
       general = {
         monitor = [
           "eDP-1, 1920x1080, 0x0, 1"
+          "desc:Samsung Electric Company SAMSUNG 0x01000E00, 3840x2160@30, 1920x0, 1"
           ", 1920x1080, 1920x0, 1"
         ];
         layout = "master";

@@ -78,6 +78,10 @@
       url = "github:adisbladis/nix-cache-beacon";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-builder-beacon = {
+      url = "github:DragonHunter274/nix-builder-beacon";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ncro = {
       url = "github:feel-co/ncro";
       inputs.nixpkgs.follows= "nixpkgs";

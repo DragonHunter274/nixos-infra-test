@@ -37,6 +37,7 @@ in
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.open-fprintd
         inputs.nixos-06cb-009a-fingerprint-sensor.nixosModules.python-validity
         inputs.nix-cache-beacon.nixosModules.default
+        inputs.nix-builder-beacon.nixosModules.default
         ../modules/syncthing.nix
       ];
     };
@@ -56,7 +57,7 @@ in
       system = "x86_64-linux";
       hostname = "tothemoon";
       extraHmUsers = { };
-      extraModules = [ ];
+      extraModules = [ inputs.nix-builder-beacon.nixosModules.default ];
       nixpkgsInput = inputs.nixpkgs-26-05;
     };
 
@@ -106,7 +107,7 @@ in
       hostname = "nixos-minimal";
       extraHmUsers = { };
       extraModules = [ ];  
-    };    
+    };
 
     netboot-minimal-netboot = builders.mkNetboot {
       system = "x86_64-linux";

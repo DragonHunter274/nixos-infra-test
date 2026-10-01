@@ -10,6 +10,9 @@
   ...
 }:
 
+let
+  ncroPkg = inputs.ncro.packages.${pkgs.stdenv.hostPlatform.system}.ncro;
+in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -19,9 +22,11 @@
     ./modules/nixos/libvirt.nix
     ./modules/nixos/fingerprint.nix
     ./modules/nixos/udev-mtkclient.nix
+    ./modules/nixos/nix-builder-beacon.nix
     ../../modules/ftp
     ../common-desktop
     inputs.termfilepickers.nixosModules.default
+    inputs.ncro.nixosModules.default
     ../../modules/goldwarden-legacy.nix
     ./packages.nix
   ];
@@ -237,6 +242,37 @@
     ];
   };
 
+  services.ncro = {
+    enable = true;
+    port = 8081;
+    openFirewall = true;
+    settings = {
+      upstreams = [
+        {
+          url = "https://cache.nixos.org";
+          priority = 10;
+          public_key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+        }
+        {
+          url = "https://nix-community.cachix.org";
+          priority = 10;
+          public_key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+        }
+        {
+          url = "https://hyprland.cachix.org";
+          priority = 10;
+          public_key = "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";
+        }
+        {
+          url = "https://hydra-cache.dh274.com";
+          priority = 10;
+          public_key = "hydra-cache.dh274.com:L2u+qgjPh3/73whvVdEQt5qun5N4uU7dAa55Qulx9m0=";
+        }
+      ];
+    };
+  };
+  nix.settings.substituters = [ "http://localhost:8081" ];
+
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true;
   hardware.bluetooth.settings = {
@@ -315,8 +351,8 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  networking.wireless.iwd.enable = true;
-  networking.networkmanager.wifi.backend = "iwd";
+  #networking.wireless.iwd.enable = true;
+  #networking.networkmanager.wifi.backend = "iwd";
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
   security.polkit.enable = true;
@@ -392,6 +428,7 @@
       "adbusers"
       "plugdev"
       "wireshark"
+      "wpa_supplicant"
     ];
     packages = with pkgs; [
       kdePackages.kate
