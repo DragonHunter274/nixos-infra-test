@@ -7,6 +7,7 @@
     advert = {
       enable = true;
       systems = [ "x86_64-linux" ];
+      maxJobs = 10;  # add this
     };
 
     sshServe.authorizedKeys = [
