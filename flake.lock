@@ -733,11 +733,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790873294,
-        "narHash": "sha256-t33ITEa6lA2DK736bw9Ry9R0wl7JbrubkPeQXq+xYC8=",
+        "lastModified": 1790876065,
+        "narHash": "sha256-8uRCJSRBqdv1+GobSYzujSoYgOKz1+GlhWpcTznXEdM=",
         "owner": "DragonHunter274",
         "repo": "nix-builder-beacon",
-        "rev": "94a7a3859d0cc26cd6f60a747fa797f490858577",
+        "rev": "172a0cf23c63b2939cc63448758370b605b4d2cf",
         "type": "github"
       },
       "original": {
