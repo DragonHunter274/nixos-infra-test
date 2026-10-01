@@ -22,6 +22,7 @@ in
     # Import other host-specific modules
     inputs.sops-nix.nixosModules.sops
     ./disko-config.nix
+    ./modules/nixos/nix-builder-beacon.nix
   ];
   disko.devices.disk.main.device = "/dev/nvme0n1";
 
@@ -206,13 +207,6 @@ in
       "users"
     ];
     text = ''
-      # `install -d -o -g` only sets ownership on the directory it's
-      # given, NOT on any intermediate parents it has to create along the
-      # way -- if ~/.local or ~/.local/share didn't already exist, they
-      # were being silently left root-owned (this script runs as root),
-      # which broke home-manager's own activation (runs as fablab, needs
-      # to write directly under ~/.local) and took the whole graphical
-      # session down with it. Chown the full chain explicitly instead.
       mkdir -p /home/fablab/.local/share/keyrings
       chown fablab:users /home/fablab/.local /home/fablab/.local/share /home/fablab/.local/share/keyrings
       chmod 700 /home/fablab/.local/share/keyrings
@@ -234,10 +228,6 @@ in
       "users"
     ];
     text = ''
-      # Cinnamon (especially the Wayland session) doesn't reliably start
-      # graphical-session.target, so a systemd --user service gated on it
-      # never fired. Restore this at boot/switch time instead, same as
-      # restoreKeyring above.
       mkdir -p /home/fablab/.config/spotify
       chown fablab:users /home/fablab/.config /home/fablab/.config/spotify
       cp -f ${config.sops.secrets.spotify_prefs.path} /home/fablab/.config/spotify/prefs
