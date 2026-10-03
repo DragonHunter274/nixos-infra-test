@@ -48,12 +48,26 @@
     ];
   };
 
+  #########START GRADIENT CONFIG########
+
+  services.gradient = {
+    enable = true;
+    domain = "gradient.example.com";
+    secrets.jwtFile = "/var/lib/gradient-secrets/jwt";
+    secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
+    postgres.enable = true;
+    worker.enable = true;
+  };
+
+  services.postgresql.package = pkgs.postgresql_18;
+
+  ########END GRADIENT CONFIG#########
+
   zramSwap = {
     enable = true;
     algorithm = "zstd";
     memoryPercent = 30;
   };
-
 
   systemd.tmpfiles.rules = [
     "d /srv/sftp-share 0755 root root -"
@@ -75,7 +89,6 @@
     services.traefik = true;
     services.local-storage = true;
   };
-
 
   services.syncthing = {
     enable = true;

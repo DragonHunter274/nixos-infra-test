@@ -19,7 +19,10 @@ in
       system = "x86_64-linux";
       hostname = "fablabmuc-38c3-minipc";
       extraHmUsers = { };
-      extraModules = [ ../modules/k3s.nix ];
+      extraModules = [
+        ../modules/k3s.nix
+        inputs.gradient.nixosModules.default
+      ];
     };
 
     desktop-simon = builders.mkNixos {
@@ -68,11 +71,11 @@ in
     # netbootNfsrootModules in lib.nix for why a dynamic (DHCP-cmdline-
     # resolved) server address isn't achievable under systemd-stage-1;
     # re-run this build if thinkpad-simon's IP changes.
-   # tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
-   #   system = "x86_64-linux";
-   #   hostname = "tothemoon";
-   #   nfsServer = "10.100.193.97";
-   # };
+    # tothemoon-netboot-nfsroot = builders.mkNetbootNfsroot {
+    #   system = "x86_64-linux";
+    #   hostname = "tothemoon";
+    #   nfsServer = "10.100.193.97";
+    # };
 
     k3s-dev = builders.mkNixos {
       system = "x86_64-linux";
@@ -101,12 +104,12 @@ in
       extraHmUsers = { };
       extraModules = [ ../modules/k3s.nix ];
     };
-    
-   nixos-minimal = builders.mkNixos {
+
+    nixos-minimal = builders.mkNixos {
       system = "x86_64-linux";
       hostname = "nixos-minimal";
       extraHmUsers = { };
-      extraModules = [ ];  
+      extraModules = [ ];
     };
 
     netboot-minimal-netboot = builders.mkNetboot {
