@@ -56,7 +56,8 @@
     secrets.jwtFile = "/var/lib/gradient-secrets/jwt";
     secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
     postgres.enable = true;
-    worker.enable = true;
+    worker.enable = false;
+    reverseProxy.nginx.manageTls = false;
   };
 
   services.postgresql.package = pkgs.postgresql_18;
