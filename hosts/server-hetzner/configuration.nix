@@ -11,11 +11,14 @@
     efiInstallAsRemovable = true;
     mirroredBoots = [
       {
-        devices = [ "/dev/disk/by-id/nvme-SAMSUNG_MZVLB1T0HBLR-00000_S4GJNX0R538710" ];
+        # "nodev": GPT disks have no BIOS Boot Partition, so legacy/BIOS
+        # grub-install (which needs one to embed into) is skipped here.
+        # UEFI install still happens per-path regardless of this list.
+        devices = [ "nodev" ];
         path = "/boot0";
       }
       {
-        devices = [ "/dev/disk/by-id/nvme-SAMSUNG_MZVLB1T0HBLR-00000_S4GJNX0R538729" ];
+        devices = [ "nodev" ];
         path = "/boot1";
       }
     ];
@@ -73,7 +76,7 @@
     };
     script = ''
       mkdir -p /var/lib/rancher/k3s/storage
-      ${pkgs.bcachefs-tools}/bin/bcachefs setattr --data_replicas=2 -R /var/lib/rancher/k3s/storage
+      ${pkgs.bcachefs-tools}/bin/bcachefs set-file-option --data_replicas=2 /var/lib/rancher/k3s/storage
     '';
   };
 
@@ -89,7 +92,7 @@
       "flakes"
     ];
     max-jobs = "auto";
-    cores = 0; 
+    cores = 0;
   };
 
   system.stateVersion = "26.05";
