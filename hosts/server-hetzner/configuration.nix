@@ -23,6 +23,8 @@
 
   boot.loader.efi.canTouchEfiVariables = false;
 
+  boot.supportedFilesystems.bcachefs = true;
+
   environment.systemPackages = with pkgs; [
     vim
     git
