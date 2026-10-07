@@ -47,6 +47,10 @@
     settings.MaxAuthTries = 10;
   };
 
+  services.tailscale = {
+    enable = true;
+  };
+
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
   ];
