@@ -142,7 +142,10 @@ in
       system = "x86_64-linux";
       hostname = "server-hetzner";
       extraHmUsers = { };
-      extraModules = [ ../modules/k3s.nix ];
+      extraModules = [ 
+        ../modules/k3s.nix
+        inputs.gradient.nixosModules.default
+      ];
     };
 
     fablabmuc-tv = builders.mkRaspberryPi {
