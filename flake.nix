@@ -87,7 +87,7 @@
       inputs.nixpkgs.follows= "nixpkgs";
     };
     gradient = {
-      url = "github:wavelens/gradient/5cce7f64862797745120ddeb035e343540abde89";
+      url = "github:wavelens/gradient";
       inputs.nixpkgs.follows= "nixpkgs";
     };
   };
