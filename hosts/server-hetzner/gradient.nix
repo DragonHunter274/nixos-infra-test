@@ -5,7 +5,7 @@
   services.gradient = {
     enable = true;
     domain = "server-hetzner.taild08e19.ts.net";
-    serveUrl = "https://server-hetzner.taild08e19.ts.net";
+    #serveUrl = "https://server-hetzner.taild08e19.ts.net";
     useTls = false;
     secrets.jwtFile = "/var/lib/gradient-secrets/jwt";
     secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
