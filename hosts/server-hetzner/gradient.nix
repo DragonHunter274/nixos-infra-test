@@ -34,7 +34,7 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${config.services.tailscale.package}/bin/tailscale funnel --bg --yes 3000";
+      ExecStart = "${config.services.tailscale.package}/bin/tailscale funnel --bg --yes 80";
     };
   };
 }
