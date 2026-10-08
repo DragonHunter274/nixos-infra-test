@@ -179,7 +179,6 @@ in
       unstablePkgs.orca-slicer
       inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.prusa-slicer
       freecad
-      age-plugin-tpm-legacy
       inkscape
       gimp
       darktable
@@ -236,16 +235,7 @@ in
     '';
   };
 
-  system.activationScripts.setupTpmForSopsNix.text = ''
-    mkdir -p /etc/sops-nix
-    ${pkgs.tpm2-tools}/bin/tpm2_nvread 0x1500016 -C o -o /etc/sops-nix/tpm-identity.txt
-  '';
-
-  system.activationScripts.setupSecrets.deps = [ "setupTpmForSopsNix" ];
-
-  sops.age.keyFile = "/etc/sops-nix/tpm-identity.txt";
-  sops.age.plugins = [ pkgs.age-plugin-tpm-legacy ];
-
+  security.sops-tpm.enable = true;
   boot.kernelParams = [ "systemd.machine_id=438a1fca24b8455fb68e3d4b242ef51d" ];
   # ZFS support
   boot.supportedFilesystems = [ "zfs" ];
