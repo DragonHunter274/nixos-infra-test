@@ -5,7 +5,12 @@
   services.gradient = {
     enable = true;
     domain = "server-hetzner.taild08e19.ts.net";
-    #serveUrl = "https://server-hetzner.taild08e19.ts.net";
+    frontend.url = "https://server-hetzner.taild08e19.ts.net";
+    packages.frontend = pkgs.gradient-frontend.overrideAttrs (old: {
+      pnpmDeps = old.pnpmDeps.overrideAttrs (_: {
+        outputHash = "sha256-unyJ7ykJ6Fiq7IZZP1wU+yRkmJlX7QV7Wdx9CNRir5k=";
+      });
+    });
     useTls = false;
     secrets.jwtFile = "/var/lib/gradient-secrets/jwt";
     secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
