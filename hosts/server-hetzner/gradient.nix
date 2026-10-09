@@ -16,6 +16,12 @@
     secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
     postgres.enable = true;
     worker.enable = true;
+    githubApp = {
+      enable = true;
+      id = 5248499;
+      privateKeyFile = "/run/secrets/gradient-github-app.pem";
+      webhookSecretFile = "/run/secrets/gradient-github-app-webhook";
+    };
   };
 
   services.postgresql.package = pkgs.postgresql_18;
