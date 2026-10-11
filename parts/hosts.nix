@@ -57,7 +57,7 @@ in
       system = "x86_64-linux";
       hostname = "tothemoon";
       extraHmUsers = { };
-      extraModules = [ inputs.nix-builder-beacon.nixosModules.default ];
+      extraModules = [ inputs.nix-builder-beacon.nixosModules.default ../modules/sops-tpm];
       nixpkgsInput = inputs.nixpkgs-26-05;
     };
 
