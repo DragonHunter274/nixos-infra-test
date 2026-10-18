@@ -22,6 +22,7 @@ in
   boot.initrd.network.ssh = {
     enable = true;
     port = 222;
+    ignoreEmptyHostKeys = true;
     hostKeys = [ "/etc/ssh/ssh_host_ed25519_key" ];
     authorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
