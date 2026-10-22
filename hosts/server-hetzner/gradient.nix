@@ -1,5 +1,20 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 {
+  imports = [ inputs.sops-nix.nixosModules.sops ];
+
+  security.sops-tpm.enable = true;
+
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+
+    secrets = {
+      gradient-jwt = { };
+      gradient-crypt = { };
+      gradient-github-app-key = { };
+      gradient-github-app-webhook = { };
+    };
+  };
+
   services.tailscale.enable = true;
 
   services.gradient = {
@@ -12,15 +27,15 @@
       });
     });
     useTls = false;
-    secrets.jwtFile = "/var/lib/gradient-secrets/jwt";
-    secrets.cryptFile = "/var/lib/gradient-secrets/crypt";
+    secrets.jwtFile = config.sops.secrets.gradient-jwt.path;
+    secrets.cryptFile = config.sops.secrets.gradient-crypt.path;
     postgres.enable = true;
     worker.enable = true;
     githubApp = {
       enable = true;
       id = 5248499;
-      privateKeyFile = "/run/secrets/gradient-github-app.pem";
-      webhookSecretFile = "/run/secrets/gradient-github-app-webhook";
+      privateKeyFile = config.sops.secrets.gradient-github-app-key.path;
+      webhookSecretFile = config.sops.secrets.gradient-github-app-webhook.path;
     };
   };
 
