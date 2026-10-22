@@ -145,6 +145,7 @@ in
       extraHmUsers = { };
       extraModules = [ 
         ../modules/k3s.nix
+        ../modules/sops-tpm
         inputs.gradient.nixosModules.default
       ];
     };
