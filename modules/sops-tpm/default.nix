@@ -28,6 +28,8 @@
       mkdir -p /etc/sops-nix
       ${pkgs.tpm2-tools}/bin/tpm2_nvread 0x1500016 -C o -o /etc/sops-nix/tpm-identity.txt
     '';
-    system.activationScripts.setupSecrets.deps = [ "setupTpmForSopsNix" ];
+    system.activationScripts.setupSecrets = lib.mkIf (
+      config.sops.secrets != { } && !config.sops.useSystemdActivation
+    ) { deps = [ "setupTpmForSopsNix" ]; };
   };
 }
