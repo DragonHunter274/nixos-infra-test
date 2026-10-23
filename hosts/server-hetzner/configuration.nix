@@ -25,6 +25,8 @@
     ];
   };
 
+  security.sops-tpm.enable = true;
+
   boot.loader.efi.canTouchEfiVariables = false;
 
   boot.supportedFilesystems.bcachefs = true;
