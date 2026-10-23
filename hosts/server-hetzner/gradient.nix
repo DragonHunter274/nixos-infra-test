@@ -2,8 +2,6 @@
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];
 
-  security.sops-tpm.enable = true;
-
   sops = {
     defaultSopsFile = ./secrets/secrets.yaml;
 
@@ -21,11 +19,6 @@
     enable = true;
     domain = "server-hetzner.taild08e19.ts.net";
     frontend.url = "https://server-hetzner.taild08e19.ts.net";
-    packages.frontend = pkgs.gradient-frontend.overrideAttrs (old: {
-      pnpmDeps = old.pnpmDeps.overrideAttrs (_: {
-        outputHash = "sha256-SP5vgJ9g776IRcj0cJS7WzWpoS3d++qNZ4VxylCTJck=";
-      });
-    });
     useTls = false;
     secrets.jwtFile = config.sops.secrets.gradient-jwt.path;
     secrets.cryptFile = config.sops.secrets.gradient-crypt.path;
