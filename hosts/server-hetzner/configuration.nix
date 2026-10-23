@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ./disko-config.nix
+    ./gradient.nix
   ];
 
   boot.loader.grub = {
@@ -23,6 +24,8 @@
       }
     ];
   };
+
+  security.sops-tpm.enable = true;
 
   boot.loader.efi.canTouchEfiVariables = false;
 
