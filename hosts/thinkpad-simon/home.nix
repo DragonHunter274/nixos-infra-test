@@ -21,7 +21,6 @@
 
   # Let Home Manager install and manage itself
   programs.home-manager.enable = true;
-  nixpkgs.config.segger-jlink.acceptLicense = true;
   home.pointerCursor = {
     gtk.enable = true;
     # x11.enable = true;
