@@ -222,46 +222,6 @@ in
         };
       };
 
-      minio = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = ''
-            If enabled minio will be enabled on node
-          '';
-        };
-        credentialsFile = lib.mkOption {
-          type = lib.types.path;
-          description = ''
-            File containing the MINIO_ROOT_USER, default is "minioadmin", and
-            MINIO_ROOT_PASSWORD (length >= 8), default is "minioadmin"; in the format of
-            an EnvironmentFile=, as described by systemd.exec(5). The acess permission must
-            be set to 770 for minio:minio.
-          '';
-        };
-        region = lib.mkOption {
-          type = lib.types.str;
-          default = "local";
-          description = ''
-            The physical location of the server.
-          '';
-        };
-        buckets = lib.mkOption {
-          type = lib.types.listOf lib.types.str;
-          default = [
-            "volsync"
-            "postgres"
-          ];
-          description = ''
-            Bucket name.
-          '';
-        };
-        dataDir = lib.mkOption {
-          default = [ "/var/lib/minio/data" ];
-          type = lib.types.listOf (lib.types.either lib.types.path lib.types.str);
-          description = "The list of data directories or nodes for storing the objects.";
-        };
-      };
     };
   };
 
@@ -332,7 +292,6 @@ in
             pkgs.helmfile
             pkgs.git
             pkgs.go-task
-            pkgs.minio-client
             pkgs.jq
             pkgs.k9s
             pkgs.krelay
@@ -432,10 +391,6 @@ in
             10250 # k3s metrics
           ]
           (lib.mkIf cfg.addons.nfs.enable [ 2049 ])
-          (lib.mkIf cfg.addons.minio.enable [
-            9000
-            9001
-          ])
           (lib.mkIf cfg.prepare.cilium [
             4240 # health check
             4244 # hubble server
@@ -468,12 +423,6 @@ in
             ${cfg.addons.nfs.path} ${config.networking.hostName}(rw,fsid=0,async,no_subtree_check,no_auth_nlm,insecure,no_root_squash)
           '';
         };
-        minio = lib.mkIf cfg.addons.minio.enable {
-          enable = true;
-          region = cfg.addons.minio.region;
-          dataDir = cfg.addons.minio.dataDir;
-          rootCredentialsFile = cfg.addons.minio.credentialsFile;
-        };
         k3s = {
           enable = true;
           role = "server";
@@ -503,7 +452,6 @@ in
           k3s = {
             after = lib.mkMerge [
               [ "k3s.delay.service" ]
-              (lib.mkIf cfg.addons.minio.enable [ "minio.service" ])
               (lib.mkIf cfg.addons.nfs.enable [ "nfs-server.service" ])
             ];
             path = with pkgs; [
@@ -519,32 +467,6 @@ in
           iscsid.serviceConfig = {
             PrivateMounts = "yes";
             BindPaths = "/run/current-system/sw/bin:/bin";
-          };
-          minio-init = lib.mkIf cfg.addons.minio.enable {
-            enable = true;
-            path = [
-              pkgs.minio
-              pkgs.minio-client
-            ];
-            requiredBy = [ "multi-user.target" ];
-            after = [ "minio.service" ];
-            serviceConfig = {
-              Type = "simple";
-              User = "minio";
-              Group = "minio";
-              RuntimeDirectory = "minio-config";
-            };
-            script = ''
-              set -e
-              sleep 5
-              source ${cfg.addons.minio.credentialsFile}
-              mc --config-dir "$RUNTIME_DIRECTORY" alias set minio http://localhost:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
-              ${toString (
-                lib.lists.forEach cfg.addons.minio.buckets (
-                  bucket: "mc --config-dir $RUNTIME_DIRECTORY mb --ignore-existing minio/${bucket};"
-                )
-              )}
-            '';
           };
         };
         timers.k3s-delay = {
