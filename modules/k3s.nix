@@ -339,7 +339,7 @@ in
             pkgs.kubectl
             pkgs.nfs-utils
             pkgs.openiscsi
-            pkgs.openssl_3
+            pkgs.openssl
             pkgs.sops
 
             (pkgs.writeShellScriptBin "nuke-k3s" ''
