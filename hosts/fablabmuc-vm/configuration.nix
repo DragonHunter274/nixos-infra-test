@@ -29,6 +29,8 @@
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "prohibit-password";
 
+  nixpkgs.config.allowUnfree = true;  
+
   services.printing = {
     enable = true;
     listenAddresses = [ "*:631" ];
