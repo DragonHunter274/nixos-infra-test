@@ -86,6 +86,10 @@
       url = "github:feel-co/ncro";
       inputs.nixpkgs.follows= "nixpkgs";
     };
+    gradient = {
+      url = "github:wavelens/gradient/ed9cd2c7f33d264a567f704edfb50fa9881a9db1";
+      #inputs.nixpkgs.follows= "nixpkgs";
+    };
   };
 
   outputs =
