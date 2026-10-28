@@ -43,7 +43,7 @@
     };
 
     hyprland = {
-      url = "github:hyprwm/Hyprland/71a1216abcc7031776630a6d88f105605c4dc1c9";
+      url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -85,6 +85,10 @@
     ncro = {
       url = "github:feel-co/ncro";
       inputs.nixpkgs.follows= "nixpkgs";
+    };
+    gradient = {
+      url = "github:wavelens/gradient/ed9cd2c7f33d264a567f704edfb50fa9881a9db1";
+      #inputs.nixpkgs.follows= "nixpkgs";
     };
   };
 
