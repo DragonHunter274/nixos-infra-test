@@ -122,6 +122,7 @@ in
     tothemoon-iso = builders.mkISO {
       system = "x86_64-linux";
       hostname = "tothemoon";
+      extraModules = [../modules/sops-tpm];
     };
 
     hydra = builders.mkNixos {
