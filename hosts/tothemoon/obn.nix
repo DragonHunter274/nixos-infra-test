@@ -23,8 +23,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "ClusterM";
     repo = "open-bamboo-networking";
-    rev = "master";
-    hash = "sha256-dbqvQdeEpMEmjZGsMMXE7+HPuLVZpIfN13XXv0joIuQ=";
+    rev = "v2.2.0";
+    hash = "sha256-VSX5j4FmLavPGs5x3ONGrI1b8Du5BKD4WzsmwJFFOak=";
   };
 
   nativeBuildInputs = [ cmake pkg-config git ];

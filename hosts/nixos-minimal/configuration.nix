@@ -6,10 +6,12 @@
 {
   networking.hostName = "nixos-minimal";
 
+  boot.supportedFilesystems.bcachefs = true;
+
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "yes";
   services.openssh.settings.MaxAuthTries = 10;
-
+  boot.kernelParams = [ "copytoram" ];
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
   services.avahi.publish.enable = true;

@@ -516,8 +516,8 @@ in
         # Git
         programs.git = mkIf (cfg.git.userName != "" && cfg.git.userEmail != "") {
           enable = true;
-          userName = cfg.git.userName;
-          userEmail = cfg.git.userEmail;
+          settings.user.name = cfg.git.userName;
+          settings.user.email = cfg.git.userEmail;
         };
 
         # Cinnamon: fractional scaling support + terminal (gnome-terminal) font
