@@ -18,6 +18,7 @@
     "usb_storage"
     "sd_mod"
     "sdhci_pci"
+    "r8169"
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];

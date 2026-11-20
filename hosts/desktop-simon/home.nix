@@ -123,8 +123,8 @@
 
   programs.git = {
     enable = true;
-    userName = "DragonHunter274";
-    userEmail = "schurgel@gmail.com";
+    settings.user.name = "DragonHunter274";
+    settings.user.email = "schurgel@gmail.com";
   };
   # You can access system configuration values via the systemConfig argument
   # For example:

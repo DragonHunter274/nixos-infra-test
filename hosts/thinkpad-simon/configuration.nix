@@ -47,6 +47,10 @@ in
   ];
   nix.distributedBuilds = true;
   nix.settings.builders-use-substitutes = true;
+  # Builders (nix-arm-builder, tothemoon via nix-builder-beacon) are already
+  # trusted via SSH key auth; none of them sign their store paths, so
+  # require-sigs=true rejects build results copied back from them.
+  nix.settings.require-sigs = false;
 
   security.wrappers.renice = {
     source = "${pkgs.util-linux}/bin/renice";
@@ -162,7 +166,7 @@ in
     };
   };
 
-  #boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   boot.kernelModules = [
     "sg"

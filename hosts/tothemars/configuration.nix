@@ -1,7 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  primaryUsbId = "b501f1b9-7714-472c-988f-3c997f146a17";
-  backupUsbId = "b501f1b9-7714-472c-988f-3c997f146a18";
+  primarySerial = "b501f1b9-7714-472c-988f-3c997f146a17";
+  backupSerial = "b501f1b9-7714-472c-988f-3c997f146a18";
 in
 {
   imports = [
@@ -17,11 +22,24 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
-  boot.initrd.kernelModules = [ "uas" "usbcore" "usb_storage" "vfat" "nls_cp437" "nls_iso8859_1" ];
+  boot.initrd.kernelModules = [
+    "uas"
+    "usbcore"
+    "usb_storage"
+    "vfat"
+    "nls_cp437"
+    "nls_iso8859_1"
+  ];
   boot.initrd.network.enable = true;
+  boot.initrd.systemd.network.networks."10-dhcp" = {
+    matchConfig.Type = "ether";
+    networkConfig.DHCP = "yes";
+  };
+  boot.initrd.systemd.network.wait-online.anyInterface = true;
   boot.initrd.network.ssh = {
     enable = true;
     port = 222;
+    ignoreEmptyHostKeys = true;
     hostKeys = [ "/etc/ssh/ssh_host_ed25519_key" ];
     authorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILMrUsj8WPgNzTTEbt2/QXsEaJs/K9SuTbrqdgk0xSRC simon@thinkpad-simon"
@@ -35,8 +53,13 @@ in
     serviceConfig.RemainAfterExit = true;
     script = ''
       mkdir -m 0755 -p /key
-      sleep 2
-      mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key || true
+      for i in $(seq 1 30); do
+        dev="$(ls /dev/disk/by-id/usb-General_UDisk_${primarySerial}-0\:0 2>/dev/null || ls /dev/disk/by-id/usb-General_UDisk_${backupSerial}-0\:0 2>/dev/null || true)"
+        if [ -n "$dev" ] && mount -n -t vfat -o ro "$dev" /key 2>/dev/null; then
+          break
+        fi
+        sleep 1
+      done
 
       if [ -f /key/age-key.txt ]; then
         mkdir -p /mnt-root/root/.config/sops/age
@@ -66,7 +89,13 @@ in
     script = ''
       mkdir -m 0755 -p /key
       if ! mountpoint -q /key; then
-        mount -n -t vfat -o ro "$(findfs UUID=${primaryUsbId})" /key || mount -n -t vfat -o ro "$(findfs UUID=${backupUsbId})" /key || true
+        for i in $(seq 1 30); do
+          dev="$(ls /dev/disk/by-id/usb-General_UDisk_${primarySerial}-0\:0 2>/dev/null || ls /dev/disk/by-id/usb-General_UDisk_${backupSerial}-0\:0 2>/dev/null || true)"
+          if [ -n "$dev" ] && mount -n -t vfat -o ro "$dev" /key 2>/dev/null; then
+            break
+          fi
+          sleep 1
+        done
       fi
 
       mkdir -p /root/.config/sops/age
@@ -106,7 +135,6 @@ in
       url = "https://github.com/dragonhunter274/home-ops";
       branch = "dev";
       path = "./environments/dev";
-
       sopsAgeKeyFile = /root/.config/sops/age/keys.txt; # Optional, defaults to ~/.config/sops/age/keys.txt
     };
     services.servicelb = false;

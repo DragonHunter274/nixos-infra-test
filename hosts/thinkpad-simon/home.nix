@@ -21,7 +21,6 @@
 
   # Let Home Manager install and manage itself
   programs.home-manager.enable = true;
-  nixpkgs.config.segger-jlink.acceptLicense = true;
   home.pointerCursor = {
     gtk.enable = true;
     # x11.enable = true;
@@ -88,8 +87,8 @@
 
   programs.git = {
     enable = true;
-    userName = "DragonHunter274";
-    userEmail = "schurgel@gmail.com";
+    settings.user.name = "DragonHunter274";
+    settings.user.email = "schurgel@gmail.com";
   };
 
   home.file.".docker/config.json".text = builtins.toJSON {

@@ -30,8 +30,8 @@
   # Git configuration
   programs.git = {
     enable = true;
-    userName = "Pi User";
-    userEmail = "pi@fablabmuc-tv.local";
+    settings.user.name = "Pi User";
+    settings.user.email = "pi@fablabmuc-tv.local";
   };
 
   # Bash configuration

@@ -22,6 +22,7 @@
               content = {
                 type = "bcachefs";
                 filesystem = "pool";
+                label = "nvme0";
               };
             };
           };
@@ -49,6 +50,7 @@
               content = {
                 type = "bcachefs";
                 filesystem = "pool";
+                label = "nvme1";
               };
             };
           };
